@@ -1,0 +1,17 @@
+EXECUTABLES = cg1_ex1
+CC=g++
+CFLAGS= -O3 
+DEPS = node.h scenegraph.h robot.h context.h 
+OBJ = node.o scenegraph.o robot.o context.o cg1_ex1.o
+LIBS = -lGLU -lGL -lglut -lm
+
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+cg1_ex1: $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+.PHONY: clean
+
+clean:
+	rm -f *.o *~ $(EXECUTABLES)
