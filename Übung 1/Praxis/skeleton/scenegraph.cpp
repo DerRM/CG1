@@ -90,7 +90,7 @@ void SceneGraph::traverse(Node *node){
   // XXX
   
   // INSERT YOUR CODE HERE
-  
+    glPushMatrix();
   // END XXX
   
   // apply local transformation
@@ -103,6 +103,10 @@ void SceneGraph::traverse(Node *node){
   // XXX  
 
   // INSERT YOUR CODE HERE
+  if (node->getChild())
+  {
+      traverse(node->getChild());
+  }
 
   // END XXX
   
@@ -111,12 +115,18 @@ void SceneGraph::traverse(Node *node){
   // XXX
   
   // INSERT YOUR CODE HERE
-  
+    glPopMatrix();
   // END XXX
   
   // and traverse possible siblings
   // XXX
-  
+    if (node->next)
+    {
+        //while (node->getChild()->next)
+        //{
+            traverse(node->next);
+        //}
+    }
   // INSERT YOUR CODE HERE
   
   // END XXX

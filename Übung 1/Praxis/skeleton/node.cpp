@@ -90,7 +90,7 @@ void Node::transform(){
 	// XXX
 
 	// INSERT YOUR CODE HERE
-
+    glTranslatef(x, y, z);
 	// END XXX
 
 	// translate node center to joint position
@@ -104,6 +104,8 @@ void Node::transform(){
 	// XXX
 
         // INSERT YOUR CODE HERE
+    GLfloat angle = 0;
+    glRotatef(angle, rotx, roty, rotz);
 
 	// END XXX
 
@@ -112,9 +114,7 @@ void Node::transform(){
 
 	// translate center of rotation into limb's origin
 	// XXX
-
 	// INSERT YOUR CODE HERE
-
 	// END XXX
 }
 
@@ -153,7 +153,7 @@ void Node::drawJoint(){
 	// draw a sphere at center of rotation
 	// (with glutwiredphere...)
 	// XXX
-
+    
 	// INSERT YOUR CODE HERE
 
 	// END XXX
