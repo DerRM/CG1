@@ -97,16 +97,16 @@ void Node::transform(){
 	// XXX
 
 	// INSERT YOUR CODE HERE
-
+    glTranslatef(-jointx, -jointy, -jointz);
 	// END XXX
 
 	// apply this node's rotation
 	// XXX
 
         // INSERT YOUR CODE HERE
-    GLfloat angle = 0;
-    glRotatef(angle, rotx, roty, rotz);
-
+    glRotatef(rotx, 1.0f, 0.0f, 0.0f);
+    glRotatef(roty, 0.0f, 1.0f, 0.0f);
+    glRotatef(rotz, 0.0f, 0.0f, 1.0f);
 	// END XXX
 
 	// draw Joint (rotation center)
@@ -115,6 +115,7 @@ void Node::transform(){
 	// translate center of rotation into limb's origin
 	// XXX
 	// INSERT YOUR CODE HERE
+    glTranslatef(jointx, jointy, jointz);
 	// END XXX
 }
 
@@ -155,7 +156,7 @@ void Node::drawJoint(){
 	// XXX
     
 	// INSERT YOUR CODE HERE
-
+    glutWireSphere(25, 10, 10);
 	// END XXX
 
 	glBegin(GL_LINES);
@@ -164,7 +165,17 @@ void Node::drawJoint(){
 	//      SEE PROVIDED cg1_ex1.exe (win32) AND cg1_ex1 (linux)
 
 	// INSERT YOUR CODE HERE
-
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0 + 50, 0, 0);
+    
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0, 0 + 50, 0);
+    
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0, 0, 0 + 50);
 	// END XXX
 
 	glEnd();
