@@ -265,7 +265,10 @@ void Context::menu(int id){
     // XXX: reset rotations
 
     // INSERT YOUR CODE HERE
-
+  case 2:
+          sceneGraph->reset();
+          display();
+          break;
     // END XXX
     
     // XXX: add more options (optional)
@@ -324,7 +327,7 @@ void Context::registerCallbacks(void){
   // XXX: add reset option
   
   // INSERT YOUR CODE HERE
-
+    glutAddMenuEntry("reset rotations", 2);
   // END XXX
 
   // XXX: add more options (optional)
