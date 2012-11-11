@@ -120,14 +120,13 @@ void SceneGraph::traverse(Node *node){
   
   // and traverse possible siblings
   // XXX
+  
+  // INSERT YOUR CODE HERE
+
     if (node->next)
     {
-        //while (node->getChild()->next)
-        //{
-            traverse(node->next);
-        //}
+        traverse(node->next);
     }
-  // INSERT YOUR CODE HERE
   
   // END XXX
 }
@@ -148,6 +147,16 @@ void SceneGraph::reset(Node* node){
   // XXX
   
   // INSERT YOUR CODE HERE
+  node->rotate(-node->rotx, -node->roty, -node->rotz);
   
+    if (node->getChild())
+    {
+        reset(node->getChild());
+    }
+    
+    if (node->next)
+    {
+        reset(node->next);
+    }
   // END XXX
 }
