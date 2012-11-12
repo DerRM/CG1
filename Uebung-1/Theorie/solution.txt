@@ -1,0 +1,58 @@
+Ich fuege hier mal ein, was ich mir bis jetzt ueberlegt habe.
+
+2.a.
+
+da koennen wir das nehmen, was wir schon haben...
+
+da kommt zuerst die Matrizengleichung, aber die sieht in so einem textfile natuerlich nur bescheiden aus,
+mal sehen ob ich heute noch latex zum laufen bekomme, dann mach ich das dort, oder wir nehmen fuer diesen teil einfach die alte seite aus dem pdf
+
+Kreis mit Mittlelpunkt im Ursprung des Koordinatensystems:
+• der Kreis wird zu einer Ellipse
+• der Ursprung des Kreises liegt nicht mehr im Mittelpunkt des Koordinatensystems
+• der Kreis liegt nun im linken oberen Quadranten des Koordinatensystems
+Kreis mit Mittelpunkt in p
+• der Kreis wird zu einer Ellipse
+• der Mittelpunkt des Kreises liegt noch immer in p
+
+
+
+b.
+
+
+
+c.
+
+geg.: M = TR; I = Identity
+ges.: M^-1
+
+TT^-1 = I
+RR^-1 = I
+M^-1 = R^-1 * T^-1
+
+Die Inverse einer Translation erhaelt man durch Invertieren des Translationsvektors (Vorzeichen umdrehen).
+Die Inverse einer Rotation erhaelt man durch Transponieren.
+
+M^-1 = links/oben/mitte R^transponiert, links/mitte-unten 0, oben/mitte-rechts -T, rechts unten 1
+
+schreib ich dann auch nochmal besser auf
+
+
+d.
+
+R = Rotation, T = Translation,  iS/aS = isotrope/anisotrope Skalierung
+
+Ich hab mir ueberlegt, das man alles mit einer Rotation nicht vertauschen kann, bin mir aber nicht ganz sicher
+
+RiS entspricht iSR = falsch
+RT entspricht TR   = falsch
+iST entspricht TiS = wahr
+TaS entspricht aST = wahr
+RaS entspricht aSR = falsch
+
+
+e.
+
+double buffering
+
+-> man hat 2 Framebuffer, waehrend einer auf dem Display angezeigt wird, wird in dem 2. Buffer der naechste Fram gerendert. Anschliessend werden beide Buffer vertauscht. Ermoeglicht fluessiges anzeigen von Bewegungen (des Roboters).
