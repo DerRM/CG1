@@ -51,6 +51,15 @@ ipch/
 *.psess
 *.vsp
 
-#generated object files
+# generated object files
 *.o
 cg1_ex1_mac
+
+# generated latex files
+*.aux
+*.dvi
+*.out
+*.pyg
+
+# Maccrap
+.DS_Store
