@@ -60,6 +60,8 @@ cg1_ex1_mac
 *.dvi
 *.out
 *.pyg
+*.gz
+*.pdf
 
 # Maccrap
 .DS_Store

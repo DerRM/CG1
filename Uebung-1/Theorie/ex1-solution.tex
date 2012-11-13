@@ -144,40 +144,66 @@ Koordinatensystems
 
 \subsection*{b.}
 
-Leiten Sie schrittweise eine Formel her, die einen Vektor v um eine beliebige Achse, gegeben durch den
-Einheitsvektor k, mit dem Winkel \(\theta\) rotiert. Dabei sollen ausschliesslich Vektoroperationen, jedoch keine
+Leiten Sie schrittweise eine Formel her, die einen Vektor $v$ um eine beliebige Achse, gegeben durch den
+Einheitsvektor $k$, mit dem Winkel $\theta$ rotiert. Dabei sollen ausschliesslich Vektoroperationen, jedoch keine
 Matrixoperationen, verwendet werden. Folgende Schritte sind dazu notwendig:
-1. Bestimmen Sie die Projektion vk des Vektor v auf Vektor k. (0,5 Punkte)
+1. Bestimmen Sie die Projektion $v_k$ des Vektor $v$ auf Vektor $k$. (0,5 Punkte)
 
 \[
- v_k = {v * k \over k^2} * k
+	v_k = {v \cdot k \over \|k\|^2}~k
 \]
 
-2. Bestimmen Sie zwei orthogonale Basisvektoren v1 und v2, die die Fläche senkrecht zu Vektor
+lässt sich auch schreiben als:
+
+\[
+	v_k = (v \cdot k)k, ~da ~\| k \| = 1
+\]
+
+2. Bestimmen Sie zwei orthogonale Basisvektoren $v_1$ und $v_2$, die die Fläche senkrecht zu Vektor $v_k$
 aufspannen. (0,5 Punkte)
 
-\(v_1\) bestimmen wir über das Skalarprodukt. Es gilt:
+$v_1$ bestimmen wir, indem wir uns die Projektion von $v$ auf $k$ zu Nutze machen und somit der Vektor von $v_k$ nach $v$ demnach senkrecht sein muss. Es gilt:
+
 \[
-v_k * v_1 = |v_k| * |v_1| * \cos\frac{\pi}{2} = 0
-\]
-\[
-v_{k_1}v_{1_1} + v_{k_2}v_{1_2} + v_{x_3}v_{1_3} = 0
+v_1 = v - v_k
 \]
 
-\(v_2\) bestimmen wir über das Kreuzprodukt. Es gilt:
+$v_2$ bestimmen wir über das Kreuzprodukt. Es gilt:
+
+\begin{align*}
+	v_2 &= v_1 \times k bzw.\\
+	v_2 &= v \times k
+\end{align*}
+
+weil $v$ und $k$ eine Ebene aufspannen die senkrecht zu $v_2$ sein muss.
+
+3. Bestimmen Sie die um den Winkel $\theta$ rotierten Vektoren $v_1'$, $v_2'$ und $v_k'$. (0,5 Punkte)
+
+Da um den Vektor $k$ rotiert werden soll und $v_k$ auf $liegt$ ergibt sich sofort
+
 \[
-v_2 = v_1 \times v_k
+	v_k' = v_k
 \]
 
-3. Bestimmen Sie die um den Winkel \(\theta\) rotierten Vektoren \(v_1', v_2' und v_k'\). (0,5 Punkte)
+Da nun $v_1$ und $v_2$ in einer Ebene liegen und um den Schnittpunkt der beiden gedreht wird, kann man die Rotation der beiden Vektoren als Rotation im Polarkreis darstellen. Dabei ergibt sich:
 
-Dazu kann man die Schreibweise als Polarkoordinaten nutzen:
+\begin{align*}
+	v_1' &= \cos{\theta} v_1 + \sin{\theta} v_2\\
+	v_2' &= -\sin{\theta} v_2 + \cos{\theta} v_2
+\end{align*}
 
+4. Fassen Sie alle Teilschritte zu einer Formel in Abhängigkeit von $v$, $k$ und $\theta$ zusammen, die den
+rotierten Vektor $w$ bestimmt. (0,5 Punkte)
 
-4. Fassen Sie alle Teilschritte zu einer Formel in Abhängigkeit von v, k und \(\theta\) zusammen, die den
-rotierten Vektor w bestimmt. (0,5 Punkte)
+$w$ lässt sich nun in Abhängigkeit von $v$, $k$ und $\theta$ folgendermaßen formulieren:
 
-
+\begin{align*}
+	w &= v_k + v_1'\\
+	w &= (v \cdot k)k + \cos{\theta} v_1 + \sin{\theta} v_2\\
+	w &= (v \cdot k)k + \cos{\theta} (v - (v \cdot k)k) + \sin{\theta} (v \times k)\\
+	w &= (v \cdot k)k + \cos{\theta}v - \cos{theta}(v \cdot k)k + \sin{\theta}(v \times k)\\
+	w &= (1 - \cos{\theta})(v \cdot k)k + \cos{\theta}v + \sin{\theta}(k \times v)
+\end{align*}
 
 \subsection*{c.}
 
