@@ -1,0 +1,247 @@
+\documentclass[12pt]{scrreprt}
+
+\usepackage[ngerman]{babel}
+\usepackage{textcomp}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{color,fancyvrb}
+\usepackage{lmodern}
+
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+%\graphicspath{{./images/}}
+
+%% Quellcode auszeichnung %%
+\usepackage{minted}
+\makeatletter
+\minted@define@extra{label}
+\makeatother
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+\usemintedstyle{manni}
+\newminted{c}{fontfamily=helvetica, fontsize=\scriptsize, tabsize=8,
+samepage, frame=single, bgcolor=bg,label=Quellcode,
+numbersep=5pt, xrightmargin=0mm, xleftmargin=4mm, linenos}
+
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage[font=small,labelfont=bf,textfont=sf]{caption}
+\usepackage{placeins}
+\usepackage{multirow}
+\setlength{\parskip}{3ex plus 2ex minus 2ex}
+\widowpenalty=300
+\clubpenalty=300
+
+\newcommand{\comment}[1]{}
+\setcounter{secnumdepth}{6}
+
+% header and footer
+\usepackage{fancyhdr}
+\setlength{\headheight}{18pt}
+\renewcommand{\headrulewidth}{0.3pt}
+\pagestyle{fancyplain}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\fancyhf{}
+\cfoot{\thepage}
+
+% make internal and external links
+\usepackage{hyperref} % load this at the end of all packages, but
+%before the options, not true here at the moment tough
+
+\hypersetup{
+%    bookmarks=true,         % show bookmarks bar? - is already true
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={CG 1 - Exercise},    % title
+    pdfauthor={CG 1 - Gruppe 6},     % author
+    pdfsubject={},   % subject of the document
+    pdfcreator={CG 1 - Gruppe 6},   % creator of the document
+    pdfproducer={Producer}, % producer of the document
+    pdfkeywords={CG 1} {Computer Graphics I} {TU Berlin}, % list of keywords
+    pdfnewwindow=true,      % links in new window
+    colorlinks=false,       % false: boxed links; true: colored links
+    linkcolor=red,          % color of internal links
+    citecolor=green,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=cyan           % color of external links
+}
+
+\begin{document}
+
+\input{./title_cg.tex}
+\pagenumbering{arabic}
+
+\chapter*{Aufgabe 1 - Praktischer Teil}
+
+siehe Quellcode
+
+\chapter*{Aufgabe 2 - Theoriefragen}
+\section*{1.}
+
+\subsection*{a.}
+
+\subsection*{b.}
+
+\subsection*{c.}
+
+Weil in der Computergrafik sehr viel mit linearen Transformationen
+gearbeitet wird, z.B. bei der Abbildung von 3-dimensionalen
+Geometriemodellen in den 2D-Raum eines Bildschirmes.
+
+Würde die geforderte Vorraussetzung nicht gelten, würden sich 2 sich
+schneidende Linien unter Umständen nach der linearen Transformation
+nicht mehr schneiden. Das wäre schlecht.
+
+
+\section*{2. Geometrie Shader}
+
+\subsection*{Funktionsweise}
+
+Geometrieshader werden in der Grafikpipeline nach den Vertexshadern
+ausgeführt.
+Im Gegensatz zu Vertex- und Fragmentshadern, welche nur für die
+Darstellung gegebener Geometrie geeignet sind, kann ein
+Geometrieshader neue Vertices erstellen und damit die Geometrie von
+Objekten verändern.
+
+\subsection*{warum nicht schon frueher?}
+
+Vermutlich war die Hardware noch nicht in der Lage dazu.
+Vielleicht waren auch die Grafikapis (OpenGL, Directx) noch nicht
+soweit fortgeschritten, das sie diese Möglichkeit konzeptionell
+berücksichtigten.
+
+\subsection*{Vorteile dieses Shaders?}
+
+Im Gegensatz zu Vertex- und Fragmentshader welche nur ein Vertex bzw.
+Pixel auf einmal bearbeiten können, hat man in einem Geometrieshader
+auch zugriff auf Nachbarvertices.
+Die Geometrie von Objekten kann on-the-fly verändert werden, d.h. es
+können zusätzliche Details hinzugefügt werden. Die CPU wird dadurch
+nicht belastet.
+Man kann in mehrere Framebuffer gleichzeitig rendern dank \emph{gl\_Layer}.
+
+\subsection*{Anwendungen:}
+
+\begin{itemize}
+  \item Haare, Gras, Fell
+  \item es wäre denkbar, ein mesh zu erzeugen bzw. zu erweitern,
+    welches als Grundlage für eine Landschaft dient
+  \item die Darstellung von selbstständigem Pflanzenwachstum ohne
+    CPU-Einsatz (durch Bildung von Dreiecksketten)
+  \item die Berechnung von Physikeffekten wie wallender Nebel oder Wasser
+  \item Tesselierung vorliegender Geometrien
+\end{itemize}
+
+
+\section*{3. OpenGL state machine}
+
+``OpenGL verwendet eine state machine''
+
+-> je nach Definition von ``state machine'' (die Phasen der
+Verarbeitung sind die states vs. die Verarbeitung der Graphikdaten in
+den einzelnen Phasen ist nur auf vordefininierte Weise möglich) trifft
+dies nur vollständig auf OpenGL <= 1.5 zu, denn ab OpenGL
+2.0 gab es Shader
+
+\subsection*{Vorteile}
+
+\begin{itemize}
+  \item Anweisungen an den Grafikprozessor können zwischengespeichert werden
+  (queued). Dadurch lassen sich verschiedene States definieren und bei Bedarf an
+  die GPU abgesetzt werden.
+  \item optimale Anpassung der zugrunde liegenden Hardware
+  \item einfacher zu Benutzen für den Anwender, aufgrund der
+    geringeren Komplexität und der eingeschränkten Möglichkeiten
+  \item geringe Hardwareanforderungen
+\end{itemize}
+
+\subsection*{Nachteile}
+
+\begin{itemize}
+  \item Die gesetzten Werte sind global über den gesamten Code verfügbar und
+  können dadurch ungewollt verändert werden.
+  \item Es können Objekte nicht direkt angesprochen werden, sondern nur indirekt
+  über einen Szenegraphen.
+  \item kaum Flexibilität, nur im Rahmen der vorgegebenen
+    Einstellungsmöglichkeiten
+\end{itemize}
+
+\subsection*{Heute noch gerechtfertigt?}
+
+Der Ansatz der State Machine ist auf heutiger Grafikhardware immer noch
+gerechtfertigt, denn durch sie lassen sich mehrere Zustände einer grafischen
+Anwendung beschreiben.  Im Falle von OpenGL lassen sich mehrere Zustände
+gleichzeitig abbilden in dem sie nacheinander gespeichert werden und daraufhin
+an die Grafikhardware geschickt werden.
+
+Silvio: Teilweise ja, meiner Meinung nach ist das ja auch, was der
+gegenwärtige Stand der Dinge zeigt. Eine reine StateMachine ist m.E.
+heutzutage nicht mehr angemessen, da mit dieser keine adäquaten
+Grafikeffekte erzielt werden können, gemessen an den Erwartungen
+heutiger Anwender. Das man sich z.B. bei WebGL von Anfang an auf eine
+shaderbasierte Implementation festgelegt hat unterstreicht diese
+Einschätzung.
+Dennoch sind wir noch nicht soweit voran geschritten, das es
+geeignetere Konzepte gibt, als die Vorstellung der phasenweise zu
+durchlaufenden Graphikpipeline.
+
+\section*{4.}
+
+\begin{center}
+\(
+T S R T^{-1}
+\)
+\end{center}
+
+\(
+T = \left(
+	\begin{array}{ccc}
+		1 & 0 & -p_{x} \\
+		0 & 1 & -p_{y} \\
+		0 & 0 & 1
+	\end{array}
+\right)
+S = \left(
+	\begin{array}{ccc}
+		1 & 0 & 0 \\
+		0 & s_{y} & 0 \\
+		0 & 0 & 1
+	\end{array}
+\right)
+R = \left(
+	\begin{array}{ccc}
+		\cos\alpha & -\sin\alpha & 0 \\
+		\sin\alpha & \cos\alpha & 0 \\
+		0 & 0 & 1
+	\end{array}
+\right)
+T^{-1} = \left(
+	\begin{array}{ccc}
+		1 & 0 & p_{x} \\
+		0 & 1 & p_{y} \\
+		0 & 0 & 1
+	\end{array}
+\right)
+\)
+
+\subsubsection*{Kreis mit Mittlelpunkt im Ursprung des Koordinatensystems:}
+
+\begin{itemize}
+  \item der Kreis wird zu einer Ellipse
+  \item der Ursprung des Kreises liegt nicht mehr im Mittelpunkt des
+Koordinatensystems
+  \item der Kreis liegt nun im linken oberen Quadranten des Koordinatensystems
+\end{itemize}
+
+\subsubsection*{Kreis mit Mittelpunkt in p}
+
+\begin{itemize}
+  \item der Kreis wird zu einer Ellipse
+  \item der Mittelpunkt des Kreises liegt noch immer in p
+\end{itemize}
+
+\end{document}

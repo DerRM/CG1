@@ -1,0 +1,245 @@
+\documentclass[12pt]{scrreprt}
+
+\usepackage[ngerman]{babel}
+\usepackage{textcomp}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{color,fancyvrb}
+\usepackage{lmodern}
+
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+%\graphicspath{{../latex/}}
+
+%% Quellcode auszeichnung %%
+\usepackage{minted}
+\makeatletter
+\minted@define@extra{label}
+\makeatother
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+\usemintedstyle{manni}
+\newminted{c}{fontfamily=helvetica, fontsize=\scriptsize, tabsize=8,
+samepage, frame=single, bgcolor=bg,label=Quellcode,
+numbersep=5pt, xrightmargin=0mm, xleftmargin=4mm, linenos}
+
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage[font=small,labelfont=bf,textfont=sf]{caption}
+\usepackage{placeins}
+\usepackage{multirow}
+\setlength{\parskip}{3ex plus 2ex minus 2ex}
+\widowpenalty=300
+\clubpenalty=300
+
+\newcommand{\comment}[1]{}
+\setcounter{secnumdepth}{6}
+
+% header and footer
+\usepackage{fancyhdr}
+\setlength{\headheight}{18pt}
+\renewcommand{\headrulewidth}{0.3pt}
+\pagestyle{fancyplain}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\fancyhf{}
+\cfoot{\thepage}
+
+% make internal and external links
+\usepackage{hyperref} % load this at the end of all packages, but
+%before the options, not true here at the moment tough
+
+\hypersetup{
+%    bookmarks=true,         % show bookmarks bar? - is already true
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={CG 1 - Exercise},    % title
+    pdfauthor={CG 1 - Gruppe 6},     % author
+    pdfsubject={},   % subject of the document
+    pdfcreator={CG 1 - Gruppe 6},   % creator of the document
+    pdfproducer={Producer}, % producer of the document
+    pdfkeywords={CG 1} {Computer Graphics I} {TU Berlin}, % list of keywords
+    pdfnewwindow=true,      % links in new window
+    colorlinks=false,       % false: boxed links; true: colored links
+    linkcolor=red,          % color of internal links
+    citecolor=green,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=cyan           % color of external links
+}
+
+\begin{document}
+
+\input{../../latex/title_cg.tex}
+\pagenumbering{arabic}
+
+\chapter*{Aufgabe 1 - Praktischer Teil}
+
+siehe Quellcode
+
+\chapter*{Aufgabe 2 - Theoriefragen}
+\section*{1.}
+
+\subsection*{a.}
+Beschreiben Sie die folgende Transformation des lokalen Koordinatensystems an p = (px,py) (blau) mit
+elementaren 3x3 Transformationsmatrizen (1 Punkt). Welchen Effekt hat die Transformation auf einen
+Kreis, der am Ursprung zentriert ist? Welchen Effekt hat die Transformation auf einen Kreis, der an p
+zentriert ist?
+
+
+\begin{center}
+\(
+T S R T^{-1}
+\)
+\end{center}
+
+\(
+T = \left(
+	\begin{array}{ccc}
+		1 & 0 & -p_{x} \\
+		0 & 1 & -p_{y} \\
+		0 & 0 & 1
+	\end{array}
+\right)
+S = \left(
+	\begin{array}{ccc}
+		1 & 0 & 0 \\
+		0 & s_{y} & 0 \\
+		0 & 0 & 1
+	\end{array}
+\right)
+R = \left(
+	\begin{array}{ccc}
+		\cos\alpha & -\sin\alpha & 0 \\
+		\sin\alpha & \cos\alpha & 0 \\
+		0 & 0 & 1
+	\end{array}
+\right)
+T^{-1} = \left(
+	\begin{array}{ccc}
+		1 & 0 & p_{x} \\
+		0 & 1 & p_{y} \\
+		0 & 0 & 1
+	\end{array}
+\right)
+\)
+
+\subsubsection*{Kreis mit Mittlelpunkt im Ursprung des Koordinatensystems:}
+
+\begin{itemize}
+  \item der Kreis wird zu einer Ellipse
+  \item der Ursprung des Kreises liegt nicht mehr im Mittelpunkt des
+Koordinatensystems
+  \item der Kreis liegt nun im linken oberen Quadranten des Koordinatensystems
+\end{itemize}
+
+\subsubsection*{Kreis mit Mittelpunkt in p}
+
+\begin{itemize}
+  \item der Kreis wird zu einer Ellipse
+  \item der Mittelpunkt des Kreises liegt noch immer in p
+\end{itemize}
+
+
+\subsection*{b.}
+
+Leiten Sie schrittweise eine Formel her, die einen Vektor v um eine beliebige Achse, gegeben durch den
+Einheitsvektor k, mit dem Winkel \(\theta\) rotiert. Dabei sollen ausschliesslich Vektoroperationen, jedoch keine
+Matrixoperationen, verwendet werden. Folgende Schritte sind dazu notwendig:
+1. Bestimmen Sie die Projektion vk des Vektor v auf Vektor k. (0,5 Punkte)
+
+\[
+ v_k = {v * k \over k^2} * k
+\]
+
+2. Bestimmen Sie zwei orthogonale Basisvektoren v1 und v2, die die Fläche senkrecht zu Vektor
+aufspannen. (0,5 Punkte)
+
+\(v_1\) bestimmen wir über das Skalarprodukt. Es gilt:
+\[
+v_k * v_1 = |v_k| * |v_1| * \cos\frac{\pi}{2} = 0
+\]
+\[
+v_{k_1}v_{1_1} + v_{k_2}v_{1_2} + v_{x_3}v_{1_3} = 0
+\]
+
+\(v_2\) bestimmen wir über das Kreuzprodukt. Es gilt:
+\[
+v_2 = v_1 \times v_k
+\]
+
+3. Bestimmen Sie die um den Winkel \(\theta\) rotierten Vektoren \(v_1', v_2' und v_k'\). (0,5 Punkte)
+
+Dazu kann man die Schreibweise als Polarkoordinaten nutzen:
+
+
+4. Fassen Sie alle Teilschritte zu einer Formel in Abhängigkeit von v, k und \(\theta\) zusammen, die den
+rotierten Vektor w bestimmt. (0,5 Punkte)
+
+
+
+\subsection*{c.}
+
+Gegeben ist die homogene Transformationsmatrix M als Produkt einer Translationsmatrix T und einer
+Rotationsmatrix R, M = TR. Bestimmen Sie die Inverse der Transformationsmatrix (M-1) unter
+Berücksichtigung bzw. Ausnutzung der Eigenschaften der gegebenen Matrizen.
+
+geg.: M = TR; I = Identity
+ges.: \[M^{-1} \\
+ \\
+TT^{-1} = I \\
+RR^{-1} = I \\
+M^{-1} = R^{-1} * T^{-1}
+\]
+
+Die Inverse einer Translation erhaelt man durch Invertieren des Translationsvektors (Vorzeichen umdrehen).
+Die Inverse einer Rotation erhaelt man durch Transponieren.
+
+\[
+ M^{-1} = \begin{bmatrix}
+       \cos \alpha & \sin\alpha & 0 & -T_1 \\[0.3em]
+       -\sin\alpha & \cos\alpha & 0 & -T_2 \\[0.3em]
+       0           & 0          & 0 & -T_3 \\[0.3em]
+       0           & 0          & 0 & 1
+     \end{bmatrix}
+\]
+
+\subsection*{d}
+
+Für welche Kombinationen zweier Transformationen (Rotation, isotrope/anisotrope Skalierung,
+Translation) ist die Reihenfolge der Anwendung irrelevant? Es gibt 10 mögliche Kombinationen. Erstellen
+Sie eine Tabelle.
+
+
+R = Rotation, T = Translation,  iS/aS = isotrope/anisotrope Skalierung
+
+Ich hab mir ueberlegt, das man alles mit einer Rotation nicht vertauschen kann, bin mir aber nicht ganz sicher
+
+RiS entspricht iSR = falsch\\
+RT entspricht TR   = falsch\\
+iST entspricht TiS = wahr\\
+TaS entspricht aST = wahr\\
+RaS entspricht aSR = falsch\\
+
+
+\subsection*{e}
+
+In der Programmieraufgabe wird double buffering verwendet (siehe Funktion display() in
+context.c). Was passiert beim double buffering und wieso wird es in dieser Aufgabe verwendet?
+
+-> man hat 2 Framebuffer, waehrend einer auf dem Display angezeigt wird, wird in dem 2. Buffer der naechste Fram gerendert. Anschliessend werden beide Buffer vertauscht. Ermoeglicht fluessiges anzeigen von Bewegungen (des Roboters).
+
+
+
+\begin{itemize}
+  \item Haare, Gras, Fell
+  \item es wäre denkbar, ein mesh zu erzeugen bzw. zu erweitern,
+\end{itemize}
+
+
+``OpenGL verwendet eine state machine''
+
+
+
+\end{document}
