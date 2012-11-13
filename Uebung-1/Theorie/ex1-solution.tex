@@ -125,7 +125,7 @@ T^{-1} = \left(
 \right)
 \)
 
-\subsubsection*{Kreis mit Mittlelpunkt im Ursprung des Koordinatensystems:}
+\subsubsection*{Kreis mit Mittelpunkt im Ursprung des Koordinatensystems:}
 
 \begin{itemize}
   \item der Kreis wird zu einer Ellipse
@@ -219,8 +219,8 @@ RR^{-1} = I \\
 M^{-1} = R^{-1} * T^{-1}
 \]
 
-Die Inverse einer Translation erhaelt man durch Invertieren des Translationsvektors (Vorzeichen umdrehen).
-Die Inverse einer Rotation erhaelt man durch Transponieren.
+Die Inverse einer Translation erhält man durch das Invertieren des Translationsvektors (Vorzeichen umdrehen).
+Die Inverse einer Rotation erhält man durch das Transponieren der 3x3 Rotationsmatrix.
 
 \[
  M^{-1} = \begin{bmatrix}
@@ -240,7 +240,7 @@ Sie eine Tabelle.
 
 R = Rotation, T = Translation,  iS/aS = isotrope/anisotrope Skalierung
 
-Ich hab mir ueberlegt, das man alles mit einer Rotation nicht vertauschen kann, bin mir aber nicht ganz sicher
+Ich hab mir überlegt, das man alles mit einer Rotation nicht vertauschen kann, bin mir aber nicht ganz sicher
 
 RiS entspricht iSR = falsch\\
 RT entspricht TR   = falsch\\
@@ -251,21 +251,9 @@ RaS entspricht aSR = falsch\\
 
 \subsection*{e}
 
-In der Programmieraufgabe wird double buffering verwendet (siehe Funktion display() in
-context.c). Was passiert beim double buffering und wieso wird es in dieser Aufgabe verwendet?
+In der Programmieraufgabe wird \emph{double buffering} verwendet (siehe Funktion display() in
+context.c). Was passiert beim \emph{double buffering} und wieso wird es in dieser Aufgabe verwendet?
 
--> man hat 2 Framebuffer, waehrend einer auf dem Display angezeigt wird, wird in dem 2. Buffer der naechste Fram gerendert. Anschliessend werden beide Buffer vertauscht. Ermoeglicht fluessiges anzeigen von Bewegungen (des Roboters).
-
-
-
-\begin{itemize}
-  \item Haare, Gras, Fell
-  \item es wäre denkbar, ein mesh zu erzeugen bzw. zu erweitern,
-\end{itemize}
-
-
-``OpenGL verwendet eine state machine''
-
-
+-> man hat 2 Framebuffer, während einer auf dem Display angezeigt wird, wird in dem 2. Buffer der nächste Fram gerendert. Anschliessend werden beide Buffer vertauscht. Ermöglicht flüssiges anzeigen von Bewegungen (des Roboters).
 
 \end{document}
