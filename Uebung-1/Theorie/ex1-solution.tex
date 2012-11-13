@@ -145,7 +145,7 @@ Koordinatensystems
 \subsection*{b.}
 
 Leiten Sie schrittweise eine Formel her, die einen Vektor $v$ um eine beliebige Achse, gegeben durch den
-Einheitsvektor $k$, mit dem Winkel $\theta$ rotiert. Dabei sollen ausschliesslich Vektoroperationen, jedoch keine
+Einheitsvektor $k$, mit dem Winkel $\theta$ rotiert. Dabei sollen ausschließlich Vektoroperationen, jedoch keine
 Matrixoperationen, verwendet werden. Folgende Schritte sind dazu notwendig:
 
 1. Bestimmen Sie die Projektion $v_k$ des Vektor $v$ auf Vektor $k$. (0,5 Punkte)
@@ -163,7 +163,7 @@ lässt sich auch schreiben als:
 2. Bestimmen Sie zwei orthogonale Basisvektoren $v_1$ und $v_2$, die die Fläche senkrecht zu Vektor $v_k$
 aufspannen. (0,5 Punkte)
 
-$v_1$ bestimmen wir, indem wir uns die Projektion von $v$ auf $k$ zu Nutze machen und somit der Vektor von $v_k$ nach $v$ demnach senkrecht sein muss. Es gilt:
+$v_1$ bestimmen wir, indem wir uns die Projektion von $v$ auf $k$ zu Nutze machen und somit der Vektor $v_1$ von $v_k$ nach $v$ demnach senkrecht zu $v_k$ sein muss. Es gilt:
 
 \[
 v_1 = v - v_k
@@ -210,15 +210,16 @@ $w$ lässt sich nun in Abhängigkeit von $v$, $k$ und $\theta$ folgendermaßen f
 
 Gegeben ist die homogene Transformationsmatrix M als Produkt einer Translationsmatrix T und einer
 Rotationsmatrix R, M = TR. Bestimmen Sie die Inverse der Transformationsmatrix (M-1) unter
-Berücksichtigung bzw. Ausnutzung der Eigenschaften der gegebenen Matrizen.
+Berücksichtigung bzw. Ausnutzung der Eigenschaften der gegebenen Matrizen.\\
+\\
+geg.: M = TR; I = Identity\\
+ges.: $M^{-1}$ \\
 
-geg.: M = TR; I = Identity
-ges.: \[M^{-1} \\
- \\
-TT^{-1} = I \\
-RR^{-1} = I \\
-M^{-1} = R^{-1} * T^{-1}
-\]
+\begin{align*}
+	TT^{-1} &= I \\
+	RR^{-1} &= I \\
+	M^{-1} &= R^{-1} ~ T^{-1}
+\end{align*}
 
 Die Inverse einer Translation erhält man durch das Invertieren des Translationsvektors (Vorzeichen umdrehen).
 Die Inverse einer Rotation erhält man durch das Transponieren der 3x3 Rotationsmatrix.
@@ -238,8 +239,8 @@ Für welche Kombinationen zweier Transformationen (Rotation, isotrope/anisotrope
 Translation) ist die Reihenfolge der Anwendung irrelevant? Es gibt 10 mögliche Kombinationen. Erstellen
 Sie eine Tabelle.
 
-R = Rotation, T = Translation,  iS/aS = isotrope/anisotrope Skalierung
-
+R = Rotation, T = Translation,  iS/aS = isotrope/anisotrope Skalierung\\
+\\
 RiS entspricht iSR = wahr\\
 RT entspricht TR   = falsch\\
 iST entspricht TiS = wahr\\
@@ -251,6 +252,6 @@ RaS entspricht aSR = falsch\\
 In der Programmieraufgabe wird \emph{double buffering} verwendet (siehe Funktion display() in
 context.c). Was passiert beim \emph{double buffering} und wieso wird es in dieser Aufgabe verwendet?
 
--> man hat 2 Framebuffer, während einer auf dem Display angezeigt wird, wird in dem 2. Buffer der nächste Fram gerendert. Anschliessend werden beide Buffer vertauscht. Ermöglicht flüssiges anzeigen von Bewegungen (des Roboters).
+Während des Renderings stehen 2 Framebuffer zur Verfügung. Das heißte es kann in 2 Buffer geschrieben werden um Bildinformationen zu speichern. Während der Inhalt des ersten Buffers auf dem Display angezeigt wird, wird in dem 2. Buffer der nächste Frame gerendert. Anschließend werden beide Buffer vertauscht. Dies ermöglicht flüssiges Anzeigen von Bewegungen und Animationen, da die benötigten Informationen zeitnah zur Verfügung stehen. Am Beispiel der Übung lässt sich der Roboter ruckelfrei hin- und herbewegen.
 
 \end{document}
