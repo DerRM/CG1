@@ -252,6 +252,6 @@ RaS entspricht aSR = falsch\\
 In der Programmieraufgabe wird \emph{double buffering} verwendet (siehe Funktion display() in
 context.c). Was passiert beim \emph{double buffering} und wieso wird es in dieser Aufgabe verwendet?
 
-Während des Renderings stehen 2 Framebuffer zur Verfügung. Das heißte es kann in 2 Buffer geschrieben werden um Bildinformationen zu speichern. Während der Inhalt des ersten Buffers auf dem Display angezeigt wird, wird in dem 2. Buffer der nächste Frame gerendert. Anschließend werden beide Buffer vertauscht. Dies ermöglicht flüssiges Anzeigen von Bewegungen und Animationen, da die benötigten Informationen zeitnah zur Verfügung stehen. Am Beispiel der Übung lässt sich der Roboter ruckelfrei hin- und herbewegen.
+Während des Renderings stehen 2 Framebuffer zur Verfügung. Das heißt es kann in 2 Buffer geschrieben werden um Bildinformationen zu speichern. Während der Inhalt des ersten Buffers auf dem Display angezeigt wird, wird in dem 2. Buffer der nächste Frame gerendert. Anschließend werden beide Buffer vertauscht. Dies ermöglicht ein flüssiges Anzeigen von Bewegungen und Animationen, da die benötigten Informationen zeitnah zur Verfügung stehen. Diese Technik kann aber auch Nachteile mit sich bringen. Sobald der Tauschvorgang nicht mehr mit der Frequenz des Monitors (Vsync) übereinstimmt, können Artefakte, das sogenannte Tearing, entstehen. Am Beispiel der Übung lässt sich der Roboter ruckelfrei hin- und herbewegen.
 
 \end{document}
