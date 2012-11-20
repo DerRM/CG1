@@ -305,6 +305,41 @@ void Context::mousePressed(int button, int state, int x, int y){
       leftButton= true;  
       mouseX = x;
       mouseY = y;
+        GLint vp[4];
+        GLdouble mv[16];
+        GLdouble p[16];
+        glGetDoublev(GL_MODELVIEW_MATRIX, mv);
+        glGetDoublev(GL_PROJECTION_MATRIX, p);
+        glGetIntegerv(GL_VIEWPORT, vp);
+        GLdouble nearX,nearY,nearZ,
+                 farX, farY, farZ,
+                 rayX, rayY, rayZ;
+        
+        gluUnProject((GLdouble)mouseX, (GLdouble)mouseY, 0.0,
+                     mv, p, vp,
+                     &nearX, &nearY, &nearZ);
+        //cout << "x: " << nearX << " y: " << nearY << " z: " << nearZ << "\n";
+        
+        gluUnProject((GLdouble)mouseX, (GLdouble)mouseY, 1.0,
+                     mv, p, vp,
+                     &farX, &farY, &farZ);
+        
+        rayX = farX - nearX;
+        rayY = farY - nearY;
+        rayZ = farZ - nearZ;
+        
+        //cout << "Ray x: " << rayX << " y: " << rayY << " z: " << rayZ << "\n";
+        
+        double length = sqrt(rayX * rayX + rayY * rayY + rayZ * rayZ);
+        
+        rayX /= length;
+        rayY /= length;
+        rayZ /= length;
+        
+        cout << "Ray x: " << rayX << " y: " << rayY << " z: " << rayZ << "\n";
+
+        sceneGraph->hitTest(rayX, rayY, rayZ);
+        display();
     }
   }
 }

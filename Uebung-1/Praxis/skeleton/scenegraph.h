@@ -40,6 +40,9 @@ class SceneGraph{
 
   // reset all rotations
   void reset();
+    
+    // hit test for ray
+    void hitTest(float rayX, float rayY, float rayZ);
 
  private:
 
@@ -57,4 +60,6 @@ class SceneGraph{
 
   // destroy all nodes
   void clear(Node *node);
+    
+    void hitTest(Node *node, float rayX, float rayY, float rayZ);
 };

@@ -79,6 +79,8 @@ public:
   // increment / decrement rotation
   void rotate(float x, float y, float z);
 
+    void hitTest(float rayX, float rayY, float rayZ);
+    
   // return parent / child / siblings
   Node *getNext();
   Node *getPrevious();
@@ -118,4 +120,5 @@ public:
   // parent / child node
   Node* parent;
   Node* child;
+    double mv[16];
 };

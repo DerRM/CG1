@@ -117,6 +117,8 @@ void Node::transform(){
 	// INSERT YOUR CODE HERE
     glTranslatef(jointx, jointy, jointz);
 	// END XXX
+    
+    glGetDoublev(GL_MODELVIEW_MATRIX, mv);
 }
 
 // draw an individual node
@@ -188,6 +190,16 @@ void Node::rotate(float x, float y, float z){
   rotx+= x;
   roty+= y;
   rotz+= z;
+}
+
+void Node::hitTest(float rayX, float rayY, float rayZ)
+{
+    //cout << "Node x: " << x << " z: " << y << " z: " << z << "\n";
+    
+    cout << mv[0] << " " << mv[4] << " " << mv[8] << " " << mv[12] << "\n";
+    cout << mv[1] << " " << mv[5] << " " << mv[9] << " " << mv[13] << "\n";
+    cout << mv[2] << " " << mv[6] << " " << mv[10] << " " << mv[14] << "\n";
+    cout << mv[3] << " " << mv[7] << " " << mv[11] << " " << mv[15] << "\n";
 }
 
 Node *Node::getNext(){

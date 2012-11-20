@@ -48,6 +48,27 @@ void SceneGraph::reset(){
   reset(root);
 }
 
+void SceneGraph::hitTest(float rayX, float rayY, float rayZ)
+{
+    hitTest(root, rayX, rayY, rayZ);
+}
+
+void SceneGraph::hitTest(Node *node, float rayX, float rayY, float rayZ)
+{
+    node->hitTest(rayX, rayY, rayZ);
+    
+    if (node->getChild())
+    {
+        hitTest(node->getChild(), rayX, rayY, rayZ);
+    }
+    
+    if (node->next)
+    {
+        hitTest(node->next, rayX, rayY, rayZ);
+    }
+
+}
+
 // navigation in tree
 // (needed for node selection)
 void SceneGraph::up(){

@@ -53,7 +53,10 @@ ipch/
 
 # generated object files
 *.o
+*.exe
 cg1_ex1_mac
+cg1_ex2
+cg1_ex2_mac
 
 # generated latex files
 *.aux
@@ -65,3 +68,6 @@ cg1_ex1_mac
 
 # Maccrap
 .DS_Store
+
+#unignore
+!/data/*.obj
