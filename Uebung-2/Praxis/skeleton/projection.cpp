@@ -431,6 +431,132 @@ void Screen::menu(int value){
   Context::display();
 }
 
+// CLIP WINDOW
+void Clip::reshape(int width, int height){
+
+  glViewport(0, 0, width, height);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(60.0, (GLfloat)width/height, 1.0, 256.0);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glTranslatef(0.0, 0.0, -5.0);
+  glRotatef(-45.0, 0.0, 1.0, 0.0);
+  glShadeModel(GL_SMOOTH);
+}
+
+void Clip::display(void){
+
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_LIGHT0);
+
+  vec3 viewDir;
+    
+  // 'l' is the normalized viewing direction
+  viewDir[0]= lookat[3].getValue() - lookat[0].getValue(); 
+  viewDir[1]= lookat[4].getValue() - lookat[1].getValue(); 
+  viewDir[2]= lookat[5].getValue() - lookat[2].getValue();
+  double viewLength= length(viewDir);
+  viewDir= normalize(viewDir);
+
+  glClearColor(0.0, 0.0, 0.0, 1.0);    
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+  /* draw current model if toggled
+  if(drawModel) {
+    glEnable(GL_LIGHTING);
+    glLightfv(GL_LIGHT0, GL_POSITION, &lightPos[0]);
+    model.draw();
+    glDisable(GL_LIGHTING);
+  }
+  */  
+  glPushMatrix();
+  // apply inverse modelview transformation to axes and frustum
+  // this moves the camera position and frustum into world space
+  // coordinates
+  glMultMatrixf(&inverse(modelView)[0][0]);
+    
+  /* draw the axis and eye vector */
+  glPushMatrix();
+  glColor3ub(0, 0, 255);
+  glBegin(GL_LINE_STRIP);
+  glVertex3f(0.0, 0.0, 0.0);
+  glVertex3f(0.0, 0.0, -1.0 * viewLength);
+  glVertex3f(0.1, 0.0, -0.9 * viewLength);
+  glVertex3f(-0.1, 0.0, -0.9 * viewLength);
+  glVertex3f(0.0, 0.0, -1.0 * viewLength);
+  glVertex3f(0.0, 0.1, -0.9 * viewLength);
+  glVertex3f(0.0, -0.1, -0.9 * viewLength);
+  glVertex3f(0.0, 0.0, -1.0 * viewLength);
+  glEnd();
+  glColor3ub(255, 255, 0);
+  Context::setFont("helvetica", 12);
+  Context::drawString(0.0, 0.0, -1.1 * viewLength, "e");
+  glColor3ub(255, 0, 0);
+  glScalef(0.4, 0.4, 0.4);
+  drawAxes();
+  glPopMatrix();
+    
+  // apply inverse projection transformation to unit-frustum
+  glMultMatrixf(&inverse(projection)[0][0]);
+    
+  /* draw the canonical viewing frustum */
+  // back clip plane
+  glColor3f(0.2, 0.2, 0.2);
+  glBegin(GL_QUADS);
+  glVertex3i(1, 1, 1);
+  glVertex3i(-1, 1, 1);
+  glVertex3i(-1, -1, 1);
+  glVertex3i(1, -1, 1);
+  glEnd();
+    
+  // four corners of frustum
+  glColor3ub(128, 196, 128);
+  glBegin(GL_LINES);
+  glVertex3i(1, 1, -1);
+  glVertex3i(1, 1, 1);
+  glVertex3i(-1, 1, -1);
+  glVertex3i(-1, 1, 1);
+  glVertex3i(-1, -1, -1);
+  glVertex3i(-1, -1, 1);
+  glVertex3i(1, -1, -1);
+  glVertex3i(1, -1, 1);
+  glEnd();
+    
+  // front clip plane
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glColor4f(0.2, 0.2, 0.4, 0.5);
+  glBegin(GL_QUADS);
+  glVertex3i(1, 1, -1);
+  glVertex3i(-1, 1, -1);
+  glVertex3i(-1, -1, -1);
+  glVertex3i(1, -1, -1);
+  glEnd();
+  glDisable(GL_BLEND);
+    
+  glPopMatrix();
+    
+  glutSwapBuffers();
+}
+
+char Clip::menuOptions[]= {'m'};
+string Clip::menuText[]= {"Toggle model"};
+int Clip::numOptions= 1;
+
+void Clip::menu(int value){
+
+  switch (value) {
+  case 'm':
+   // drawModel= !drawModel;
+    break;
+  default:
+    break;
+  }
+  display();
+}
+
+
 // -------------------------------------------------------
 // COMMAND WINDOW
 // -------------------------------------------------------

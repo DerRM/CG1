@@ -54,6 +54,23 @@ namespace Screen{
   void menu(int id);
 };
 
+// clip-space view
+namespace Clip{
+
+  extern char menuOptions[];
+  extern std::string menuText[];
+  extern int numOptions;
+
+  // display scene
+  void display(void);
+  
+  // redisplay scene after window reshape
+  void reshape(int width, int height);
+
+  // mouse menu
+  void menu(int id);
+};
+
 // command window
 namespace Command{
 
