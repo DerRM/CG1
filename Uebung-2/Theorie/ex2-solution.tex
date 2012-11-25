@@ -80,13 +80,64 @@ siehe Quellcode
 
 \chapter*{Aufgabe 2 - Theoriefragen}
 \section*{1.}
+Der Grund für das Clipping am kanonischen Sichtvolumen in OpenGL ist Performance. Durch das Clipping werden alle Teile der Geometrie abgeschnitten, die außerhalb des sichtbaren Bereichs liegen. Dies hat den Grund beim Rendern Rechenarbeit zu sparen, da es wenig Sinn macht Objekte bzw. Teile von Objekten zu rendern, die eindeutig nicht gesehen werden können.
 \section*{2.}
+Da ein 3dimensionales kanonisches Sichtvolumen 6 Seiten hat, besteht der Outcode aus 6 Ziffern die entweder 1 oder 0 sein können. Die Seiten außerhalb des Volumens kriegen jeweils einen eindeutigen Code zugeordnet:
+
+\begin{align*}
+	000001& &top\\
+	000010& &bottom\\
+	000100& &left\\
+	001000& &right\\
+	010000& &front\\
+	100000& &back
+\end{align*}
+
+Wenn sich 2 Seiten an einer Kante schneiden werden die jeweiligen Codes verodert:
+
+\begin{align*}
+	000101& &top-left\\
+	001001& &top-right\\
+	010001& &top-front\\
+	100001& &top-back\\
+	000110& &bottom-left\\
+	001010& &bottom-right\\
+	010010& &bottom-front\\
+	100010& &bottom-back\\
+	010100& &front-left\\
+	011000& &front-right\\
+	100100& &back-left\\
+	101000& &back-right
+\end{align*}
+
+Treffen sich die Kanten an einem Eckpunkt entstehen wiederum verschiedene Outcodes:
+
+\begin{align*}
+	0100101& &top-left-front\\
+	0110001& &top-right-front\\
+	1001001& &top-left-back\\
+	1010001& &top-right-back\\
+	0100110& &bottom-left-front\\
+	0110010& &bottom-right-front\\
+	1001010& &bottom-left-back\\
+	1010010& &bottom-right-back
+\end{align*}
+
+Als Primitive eignen sich im 3D-Fall die Ebenen.
+
 \section*{3.}
 \section*{4.}
+Die Komplexität bezieht sich dabei auf das "Primitiv" der Dreiecke.
 \section*{5.}
 \section*{6.}
 \subsection*{(a)}
+Wir nehmen einen beliebigen Vektor $\vec{v}$ aus der Ebene und die Normale $\vec{n}$ der Ebene. Dabei lässt sich die Ebene wie folgt beschreiben:
+
+\[
+	\vec{n} \cdot \vec{v} = n_x \cdot v_x + n_y \cdot v_y + n_z \cdot v_z = 0
+\] 
 \subsection*{(b)}
 \subsection*{(c)}
+Das Transformationsgesetz bei einer Normalen gilt aus dem Grund nicht, da eine Normale nicht durch eine Punkt zu Punkt Beziehung beschrieben werden kann. Das bedeutet, es lässt sich keine Normale nur aus 2 gegebenen Punkten bestimmen und somit verhält sich eine Normale auch nicht wie ein zu transformierender Punkt.
 \subsection*{(d)}
 \end{document}
