@@ -127,8 +127,9 @@ Als Primitive eignen sich im 3D-Fall die Ebenen.
 
 \section*{3.}
 \section*{4.}
-Die Komplexität bezieht sich dabei auf das "Primitiv" der Dreiecke.
+Wenn wir zum Clipping den Sutherland Hodgman Algorithmus verwenden, lässt sich ein beliebiges Polygon anhand eines konvexen Polygons clippen. Die Komplexität, die dabei entsteht ist dabei $O(n)$. Wobei sich das $n$ auf die Anzahl der Kanten des konvexen Polygons bezieht an welchem das beliebige Polygon geclippt werden soll. Dies rührt daher, dass der Algorithmus zum Clippen alle vorhandenen Kanten durchgeht und die Schnittpunkte mit dem beliebigen Polygon berechnet.
 \section*{5.}
+Da üblicherweise alle unnötigen Geometrien außerhalb des kanonische Sichtvolumens geclippt werden, würde es wenig Sinn machen für nicht sichtbare Dreiecke zu berechnen in welche Richtung diese orientiert sind und deren Sichtbarkeit zu bestimmen.
 \section*{6.}
 \subsection*{(a)}
 Wir nehmen einen beliebigen Vektor $\vec{v}$ aus der Ebene und die Normale $\vec{n}$ der Ebene. Dabei lässt sich die Ebene wie folgt beschreiben:
