@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------
    name:           context.h
    purpose:        GL context class declaration, prototypes of GLUT callbacks
-   version:	   SKELETON CODE
+   version:        SKELETON CODE
    TODO:           nothing (see context.cpp)
    author:         katrin lang
                    computer graphics
@@ -13,10 +13,10 @@
 #include <string>
 
 namespace Context{
-  
-  // intialization                                             
-  void init(int argc, char **argv);  
-  
+
+  // intialization
+  void init(int argc, char **argv);
+
   // redisplay all windows
   void display(void);
 

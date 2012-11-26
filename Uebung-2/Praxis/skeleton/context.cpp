@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------
    name:           context.cpp
    purpose:        GL context declarations and prototypes of GLUT callbacks
-   version:	   SKELETON CODE
+   version:        SKELETON CODE
    TODO:           add clip-space window
    author:         katrin lang
                    computer graphics
@@ -11,14 +11,14 @@
 #include <iostream>
 #include <math.h>
 
-#ifdef __APPLE__ 
+#ifdef __APPLE__
 #include <GLUT/glut.h>
 #elif _WIN32
 #include "win32/glut.h"
 #else
 #include <GL/glut.h>
 #endif
- 
+
 
 #include "context.h"
 #include "window.h"
@@ -30,7 +30,7 @@ using namespace std;
 static const int GAP= 25;
 
 // window size and position
-static int width= 512+GAP*3;
+static int width= 768+GAP*3;
 static int height= 512+GAP*3;
 
 static int subWidth= (width-GAP*3)/3.0;      //TODO fit for 3 windows
@@ -53,13 +53,13 @@ static GLfloat farPlane= cameraZ*10.0;
 
 static GLfloat lightModelAmbient[]= { 0.3, 0.3, 0.3 };
 
-// glut bitmap font 
+// glut bitmap font
 // see setFont
 static GLvoid *font= GLUT_BITMAP_HELVETICA_10;
-  
+
 // redisplay scene after window reshape
 static void reshape(int width, int height);
- 
+
 static Window main, world, screen, command, clip;
 
 static void createWindows(void){
@@ -111,7 +111,7 @@ void Context::init(int argc, char **argv){
   glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH );
 
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightModelAmbient);
-   
+
   // some output to console
   cout << "--------------------------------------------\n";
   cout << " cg1_ex2 projection tutorial                \n";
@@ -141,20 +141,21 @@ void Context::display(void){
 
   glColor4f(0, 0, 0, 1);
   setFont("helvetica", 12);
-  
+
   drawString(GAP, GAP-5, "World-space view");
   drawString(GAP+subWidth+GAP, GAP-5, "Screen-space view");
-  drawString(GAP+subWidth+GAP+GAP+subWidth, GAP-5, "Clip-space view");  
+  drawString(GAP+subWidth+GAP+GAP+subWidth, GAP-5, "Clip-space view");
   drawString(GAP, GAP+subHeight+GAP-5, "Command manipulation window");
 
   world.redisplay();
-  screen.redisplay(); 
-  command.redisplay(); 
+  screen.redisplay();
+  clip.redisplay();
+  command.redisplay();
 }
 
 // reshape-Callback for GLUT
 static void reshape(int w, int h){
- 
+
   width=w;
   height=h;
 
@@ -194,9 +195,9 @@ static void reshape(int w, int h){
 static void menu(int id){
 
   switch (id) {
-  case 1: 
+  case 1:
     break;
-  case 2:  
+  case 2:
     break;
   default:
     break;
@@ -205,22 +206,22 @@ static void menu(int id){
 
 
 // select glut bitmap font
-void Context::setFont(string name, int size){  
-  
+void Context::setFont(string name, int size){
+
   if(name.compare("helvetica") == 0){
     if(size == 10)
       font= GLUT_BITMAP_HELVETICA_10;
-    else if(size == 12) 
+    else if(size == 12)
       font= GLUT_BITMAP_HELVETICA_12;
     else if(size == 18)
       font= GLUT_BITMAP_HELVETICA_18;
-  } 
+  }
   else if(name.compare("times") == 0){
     if(size == 10)
       font= GLUT_BITMAP_TIMES_ROMAN_10;
     if(size == 24)
       font= GLUT_BITMAP_TIMES_ROMAN_24;
-  } 
+  }
   else if(name.compare("8x13") == 0){
     font= GLUT_BITMAP_8_BY_13;
   }

@@ -1,11 +1,11 @@
 /* ----------------------------------------------------------------
    name:           projection.cpp
-   purpose:        projection tutorial 
+   purpose:        projection tutorial
                    based on tutorial by Nate Robins, 1997
-		   modified for clip-space viewing in the context 
-		   of 'introduction to computer graphics' 
-		   winter term 2012/2013, assignment 2
-   version:	   SKELETON CODE
+           modified for clip-space viewing in the context
+           of 'introduction to computer graphics'
+           winter term 2012/2013, assignment 2
+   version:        SKELETON CODE
    TODO:           clip-space view callbacks
    author:         katrin lang
                    computer graphics
@@ -13,7 +13,7 @@
    ------------------------------------------------------------- */
 
 #include <iostream>
-#ifdef __APPLE__ 
+#ifdef __APPLE__
 #include <GLUT/glut.h>
 #elif _WIN32
 #include "win32/glut.h"
@@ -117,22 +117,22 @@ void setMatrices(void){
   glPushMatrix();
   glLoadIdentity();
   if(mode == PERSPECTIVE)
-    gluPerspective(perspective[0].getValue(), perspective[1].getValue(), 
-		   perspective[2].getValue(), perspective[3].getValue());
+    gluPerspective(perspective[0].getValue(), perspective[1].getValue(),
+           perspective[2].getValue(), perspective[3].getValue());
   else if(mode == ORTHO)
     glOrtho(ortho[0].getValue(), ortho[1].getValue(), ortho[2].getValue(),
-	    ortho[3].getValue(), ortho[4].getValue(), ortho[5].getValue());
+        ortho[3].getValue(), ortho[4].getValue(), ortho[5].getValue());
   else if(mode == FRUSTUM)
     glFrustum(frustum[0].getValue(), frustum[1].getValue(), frustum[2].getValue(),
-	      frustum[3].getValue(), frustum[4].getValue(), frustum[5].getValue());
+          frustum[3].getValue(), frustum[4].getValue(), frustum[5].getValue());
   glGetFloatv(GL_PROJECTION_MATRIX, &projection[0][0]);
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glLoadIdentity();
   gluLookAt(lookat[0].getValue(), lookat[1].getValue(), lookat[2].getValue(),
-	    lookat[3].getValue(), lookat[4].getValue(), lookat[5].getValue(),
-	    lookat[6].getValue(), lookat[7].getValue(), lookat[8].getValue());    
+        lookat[3].getValue(), lookat[4].getValue(), lookat[5].getValue(),
+        lookat[6].getValue(), lookat[7].getValue(), lookat[8].getValue());
   glGetFloatv(GL_MODELVIEW_MATRIX, &modelView[0][0]);
   glPopMatrix();
 }
@@ -222,7 +222,7 @@ static void drawAxes(void){
   glVertex3f(0.0, -0.25, 0.75);
   glVertex3f(0.0, 0.0, 1.0);
   glEnd();
-    
+
   glColor3ub(255, 255, 0);
   Context::setFont("helvetica", 12);
   Context::drawString(1.1, 0.0, 0.0, "x");
@@ -255,17 +255,17 @@ void World::display(void){
   glEnable(GL_LIGHT0);
 
   vec3 viewDir;
-    
+
   // 'l' is the normalized viewing direction
-  viewDir[0]= lookat[3].getValue() - lookat[0].getValue(); 
-  viewDir[1]= lookat[4].getValue() - lookat[1].getValue(); 
+  viewDir[0]= lookat[3].getValue() - lookat[0].getValue();
+  viewDir[1]= lookat[4].getValue() - lookat[1].getValue();
   viewDir[2]= lookat[5].getValue() - lookat[2].getValue();
   double viewLength= length(viewDir);
   viewDir= normalize(viewDir);
 
-  glClearColor(0.0, 0.0, 0.0, 1.0);    
+  glClearColor(0.0, 0.0, 0.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
   // draw current model if toggled
   if(drawModel) {
     glEnable(GL_LIGHTING);
@@ -273,13 +273,13 @@ void World::display(void){
     model.draw();
     glDisable(GL_LIGHTING);
   }
-    
+
   glPushMatrix();
   // apply inverse modelview transformation to axes and frustum
   // this moves the camera position and frustum into world space
   // coordinates
   glMultMatrixf(&inverse(modelView)[0][0]);
-    
+
   /* draw the axis and eye vector */
   glPushMatrix();
   glColor3ub(0, 0, 255);
@@ -300,10 +300,10 @@ void World::display(void){
   glScalef(0.4, 0.4, 0.4);
   drawAxes();
   glPopMatrix();
-    
+
   // apply inverse projection transformation to unit-frustum
   glMultMatrixf(&inverse(projection)[0][0]);
-    
+
   /* draw the canonical viewing frustum */
   // back clip plane
   glColor3f(0.2, 0.2, 0.2);
@@ -313,7 +313,7 @@ void World::display(void){
   glVertex3i(-1, -1, 1);
   glVertex3i(1, -1, 1);
   glEnd();
-    
+
   // four corners of frustum
   glColor3ub(128, 196, 128);
   glBegin(GL_LINES);
@@ -326,7 +326,7 @@ void World::display(void){
   glVertex3i(1, -1, -1);
   glVertex3i(1, -1, 1);
   glEnd();
-    
+
   // front clip plane
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -338,9 +338,9 @@ void World::display(void){
   glVertex3i(1, -1, -1);
   glEnd();
   glDisable(GL_BLEND);
-    
+
   glPopMatrix();
-    
+
   glutSwapBuffers();
 }
 
@@ -400,7 +400,7 @@ int Screen::numOptions= 9;
 void Screen::menu(int value){
 
   string name;
-    
+
   switch(value){
   case 'a':
     name = "data/al.obj";
@@ -426,56 +426,60 @@ void Screen::menu(int value){
   default:
     break;
   }
-    
+
   model= OBJModel(name);
   Context::display();
 }
 
 // CLIP WINDOW
+bool Clip::drawModel= true;
+
 void Clip::reshape(int width, int height){
 
   glViewport(0, 0, width, height);
+
   glMatrixMode(GL_PROJECTION);
+
   glLoadIdentity();
+
   gluPerspective(60.0, (GLfloat)width/height, 1.0, 256.0);
+
   glMatrixMode(GL_MODELVIEW);
+
   glLoadIdentity();
-  glTranslatef(0.0, 0.0, -5.0);
-  glRotatef(-45.0, 0.0, 1.0, 0.0);
+
+  glTranslatef(0.0, 0.0, -4.0);
+
+  glRotatef(225.0, 0.0, 1.0, 0.0);
+
   glShadeModel(GL_SMOOTH);
 }
 
 void Clip::display(void){
 
+  glEnable(GL_NORMALIZE);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);
 
   vec3 viewDir;
-    
+
   // 'l' is the normalized viewing direction
-  viewDir[0]= lookat[3].getValue() - lookat[0].getValue(); 
-  viewDir[1]= lookat[4].getValue() - lookat[1].getValue(); 
+  viewDir[0]= lookat[3].getValue() - lookat[0].getValue();
+  viewDir[1]= lookat[4].getValue() - lookat[1].getValue();
   viewDir[2]= lookat[5].getValue() - lookat[2].getValue();
   double viewLength= length(viewDir);
   viewDir= normalize(viewDir);
 
-  glClearColor(0.0, 0.0, 0.0, 1.0);    
+  glClearColor(0.0, 0.0, 0.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-  /* draw current model if toggled
-  if(drawModel) {
-    glEnable(GL_LIGHTING);
-    glLightfv(GL_LIGHT0, GL_POSITION, &lightPos[0]);
-    model.draw();
-    glDisable(GL_LIGHTING);
-  }
-  */  
+
+
   glPushMatrix();
   // apply inverse modelview transformation to axes and frustum
   // this moves the camera position and frustum into world space
   // coordinates
-  glMultMatrixf(&inverse(modelView)[0][0]);
-    
+  //  glMultMatrixf(&inverse(modelView)[0][0]);
+
   /* draw the axis and eye vector */
   glPushMatrix();
   glColor3ub(0, 0, 255);
@@ -496,10 +500,10 @@ void Clip::display(void){
   glScalef(0.4, 0.4, 0.4);
   drawAxes();
   glPopMatrix();
-    
+
   // apply inverse projection transformation to unit-frustum
-  glMultMatrixf(&inverse(projection)[0][0]);
-    
+  //  glMultMatrixf(&inverse(projection)[0][0]);
+
   /* draw the canonical viewing frustum */
   // back clip plane
   glColor3f(0.2, 0.2, 0.2);
@@ -509,7 +513,7 @@ void Clip::display(void){
   glVertex3i(-1, -1, 1);
   glVertex3i(1, -1, 1);
   glEnd();
-    
+
   // four corners of frustum
   glColor3ub(128, 196, 128);
   glBegin(GL_LINES);
@@ -522,7 +526,7 @@ void Clip::display(void){
   glVertex3i(1, -1, -1);
   glVertex3i(1, -1, 1);
   glEnd();
-    
+
   // front clip plane
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -534,9 +538,34 @@ void Clip::display(void){
   glVertex3i(1, -1, -1);
   glEnd();
   glDisable(GL_BLEND);
-    
+
   glPopMatrix();
-    
+
+
+
+  glPushMatrix();
+
+  //  glMultMatrixf(&(projection)[0][0]);
+  //glMultMatrixf(&inverse(projection)[0][0]);
+
+  glMultMatrixf(&inverse(modelView)[0][0]);
+  glMultMatrixf(&inverse(projection)[0][0]);
+  //glMultMatrixf(&inverse(modelView)[0][0]);
+  //  glMultMatrixf(&(modelView)[0][0]);
+
+  /* draw current model if toggled */
+  if(drawModel) {
+    glEnable(GL_LIGHTING);
+
+    glLightfv(GL_LIGHT0, GL_POSITION, &lightPos[0]);
+    model.draw();
+
+    glDisable(GL_LIGHTING);
+  }
+  glPopMatrix();
+  glDisable(GL_NORMALIZE);
+
+
   glutSwapBuffers();
 }
 
@@ -548,7 +577,7 @@ void Clip::menu(int value){
 
   switch (value) {
   case 'm':
-   // drawModel= !drawModel;
+    drawModel= !drawModel;
     break;
   default:
     break;
@@ -578,66 +607,66 @@ void Command::display(void){
 
   glClearColor(0.0, 0.0, 0.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
   glColor3ub(255,255,255);
-    
+
   Context::setFont("helvetica", 18);
-    
+
   if(mode == PERSPECTIVE){
-    Context::drawString(190, perspective[0].y-40, "fovy"); 
-    Context::drawString(240, perspective[0].y-40, "aspect"); 
-    Context::drawString(310, perspective[0].y-40, "zNear"); 
+    Context::drawString(190, perspective[0].y-40, "fovy");
+    Context::drawString(240, perspective[0].y-40, "aspect");
+    Context::drawString(310, perspective[0].y-40, "zNear");
     Context::drawString(370, perspective[0].y-40, "zFar");
-  } 
+  }
   else{
-    Context::drawString(140, perspective[0].y-40, "left"); 
-    Context::drawString(180, perspective[0].y-40, "right"); 
+    Context::drawString(140, perspective[0].y-40, "left");
+    Context::drawString(180, perspective[0].y-40, "right");
     Context::drawString(240, perspective[0].y-40, "bottom");
-    Context::drawString(320, perspective[0].y-40, "top"); 
+    Context::drawString(320, perspective[0].y-40, "top");
     Context::drawString(370, perspective[0].y-40, "near");
     Context::drawString(430, perspective[0].y-40, "far");
   }
-    
+
   if(mode == PERSPECTIVE){
     Context::drawString(50, perspective[0].y, "gluPerspective(");
-    Context::drawString(230, perspective[0].y, ","); 
+    Context::drawString(230, perspective[0].y, ",");
     Context::drawString(290, perspective[0].y, ",");
     Context::drawString(350, perspective[0].y, ",");
     Context::drawString(420, perspective[0].y, ");");
-  } 
+  }
   else if(mode == FRUSTUM){
     Context::drawString(30, frustum[0].y, "glFrustum(");
     Context::drawString(170, frustum[0].y, ",");
-    Context::drawString(230, frustum[0].y, ","); 
+    Context::drawString(230, frustum[0].y, ",");
     Context::drawString(290, frustum[0].y, ",");
     Context::drawString(350, frustum[0].y, ",");
-    Context::drawString(410, frustum[0].y, ","); 
+    Context::drawString(410, frustum[0].y, ",");
     Context::drawString(480, frustum[0].y, ");");
-  } 
+  }
   else{
     Context::drawString(45, ortho[0].y, "glOrtho(");
     Context::drawString(170, ortho[0].y, ",");
-    Context::drawString(230, ortho[0].y, ","); 
+    Context::drawString(230, ortho[0].y, ",");
     Context::drawString(290, ortho[0].y, ",");
     Context::drawString(350, ortho[0].y, ",");
-    Context::drawString(410, ortho[0].y, ","); 
+    Context::drawString(410, ortho[0].y, ",");
     Context::drawString(480, ortho[0].y, ");");
   }
-    
+
   Context::drawString(88, lookat[0].y, "gluLookAt(");
-  Context::drawString(230, lookat[0].y, ","); 
+  Context::drawString(230, lookat[0].y, ",");
   Context::drawString(290, lookat[0].y, ",");
   Context::drawString(350, lookat[0].y, ",");
   Context::drawString(380, lookat[0].y, "<- eye");
-  Context::drawString(230, lookat[3].y, ","); 
+  Context::drawString(230, lookat[3].y, ",");
   Context::drawString(290, lookat[3].y, ",");
   Context::drawString(350, lookat[3].y, ",");
   Context::drawString(380, lookat[3].y, "<- center");
-  Context::drawString(230, lookat[6].y, ","); 
+  Context::drawString(230, lookat[6].y, ",");
   Context::drawString(290, lookat[6].y, ",");
   Context::drawString(360, lookat[6].y, ");");
   Context::drawString(380, lookat[6].y, "<- up");
-    
+
   if(mode == PERSPECTIVE){
     for(int i= 0; i<4; i++){
       perspective[i].draw();
@@ -647,38 +676,38 @@ void Command::display(void){
     for(int i= 0; i<6; i++){
       frustum[i].draw();
     }
-  } 
+  }
   else if(mode == ORTHO){
     for(int i= 0; i<6; i++){
       ortho[i].draw();
     }
-  }   
-    
+  }
+
   for(int i= 0; i<9; i++){
     lookat[i].draw();
   }
-    
+
   glutSwapBuffers();
 }
 
 void Command::mousePressed(int button, int state, int x, int y){
- 
+
   if(state == GLUT_DOWN){
-    Cell::active= true;  
+    Cell::active= true;
     if(mode == PERSPECTIVE){
       for(int i= 0; i<4; i++){
-	perspective[i].hit(x, y);
+    perspective[i].hit(x, y);
       }
-    } 
+    }
     else if(mode == FRUSTUM){
       for(int i= 0; i<6; i++){
-	frustum[i].hit(x, y);
+    frustum[i].hit(x, y);
       }
-    } 
+    }
     else if(mode == ORTHO){
 
       for(int i= 0; i<6; i++){
-	ortho[i].hit(x, y);
+    ortho[i].hit(x, y);
       }
     }
     for(int i= 0; i<9; i++){
@@ -686,11 +715,11 @@ void Command::mousePressed(int button, int state, int x, int y){
     }
   }
   else if (state == GLUT_UP) {
-    Cell::active= false;  
+    Cell::active= false;
   }
-    
+
   old_y = y;
-    
+
   display();
 }
 
@@ -708,11 +737,11 @@ void Command::mouseMoved(int x, int y){
   for(int i= 0; i<9; i++){
     lookat[i].update(old_y-y);
   }
-	
+
   old_y = y;
 
   setMatrices();
-   
+
   Context::display();
 
 }
