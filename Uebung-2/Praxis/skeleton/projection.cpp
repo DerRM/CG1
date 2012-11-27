@@ -462,9 +462,6 @@ void Clip::reshape(int width, int height){
   glTranslatef(0.0, 0.0, -4.0);
   glRotatef(45.0, 0.0, 1.0, 0.0);
 
-  glShadeModel(GL_SMOOTH);
-  glTranslatef(0.0, 0.0, -4.0);
-  glRotatef(225.0, 0.0, 1.0, 0.0);
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);

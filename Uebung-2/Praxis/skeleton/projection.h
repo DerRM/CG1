@@ -61,6 +61,7 @@ namespace Clip{
   extern int mouseX;
   extern int mouseY;
   extern bool drawModel;
+  extern bool clip_on;
 
   extern char menuOptions[];
   extern std::string menuText[];

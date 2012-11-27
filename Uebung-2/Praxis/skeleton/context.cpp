@@ -151,11 +151,7 @@ void Context::display(void){
   world.redisplay();
   screen.redisplay();
   clip.redisplay();
-<<<<<<< HEAD
   command.redisplay();
-=======
-  command.redisplay(); 
->>>>>>> mehr zur praxis
 }
 
 // reshape-Callback for GLUT
