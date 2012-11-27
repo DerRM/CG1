@@ -434,27 +434,46 @@ void Screen::menu(int value){
 
 // CLIP WINDOW
 bool Clip::drawModel= true;
+<<<<<<< HEAD
 bool Clip::clip_on= true;
 
+=======
+int Clip::xRot = 0;
+// mouse position in previous frame
+int Clip::mouseX=0, Clip::mouseY=0;
+>>>>>>> adding mouse movement, clip space view seems to work correctly finally
+
+
+<<<<<<< HEAD
+  glViewport(0, 0, width, height);
+  glShadeModel(GL_SMOOTH);
+=======
+// mouse motion
+void Clip::mouseMoved(int x, int y){
+>>>>>>> adding mouse movement, clip space view seems to work correctly finally
+
+
+  glTranslatef(0.0, 0.0, -4.0);
+  glRotatef(x - mouseX, 0.0, 1.0, 0.0);
+  glTranslatef(0.0, 0.0, 4.0);
+
+
+
+  mouseX = x;
+  //mouseY = y;
+  display();
+}
 
 void Clip::reshape(int width, int height){
 
   glViewport(0, 0, width, height);
-  glShadeModel(GL_SMOOTH);
-
   glMatrixMode(GL_PROJECTION);
-
   glLoadIdentity();
-
   gluPerspective(60.0, (GLfloat)width/height, 1.0, 256.0);
-
   glMatrixMode(GL_MODELVIEW);
-
   glLoadIdentity();
-
-  glTranslatef(0.0, 0.0, -4.0);
-
-  glRotatef(225.0, 0.0, 1.0, 0.0);
+  //  glTranslatef(0.0, 0.0, -4.0);
+  //  glRotatef(-45.0, 0.0, 1.0, 0.0);
 
   glShadeModel(GL_SMOOTH);
   glTranslatef(0.0, 0.0, -4.0);
@@ -467,7 +486,9 @@ void Clip::reshape(int width, int height){
 
 void Clip::display(void){
 
-  glEnable(GL_NORMALIZE);
+  //glEnable(GL_NORMALIZE);
+  //glDisable(GL_NORMALIZE);
+
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);
 
@@ -484,7 +505,72 @@ void Clip::display(void){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+  // for all three objects
   glPushMatrix();
+
+  glTranslatef(0.0, 0.0, -4.0);
+
+  glScalef(1.,1.,-1.);
+
+  //glMultMatrixf(&inverse(modelView)[0][0]);
+
+  //glMultMatrixf(&(projection)[0][0]);
+
+
+
+
+
+  // only for the model
+  glPushMatrix();
+
+  //glScalef(1.,1.,-1.);
+
+  //glTranslatef(0.0, 0.0, 4.0);
+  //glMultMatrixf(&inverse(projection)[0][0]);
+
+  //glLoadIdentity();
+
+  //glMultMatrixf(&(projection)[0][0]);
+
+  //glMultMatrixf(&inverse(modelView)[0][0]);
+
+    glMultMatrixf(&(projection)[0][0]);
+    //glMultMatrixf(&inverse(projection)[0][0]);
+
+  //glMultMatrixf(&inverse(modelView)[0][0]);
+  glMultMatrixf(&(modelView)[0][0]);
+  //glTranslatef(0.0, 0.0, 4.0);
+
+
+  /* draw current model if toggled */
+  if(drawModel) {
+    glEnable(GL_LIGHTING);
+    //    glLightfv(GL_LIGHT0, GL_POSITION, &lightPos[0]);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, &lightPos[0]);
+    model.draw();
+
+    glDisable(GL_LIGHTING);
+  }
+
+
+
+  //  glTranslatef(0.0, 0.0, -4.0);
+
+  glPopMatrix(); // pop model Matrix
+
+
+
+  // for frustum and axes
+  glPushMatrix();
+
+  //glScalef(1.,1.,-1.);
+  //glMultMatrixf(&inverse(projection)[0][0]);
+
+  //glMultMatrixf(&(modelView)[0][0]);  // -> changes on glulookat have an effect
+  //glScalef(1.,1.,-1.);
+
+
+
   // apply inverse modelview transformation to axes and frustum
   // this moves the camera position and frustum into world space
   // coordinates
@@ -492,7 +578,7 @@ void Clip::display(void){
 
   /* draw the axis and eye vector */
   glPushMatrix();
-  glColor3ub(0, 0, 255);
+  /*  glColor3ub(0, 0, 255);
   glBegin(GL_LINE_STRIP);
   glVertex3f(0.0, 0.0, 0.0);
   glVertex3f(0.0, 0.0, -1.0 * viewLength);
@@ -506,16 +592,18 @@ void Clip::display(void){
   glColor3ub(255, 255, 0);
   Context::setFont("helvetica", 12);
   Context::drawString(0.0, 0.0, -1.1 * viewLength, "e");
+  */
   glColor3ub(255, 0, 0);
   glScalef(0.4, 0.4, 0.4);
-  drawAxes();
-  glPopMatrix();
+  // drawAxes();
+  glPopMatrix();  // axis and eye vector
 
   // apply inverse projection transformation to unit-frustum
   //  glMultMatrixf(&inverse(projection)[0][0]);
+<<<<<<< HEAD
   //matrices for the clipplanes
   GLdouble left[] = {1.0 , 0.0 , 0.0 , 1.0};
-  GLdouble right[] = {-1.0 , 0.0 , 0.0 , 1.0};	    
+  GLdouble right[] = {-1.0 , 0.0 , 0.0 , 1.0};
   GLdouble botom[] = {0.0 , 1.0 , 0.0 , 1.0};
   GLdouble top[] = {0.0 , -1.0 , 0.0 , 1.0};
   GLdouble near[] = {0.0 , 0.0 , 1.0 , 1.0};
@@ -529,7 +617,13 @@ void Clip::display(void){
   glClipPlane(GL_CLIP_PLANE4,botom);
   glClipPlane(GL_CLIP_PLANE5,top);
 
-  //draw the canonical cube (taken from the world view) 
+  //draw the canonical cube (taken from the world view)
+=======
+
+
+
+
+>>>>>>> adding mouse movement, clip space view seems to work correctly finally
   /* draw the canonical viewing frustum */
   // back clip plane
   glColor3f(0.2, 0.2, 0.2);
@@ -565,52 +659,35 @@ void Clip::display(void){
   glEnd();
   glDisable(GL_BLEND);
 
-  glPopMatrix();
+  glPopMatrix(); // pop
 
 
 
-  glPushMatrix();
 
-  //  glMultMatrixf(&(projection)[0][0]);
-  //glMultMatrixf(&inverse(projection)[0][0]);
 
-  glMultMatrixf(&inverse(modelView)[0][0]);
-  glMultMatrixf(&inverse(projection)[0][0]);
-  //glMultMatrixf(&inverse(modelView)[0][0]);
-  //  glMultMatrixf(&(modelView)[0][0]);
+  glPopMatrix(); // pop all 3 matrix
 
-  /* draw current model if toggled */
-  if(drawModel) {
-    glEnable(GL_LIGHTING);
-
-    glLightfv(GL_LIGHT0, GL_POSITION, &lightPos[0]);
-    model.draw();
-
-    glDisable(GL_LIGHTING);
-  }
-  glPopMatrix();
-  glDisable(GL_NORMALIZE);
 
 
  //en- and disabeling of clipplanes
-	if(clip_on){
-	glEnable(GL_CLIP_PLANE0);
-	glEnable(GL_CLIP_PLANE1);
-	glEnable(GL_CLIP_PLANE2);
-	glEnable(GL_CLIP_PLANE3);
-	glEnable(GL_CLIP_PLANE4);
-	glEnable(GL_CLIP_PLANE5);
+    if(clip_on){
+    glEnable(GL_CLIP_PLANE0);
+    glEnable(GL_CLIP_PLANE1);
+    glEnable(GL_CLIP_PLANE2);
+    glEnable(GL_CLIP_PLANE3);
+    glEnable(GL_CLIP_PLANE4);
+    glEnable(GL_CLIP_PLANE5);
     }
 
     if(clip_on){
-	glDisable(GL_CLIP_PLANE0);
-	glDisable(GL_CLIP_PLANE1);
-	glDisable(GL_CLIP_PLANE2);
-	glDisable(GL_CLIP_PLANE3);
-	glDisable(GL_CLIP_PLANE4);
-	glDisable(GL_CLIP_PLANE5);
+    glDisable(GL_CLIP_PLANE0);
+    glDisable(GL_CLIP_PLANE1);
+    glDisable(GL_CLIP_PLANE2);
+    glDisable(GL_CLIP_PLANE3);
+    glDisable(GL_CLIP_PLANE4);
+    glDisable(GL_CLIP_PLANE5);
     }
-    glPopMatrix();   
+    glPopMatrix();
 
   glutSwapBuffers();
 }

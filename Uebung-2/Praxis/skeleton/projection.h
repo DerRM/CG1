@@ -57,7 +57,11 @@ namespace Screen{
 // clip-space view
 namespace Clip{
 
+  extern int xRot;
+  extern int mouseX;
+  extern int mouseY;
   extern bool drawModel;
+
   extern char menuOptions[];
   extern std::string menuText[];
   extern int numOptions;
@@ -70,6 +74,9 @@ namespace Clip{
 
   // mouse menu
   void menu(int id);
+
+  // mouse movement
+  void mouseMoved(int x, int y);
 };
 
 // command window

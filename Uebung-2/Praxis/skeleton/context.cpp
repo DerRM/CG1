@@ -89,6 +89,7 @@ static void createWindows(void){
   clip.registerMenu(Clip::menu);
   clip.addMenu(Clip::menuOptions, Clip::menuText, Clip::numOptions);
   clip.registerKeyPressed(keyPressed);
+  clip.registerMouseMoved(Clip::mouseMoved);
 
   command= Window(&main, "Command manipulation window", GAP, subHeight+2*GAP, width-2*GAP, subHeight);
   command.registerDisplay(Command::display);
