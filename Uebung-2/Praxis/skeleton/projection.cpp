@@ -345,7 +345,7 @@ void World::display(void){
 }
 
 char World::menuOptions[]= {'m'};
-string World::menuText[]= {"Toggle model"};
+string World::menuText[]= {"Toggl8e model"};
 int World::numOptions= 1;
 
 void World::menu(int value){
@@ -371,6 +371,7 @@ void Screen::reshape(int width, int height){
   glViewport(0, 0, width, height);
   glShadeModel(GL_SMOOTH);
 }
+
 
 void Screen::display(void){
 
@@ -432,11 +433,20 @@ void Screen::menu(int value){
 }
 
 // CLIP WINDOW
+<<<<<<< HEAD
 bool Clip::drawModel= true;
+=======
+bool Clip::clip_on= true;
+>>>>>>> mehr zur praxis
 
 void Clip::reshape(int width, int height){
 
   glViewport(0, 0, width, height);
+<<<<<<< HEAD
+=======
+  glShadeModel(GL_SMOOTH);
+
+>>>>>>> mehr zur praxis
 
   glMatrixMode(GL_PROJECTION);
 
@@ -447,16 +457,26 @@ void Clip::reshape(int width, int height){
   glMatrixMode(GL_MODELVIEW);
 
   glLoadIdentity();
+<<<<<<< HEAD
 
   glTranslatef(0.0, 0.0, -4.0);
 
   glRotatef(225.0, 0.0, 1.0, 0.0);
 
   glShadeModel(GL_SMOOTH);
+=======
+  glTranslatef(0.0, 0.0, -4.0);
+  glRotatef(225.0, 0.0, 1.0, 0.0);
+  glClearColor(0.0, 0.0, 0.0, 0.0);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_LIGHT0);
+
+>>>>>>> mehr zur praxis
 }
 
 void Clip::display(void){
 
+<<<<<<< HEAD
   glEnable(GL_NORMALIZE);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);
@@ -504,6 +524,25 @@ void Clip::display(void){
   // apply inverse projection transformation to unit-frustum
   //  glMultMatrixf(&inverse(projection)[0][0]);
 
+=======
+  //matrices for the clipplanes
+  GLdouble left[] = {1.0 , 0.0 , 0.0 , 1.0};
+  GLdouble right[] = {-1.0 , 0.0 , 0.0 , 1.0};	    
+  GLdouble botom[] = {0.0 , 1.0 , 0.0 , 1.0};
+  GLdouble top[] = {0.0 , -1.0 , 0.0 , 1.0};
+  GLdouble near[] = {0.0 , 0.0 , 1.0 , 1.0};
+  GLdouble away[] = {0.0 , 0.0 , -1.0 , 1.0};
+
+
+  glClipPlane(GL_CLIP_PLANE0,near);
+  glClipPlane(GL_CLIP_PLANE1,away);
+  glClipPlane(GL_CLIP_PLANE2,left);
+  glClipPlane(GL_CLIP_PLANE3,right);
+  glClipPlane(GL_CLIP_PLANE4,botom);
+  glClipPlane(GL_CLIP_PLANE5,top);
+
+  //draw the canonical cube (taken from the world view) 
+>>>>>>> mehr zur praxis
   /* draw the canonical viewing frustum */
   // back clip plane
   glColor3f(0.2, 0.2, 0.2);
@@ -537,6 +576,7 @@ void Clip::display(void){
   glVertex3i(-1, -1, -1);
   glVertex3i(1, -1, -1);
   glEnd();
+<<<<<<< HEAD
   glDisable(GL_BLEND);
 
   glPopMatrix();
@@ -565,19 +605,46 @@ void Clip::display(void){
   glPopMatrix();
   glDisable(GL_NORMALIZE);
 
+=======
+
+ //en- and disabeling of clipplanes
+	if(clip_on){
+	glEnable(GL_CLIP_PLANE0);
+	glEnable(GL_CLIP_PLANE1);
+	glEnable(GL_CLIP_PLANE2);
+	glEnable(GL_CLIP_PLANE3);
+	glEnable(GL_CLIP_PLANE4);
+	glEnable(GL_CLIP_PLANE5);
+    }
+
+    if(clip_on){
+	glDisable(GL_CLIP_PLANE0);
+	glDisable(GL_CLIP_PLANE1);
+	glDisable(GL_CLIP_PLANE2);
+	glDisable(GL_CLIP_PLANE3);
+	glDisable(GL_CLIP_PLANE4);
+	glDisable(GL_CLIP_PLANE5);
+    }
+    glPopMatrix();   
+>>>>>>> mehr zur praxis
 
   glutSwapBuffers();
 }
 
-char Clip::menuOptions[]= {'m'};
-string Clip::menuText[]= {"Toggle model"};
+char Clip::menuOptions[]= {'c'};
+string Clip::menuText[]= {"Clipplanes on"};
 int Clip::numOptions= 1;
 
 void Clip::menu(int value){
 
   switch (value) {
+<<<<<<< HEAD
   case 'm':
     drawModel= !drawModel;
+=======
+  case 'c':
+    clip_on= !clip_on;
+>>>>>>> mehr zur praxis
     break;
   default:
     break;
