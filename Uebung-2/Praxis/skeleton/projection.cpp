@@ -433,20 +433,14 @@ void Screen::menu(int value){
 }
 
 // CLIP WINDOW
-<<<<<<< HEAD
 bool Clip::drawModel= true;
-=======
 bool Clip::clip_on= true;
->>>>>>> mehr zur praxis
+
 
 void Clip::reshape(int width, int height){
 
   glViewport(0, 0, width, height);
-<<<<<<< HEAD
-=======
   glShadeModel(GL_SMOOTH);
-
->>>>>>> mehr zur praxis
 
   glMatrixMode(GL_PROJECTION);
 
@@ -457,26 +451,22 @@ void Clip::reshape(int width, int height){
   glMatrixMode(GL_MODELVIEW);
 
   glLoadIdentity();
-<<<<<<< HEAD
 
   glTranslatef(0.0, 0.0, -4.0);
 
   glRotatef(225.0, 0.0, 1.0, 0.0);
 
   glShadeModel(GL_SMOOTH);
-=======
   glTranslatef(0.0, 0.0, -4.0);
   glRotatef(225.0, 0.0, 1.0, 0.0);
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);
 
->>>>>>> mehr zur praxis
 }
 
 void Clip::display(void){
 
-<<<<<<< HEAD
   glEnable(GL_NORMALIZE);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);
@@ -523,8 +513,6 @@ void Clip::display(void){
 
   // apply inverse projection transformation to unit-frustum
   //  glMultMatrixf(&inverse(projection)[0][0]);
-
-=======
   //matrices for the clipplanes
   GLdouble left[] = {1.0 , 0.0 , 0.0 , 1.0};
   GLdouble right[] = {-1.0 , 0.0 , 0.0 , 1.0};	    
@@ -542,7 +530,6 @@ void Clip::display(void){
   glClipPlane(GL_CLIP_PLANE5,top);
 
   //draw the canonical cube (taken from the world view) 
->>>>>>> mehr zur praxis
   /* draw the canonical viewing frustum */
   // back clip plane
   glColor3f(0.2, 0.2, 0.2);
@@ -576,7 +563,6 @@ void Clip::display(void){
   glVertex3i(-1, -1, -1);
   glVertex3i(1, -1, -1);
   glEnd();
-<<<<<<< HEAD
   glDisable(GL_BLEND);
 
   glPopMatrix();
@@ -605,7 +591,6 @@ void Clip::display(void){
   glPopMatrix();
   glDisable(GL_NORMALIZE);
 
-=======
 
  //en- and disabeling of clipplanes
 	if(clip_on){
@@ -626,7 +611,6 @@ void Clip::display(void){
 	glDisable(GL_CLIP_PLANE5);
     }
     glPopMatrix();   
->>>>>>> mehr zur praxis
 
   glutSwapBuffers();
 }
@@ -638,13 +622,10 @@ int Clip::numOptions= 1;
 void Clip::menu(int value){
 
   switch (value) {
-<<<<<<< HEAD
   case 'm':
     drawModel= !drawModel;
-=======
   case 'c':
     clip_on= !clip_on;
->>>>>>> mehr zur praxis
     break;
   default:
     break;
