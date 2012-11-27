@@ -110,7 +110,7 @@ Wenn sich 2 Seiten an einer Kante schneiden werden die jeweiligen Codes verodert
 	101000& &back-right
 \end{align*}
 
-Treffen sich die Kanten an einem Eckpunkt entstehen wiederum verschiedene Outcodes:
+Treffen sich die Kanten an einem Eckpunkt bzw. schneiden sich 3 Seiten an einem gemeinsamen Punkt entstehen wiederum verschiedene Outcodes:
 
 \begin{align*}
 	0100101& &top-left-front\\
@@ -123,7 +123,7 @@ Treffen sich die Kanten an einem Eckpunkt entstehen wiederum verschiedene Outcod
 	1010010& &bottom-right-back
 \end{align*}
 
-Als Primitive eignen sich im 3D-Fall die Ebenen.
+Der Raum innerhalb des kanonische Volumens bekommt den eindeutigen Code $000000$zugewiesen. Als Primitive zum unterteilen der einzelnen Halbräume eignen sich im 3D-Fall die Ebenen.
 
 \section*{3.}
 \section*{4.}
@@ -138,7 +138,52 @@ Wir nehmen einen beliebigen Vektor $\vec{v}$ aus der Ebene und die Normale $\vec
 	\vec{n} \cdot \vec{v} = n_x \cdot v_x + n_y \cdot v_y + n_z \cdot v_z = 0
 \] 
 \subsection*{(b)}
+Um die Transformationsmatrix für die Normale $n$ herzuleiten nutzen wir die Gleichung aus (a). Da diese gilt, muss auch folgendes für eine beliebige affine Transformation $T$ gelten:
+
+\begin{align*}
+	\vec{v'} &= T \vec{v}\\
+	\vec{n'} \cdot \vec{v'} = \vec{n'} \cdot T \vec{v} &= 0 
+\end{align*}
+
+Schreiben wir diese Gleichung nun aus, erhalten wir:
+
+\begin{align*}
+	n'_x~ (t_{11} v_x + t_{12} v_y + t_{13} v_z + t_{14}) &~+\\
+	n'_y~ (t_{21} v_x + t_{22} v_y + t_{23} v_z + t_{24}) &~+\\
+	n'_z~ (t_{31} v_x + t_{32} v_y + t_{33} v_z + t_{34}) &~+\\
+	0~ (t_{41} v_x + t_{42} v_y + t_{43} v_z + t_{44}) &= 0\\
+\end{align*}
+
+Demnach gilt auch folgendes, wenn wir nach den Komponenten von $\vec{v'}$ ausklammern:
+
+\begin{align*}
+	v_x~(t_{11} n'_x + t_{21} n'_y + t_{31} n'_z + t_{41} 0 ) &~+\\
+	v_y~(t_{12} n'_x + t_{22} n'_y + t_{32} n'_z + t_{42} 0) &~+\\
+	v_z~(t_{13} n'_x + t_{23} n'_y + t_{33} n'_z + t_{43} 0) &~+\\
+	1~(t_{14} n'_x + t_{24} n'_y + t_{34} n'_z + t_{44} 0) &= 0
+\end{align*}
+
+Wenn man dies nun kompakt schreibt:
+
+\[
+	\vec{v} \cdot
+	\begin{pmatrix}
+		t_{11} & t_{21} & t_{31} & t_{41}\\
+		t_{12} & t_{22} & t_{32} & t_{42}\\
+		t_{13} & t_{23} & t_{33} & t_{43}\\
+		t_{14} & t_{24} & t_{34} & t_{44}
+	\end{pmatrix}
+	\vec{n'} = 0
+\]
+
+sieht man sofort, dass die Matrix $T^T$ die transponierte zu $T$ ist, wodurch gilt:
+
+\[
+	\vec{n'} = T^T \vec{n}
+\]
+
 \subsection*{(c)}
 Das Transformationsgesetz bei einer Normalen gilt aus dem Grund nicht, da eine Normale nicht durch eine Punkt zu Punkt Beziehung beschrieben werden kann. Das bedeutet, es lässt sich keine Normale nur aus 2 gegebenen Punkten bestimmen und somit verhält sich eine Normale auch nicht wie ein zu transformierender Punkt.
 \subsection*{(d)}
+Das hergeleitete Transformationsgesetz für eine beliebige Normale gilt selbst bei gekrümmten Flächen. Um dort die Normale zu erhalten muss zunächst eine Tangentialebene an die gewünschte Stelle angelegt werden. Dadurch lässt sich die Normale bestimmen und wie gehabt transformieren.
 \end{document}
