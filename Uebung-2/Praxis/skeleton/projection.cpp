@@ -345,7 +345,7 @@ void World::display(void){
 }
 
 char World::menuOptions[]= {'m'};
-string World::menuText[]= {"Toggl8e model"};
+string World::menuText[]= {"Toggle model"};
 int World::numOptions= 1;
 
 void World::menu(int value){
@@ -451,8 +451,6 @@ void Clip::mouseMoved(int x, int y){
 
 void Clip::reshape(int width, int height){
 
-  glShadeModel(GL_SMOOTH);
-
   glViewport(0, 0, width, height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -461,11 +459,6 @@ void Clip::reshape(int width, int height){
   glLoadIdentity();
   glTranslatef(0.0, 0.0, -4.0);
   glRotatef(45.0, 0.0, 1.0, 0.0);
-
-  glClearColor(0.0, 0.0, 0.0, 0.0);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_LIGHT0);
-
 }
 
 void Clip::display(void){
@@ -516,23 +509,6 @@ void Clip::display(void){
   drawAxes();
   glPopMatrix();  // axis
 
-  //matrices for the clipplanes
-  GLdouble left[] = {1.0 , 0.0 , 0.0 , 1.0};
-  GLdouble right[] = {-1.0 , 0.0 , 0.0 , 1.0};
-  GLdouble botom[] = {0.0 , 1.0 , 0.0 , 1.0};
-  GLdouble top[] = {0.0 , -1.0 , 0.0 , 1.0};
-  GLdouble near[] = {0.0 , 0.0 , 1.0 , 1.0};
-  GLdouble away[] = {0.0 , 0.0 , -1.0 , 1.0};
-
-
-  glClipPlane(GL_CLIP_PLANE0,near);
-  glClipPlane(GL_CLIP_PLANE1,away);
-  glClipPlane(GL_CLIP_PLANE2,left);
-  glClipPlane(GL_CLIP_PLANE3,right);
-  glClipPlane(GL_CLIP_PLANE4,botom);
-  glClipPlane(GL_CLIP_PLANE5,top);
-
-
   /* draw the canonical viewing frustum */
   // back clip plane
   glColor3f(0.2, 0.2, 0.2);
@@ -568,42 +544,56 @@ void Clip::display(void){
   glEnd();
   glDisable(GL_BLEND);
 
-  glPopMatrix(); // viewing frustum
+  //matrices for the clipplanes
+  GLdouble left[] = {1.0 , 0.0 , 0.0 , 1.0};
+  GLdouble right[] = {-1.0 , 0.0 , 0.0 , 1.0};
+  GLdouble botom[] = {0.0 , 1.0 , 0.0 , 1.0};
+  GLdouble top[] = {0.0 , -1.0 , 0.0 , 1.0};
+  GLdouble near[] = {0.0 , 0.0 , 1.0 , 1.0};
+  GLdouble away[] = {0.0 , 0.0 , -1.0 , 1.0};
 
-  glPopMatrix(); // all 3
 
- //en- and disabeling of clipplanes
-    if(clip_on){
+  glClipPlane(GL_CLIP_PLANE0,near);
+  glClipPlane(GL_CLIP_PLANE1,away);
+  glClipPlane(GL_CLIP_PLANE2,left);
+  glClipPlane(GL_CLIP_PLANE3,right);
+  glClipPlane(GL_CLIP_PLANE4,botom);
+  glClipPlane(GL_CLIP_PLANE5,top);
+
+  //en- and disabeling of clipplanes
+  if(clip_on){
     glEnable(GL_CLIP_PLANE0);
     glEnable(GL_CLIP_PLANE1);
     glEnable(GL_CLIP_PLANE2);
     glEnable(GL_CLIP_PLANE3);
     glEnable(GL_CLIP_PLANE4);
     glEnable(GL_CLIP_PLANE5);
-    }
-
-    if(clip_on){
+  } else {
     glDisable(GL_CLIP_PLANE0);
     glDisable(GL_CLIP_PLANE1);
     glDisable(GL_CLIP_PLANE2);
     glDisable(GL_CLIP_PLANE3);
     glDisable(GL_CLIP_PLANE4);
     glDisable(GL_CLIP_PLANE5);
-    }
-    glPopMatrix();
+  }
+
+  glPopMatrix(); // viewing frustum
+
+  glPopMatrix(); // all 3
 
   glutSwapBuffers();
 }
 
-char Clip::menuOptions[]= {'c'};
-string Clip::menuText[]= {"Clipplanes on"};
-int Clip::numOptions= 1;
+char Clip::menuOptions[]= {'m', 'c'};
+string Clip::menuText[]= {"Toggle Model", "Toggle clipping"};
+int Clip::numOptions= 2;
 
 void Clip::menu(int value){
 
   switch (value) {
   case 'm':
     drawModel= !drawModel;
+    break;
   case 'c':
     clip_on= !clip_on;
     break;
