@@ -126,6 +126,19 @@ Treffen sich die Kanten an einem Eckpunkt bzw. schneiden sich 3 Seiten an einem 
 Der Raum innerhalb des kanonische Volumens bekommt den eindeutigen Code $000000$zugewiesen. Als Primitive zum unterteilen der einzelnen Halbräume eignen sich im 3D-Fall die Ebenen.
 
 \section*{3.}
+Man kann im projektiven 3D-Raum jeden Punkt $p = (x,y)$ als einen projektiven Punkt $p = (x,y,1)$ darstellen. Projektive Punkte mit der dritten Koordinate 0 werden nicht abgebildet. Diese Menge an Punkten lässt sich durch eine uneigentliche Hyperebene $H$ beschreiben. Mit anderen Worten spannen diese Punkte eine Ebene im projektiven 3D-Raum auf.
+
+\[
+	H := \{ [x,y,w] \in P(\mathbb{R}^3), w = 0\}
+\]
+
+In die andere Richtung lassen sich jedem projektiven Punkt $p=[x,y,w]^t$, der nicht in $H$ enthalten ist und somit dessen $w \not = 0$ ist , einen 2dimensionalen Punkt zuordnen:
+
+\[
+	[x, y, w] \mapsto (\frac{x}{w},\frac{y}{w})^T
+\]
+
+Das kann als Projektion auf die Ebene $H$ aufgefasst werden. Dies ist auch als Dualität zwischen Punkt und Hyperebene zu verstehen.
 \section*{4.}
 Wenn wir zum Clipping den Sutherland Hodgman Algorithmus verwenden, lässt sich ein beliebiges Polygon anhand eines konvexen Polygons clippen. Die Komplexität, die dabei entsteht ist dabei $O(n)$. Wobei sich das $n$ auf die Anzahl der Kanten des konvexen Polygons bezieht an welchem das beliebige Polygon geclippt werden soll. Dies rührt daher, dass der Algorithmus zum Clippen alle vorhandenen Kanten durchgeht und die Schnittpunkte mit dem beliebigen Polygon berechnet.
 \section*{5.}
