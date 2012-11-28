@@ -42,7 +42,7 @@ static mat4 projection, modelView;
 static OBJModel model("data/al.obj");
 
 // directional light in positve z-direction
-static  vec4 lightPos= vec4(0.0, 0.0, 1.0, 0.0);
+static  vec4 lightPos= vec4(0.0, 0.0,1.0, 0.0);
 
 static bool leftButton= false;
 
@@ -491,9 +491,27 @@ void Clip::display(void){
   if(drawModel) {
     glEnable(GL_LIGHTING);
     //glEnable(GL_NORMALIZE);
-    //glLightfv(GL_LIGHT0, GL_POSITION, &lightPos[0]);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, &lightPos[0]);
+    //glFrontFace(GL_CW);
+
+    glPushMatrix();
+
+    //glScalef(-1.,-1.,-1.);
+    glRotatef(130.,0.,0.,1.);
+
+    glm::mat3 normMatrix(modelView);
+    normMatrix = glm::transpose(glm::inverse(normMatrix));
+    glMultMatrixf(&inverse(normMatrix)[0][0]);
+
+    //glColor3f(1.2, 0.2, 0.2);
+    //glutSolidSphere(0.7,10,10);
+
+    glLightfv(GL_LIGHT0, GL_POSITION, &lightPos[0]);
+    glPopMatrix();
+
+    //glLightfv(GL_LIGHT0, GL_AMBIENT, &lightPos[0]);
+
     model.draw();
+
     //glDisable(GL_NORMALIZE);
     glDisable(GL_LIGHTING);
   }
