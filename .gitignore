@@ -71,3 +71,4 @@ cg1_ex2_mac
 
 #unignore
 !/data/*.obj
+!Uebung-3/Praxis/meshes/*.obj

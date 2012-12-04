@@ -34,6 +34,7 @@
 #include "ErrorDevel.h"
 #include "Checker.h"
 #include "GLSLShader.h"
+#include "Mesh.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // defines / flags
@@ -89,6 +90,7 @@ vec4 lightColor(0.7f,0.7f,0.7f,1.0f);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // variables, global
 GLSLShader blinnPhongShader;
+Mesh mesh;
 
 
 enum RenderMode{
@@ -205,12 +207,12 @@ void display(){
 
 	// Render the object 
 	// TODO
-	glBegin(GL_TRIANGLES);
-	glVertex3f(1,0,0);
-	glVertex3f(0,1,0);
-	glVertex3f(0,0,1);
-	glEnd();
-
+//	glBegin(GL_TRIANGLES);
+//	glVertex3f(1,0,0);
+//	glVertex3f(0,1,0);
+//	glVertex3f(0,0,1);
+//	glEnd();
+    mesh.renderFlat();
 
 
 	// disable program object to avoid side effects
@@ -270,7 +272,8 @@ main( int argc, char** argv) {
 	// load ressources
 	blinnPhongShader.load("shaders/BlinnPhong");
 	// TODO LOAD MESH
-	
+	mesh.loadOff("meshes/cow.off");
+    
 	// register glut callbacks
 	glutDisplayFunc( display);
 	glutKeyboardFunc( keyboard);
