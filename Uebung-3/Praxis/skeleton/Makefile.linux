@@ -44,12 +44,14 @@ SOURCES= \
 HEADERS+= \
 	GLSLShader.h \
 	ErrorDevel.h \
-	Checker.h
+	Checker.h \
+	Mesh.h
 
 SOURCES+= \
 	GLSLShader.cpp \
 	ErrorDevel.cpp \
 	Checker.cpp \
+	Mesh.cpp \
 	cg1_ex3.cpp
 
 

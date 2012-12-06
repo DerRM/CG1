@@ -13,7 +13,7 @@ Mesh::Mesh()
 
 void Mesh::loadOff(const string& filename)
 {
-    ifstream input(filename);
+    ifstream input(filename.c_str());
     
     if (input.fail())
     {
@@ -58,7 +58,7 @@ void Mesh::loadOff(const string& filename)
                 }
                 default:
                 {
-                    if (linenumber > 2 && linenumber <= m_numVertices + 2)
+                    if (linenumber > 2 && linenumber < m_numVertices + 2)
                     {
                         Vertex vertex;
                         vertex.x = atof(word.c_str());
@@ -68,8 +68,8 @@ void Mesh::loadOff(const string& filename)
                         vertex.z = atof(word.c_str());
                         m_vertices[linenumber - 2] = vertex;
                     }
-                    
-                    if (linenumber > m_numVertices + 2 && linenumber <= m_numFaces + m_numVertices + 2)
+
+                    if (linenumber >= m_numVertices + 2 && linenumber < m_numFaces + m_numVertices + 2)
                     {
                         Face face;
                         linestream >> word;
@@ -80,6 +80,7 @@ void Mesh::loadOff(const string& filename)
                         face.index3 = atoi(word.c_str());
                         m_faces[linenumber - m_numVertices - 2] = face;
                     }
+
                     break;
                 }
             }
