@@ -58,7 +58,7 @@ void Mesh::loadOff(const string& filename)
                 }
                 default:
                 {
-                    if (linenumber > 2 && linenumber < m_numVertices + 2)
+                    if (linenumber > 2 && linenumber <= m_numVertices + 2)
                     {
                         Vertex vertex;
                         vertex.x = atof(word.c_str());
@@ -66,10 +66,10 @@ void Mesh::loadOff(const string& filename)
                         vertex.y = atof(word.c_str());
                         linestream >> word;
                         vertex.z = atof(word.c_str());
-                        m_vertices[linenumber - 2] = vertex;
+                        m_vertices[linenumber - 2 - 1] = vertex;
                     }
 
-                    if (linenumber >= m_numVertices + 2 && linenumber < m_numFaces + m_numVertices + 2)
+                    if (linenumber > m_numVertices + 2 && linenumber <= (m_numFaces + m_numVertices + 2))
                     {
                         Face face;
                         linestream >> word;
@@ -78,7 +78,7 @@ void Mesh::loadOff(const string& filename)
                         face.index2 = atoi(word.c_str());
                         linestream >> word;
                         face.index3 = atoi(word.c_str());
-                        m_faces[linenumber - m_numVertices - 2] = face;
+                        m_faces[linenumber - m_numVertices - 2 - 1] = face;                        
                     }
 
                     break;
@@ -92,14 +92,16 @@ void Mesh::loadOff(const string& filename)
 
 void Mesh::renderFlat()
 {
-    for (int i = 0; i < m_numVertices; i++)
+    glBegin(GL_TRIANGLES);
     {
-        glBegin(GL_POINTS);
+        for (int i = 0; i < m_numFaces; i++)
         {
-            glVertex3f(m_vertices[i].x, m_vertices[i].y, m_vertices[i].z);
+            glVertex3f(m_vertices[m_faces[i].index1].x, m_vertices[m_faces[i].index1].y, m_vertices[m_faces[i].index1].z);
+            glVertex3f(m_vertices[m_faces[i].index2].x, m_vertices[m_faces[i].index2].y, m_vertices[m_faces[i].index2].z);
+            glVertex3f(m_vertices[m_faces[i].index3].x, m_vertices[m_faces[i].index3].y, m_vertices[m_faces[i].index3].z);
         }
-        glEnd();
     }
+    glEnd();
 }
 
 void Mesh::renderSmooth()
