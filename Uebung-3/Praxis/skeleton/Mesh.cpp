@@ -51,6 +51,7 @@ void Mesh::loadOff(const string& filename)
                     m_numFaces = atoi(word.c_str());
                     cout << "Number of Faces: " << m_numFaces << "\n";
                     m_faces = new Face[m_numFaces];
+                    m_normals = new Normal[m_numFaces];
                     linestream >> word;
                     int numEdges = atoi(word.c_str());
                     cout << "Number of Edges: " << numEdges << "\n";
@@ -78,7 +79,33 @@ void Mesh::loadOff(const string& filename)
                         face.index2 = atoi(word.c_str());
                         linestream >> word;
                         face.index3 = atoi(word.c_str());
-                        m_faces[linenumber - m_numVertices - 2 - 1] = face;                        
+                        m_faces[linenumber - m_numVertices - 2 - 1] = face;
+                        
+                        Vertex v1 = m_vertices[face.index1];
+                        Vertex v2 = m_vertices[face.index2];
+                        Vertex v3 = m_vertices[face.index3];
+                        
+                        Vertex dir1;
+                        dir1.x = v1.x - v2.x;
+                        dir1.y = v1.y - v2.y;
+                        dir1.z = v1.z - v2.z;
+                        
+                        Vertex dir2;
+                        dir2.x = v3.x - v2.x;
+                        dir2.y = v3.y - v2.y;
+                        dir2.z = v3.z - v2.z;
+                        
+                        Normal normal;
+                        normal.x = dir1.y * dir2.z - dir1.z * dir2.y;
+                        normal.y = dir1.z * dir2.x - dir1.x * dir2.z;
+                        normal.z = dir1.x * dir2.y - dir1.y * dir2.x;
+                        
+                        // normalize;
+                        float length = sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
+                        normal.x /= length;
+                        normal.y /= length;
+                        normal.z /= length;
+                        m_normals[linenumber - m_numVertices - 2 - 1] = normal;
                     }
 
                     break;
@@ -96,6 +123,7 @@ void Mesh::renderFlat()
     {
         for (int i = 0; i < m_numFaces; i++)
         {
+            glNormal3f(m_normals[i].x, m_normals[i].y, m_normals[i].z);
             glVertex3f(m_vertices[m_faces[i].index1].x, m_vertices[m_faces[i].index1].y, m_vertices[m_faces[i].index1].z);
             glVertex3f(m_vertices[m_faces[i].index2].x, m_vertices[m_faces[i].index2].y, m_vertices[m_faces[i].index2].z);
             glVertex3f(m_vertices[m_faces[i].index3].x, m_vertices[m_faces[i].index3].y, m_vertices[m_faces[i].index3].z);

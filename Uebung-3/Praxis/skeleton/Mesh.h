@@ -13,6 +13,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <math.h>
 
 #ifdef __APPLE__
 #include <GL/glew.h>
