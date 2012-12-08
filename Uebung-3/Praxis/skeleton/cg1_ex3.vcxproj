@@ -78,11 +78,13 @@
     <ClCompile Include="Checker.cpp" />
     <ClCompile Include="ErrorDevel.cpp" />
     <ClCompile Include="GLSLShader.cpp" />
+    <ClCompile Include="Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Checker.h" />
     <ClInclude Include="ErrorDevel.h" />
     <ClInclude Include="GLSLShader.h" />
+    <ClInclude Include="Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\BlinnPhong.frag" />
