@@ -212,8 +212,8 @@ void display(){
 //	glVertex3f(0,1,0);
 //	glVertex3f(0,0,1);
 //	glEnd();
-    mesh.renderFlat();
-
+//    mesh.renderFlat();
+    mesh.renderSmooth();
 
 	// disable program object to avoid side effects
 	glUseProgramObjectARB( 0);
@@ -272,7 +272,7 @@ main( int argc, char** argv) {
 	// load ressources
 	blinnPhongShader.load("shaders/BlinnPhong");
 	// TODO LOAD MESH
-    mesh.loadOff("meshes/eight.off");
+    mesh.loadOff("meshes/camel_head.off");
     
 	// register glut callbacks
 	glutDisplayFunc( display);

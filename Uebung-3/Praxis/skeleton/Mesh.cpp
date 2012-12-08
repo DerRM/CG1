@@ -46,12 +46,12 @@ void Mesh::loadOff(const string& filename)
                 {
                     m_numVertices = atoi(word.c_str());
                     cout << "Number of Vertices: " << m_numVertices << "\n";
-                    m_vertices = new Vertex[m_numVertices];
+                    m_vertices = new glm::vec3[m_numVertices];
                     linestream >> word;
                     m_numFaces = atoi(word.c_str());
                     cout << "Number of Faces: " << m_numFaces << "\n";
                     m_faces = new Face[m_numFaces];
-                    m_normals = new Normal[m_numFaces];
+                    m_surfaceNormals = new glm::vec3[m_numFaces];
                     linestream >> word;
                     int numEdges = atoi(word.c_str());
                     cout << "Number of Edges: " << numEdges << "\n";
@@ -61,7 +61,7 @@ void Mesh::loadOff(const string& filename)
                 {
                     if (linenumber > 2 && linenumber <= m_numVertices + 2)
                     {
-                        Vertex vertex;
+                        glm::vec3 vertex;
                         vertex.x = atof(word.c_str());
                         linestream >> word;
                         vertex.y = atof(word.c_str());
@@ -81,31 +81,12 @@ void Mesh::loadOff(const string& filename)
                         face.index3 = atoi(word.c_str());
                         m_faces[linenumber - m_numVertices - 2 - 1] = face;
                         
-                        Vertex v1 = m_vertices[face.index1];
-                        Vertex v2 = m_vertices[face.index2];
-                        Vertex v3 = m_vertices[face.index3];
+                        glm::vec3 v1 = m_vertices[face.index1];
+                        glm::vec3 v2 = m_vertices[face.index2];
+                        glm::vec3 v3 = m_vertices[face.index3];
                         
-                        Vertex dir1;
-                        dir1.x = v1.x - v2.x;
-                        dir1.y = v1.y - v2.y;
-                        dir1.z = v1.z - v2.z;
-                        
-                        Vertex dir2;
-                        dir2.x = v3.x - v2.x;
-                        dir2.y = v3.y - v2.y;
-                        dir2.z = v3.z - v2.z;
-                        
-                        Normal normal;
-                        normal.x = dir1.y * dir2.z - dir1.z * dir2.y;
-                        normal.y = dir1.z * dir2.x - dir1.x * dir2.z;
-                        normal.z = dir1.x * dir2.y - dir1.y * dir2.x;
-                        
-                        // normalize;
-                        float length = sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
-                        normal.x /= length;
-                        normal.y /= length;
-                        normal.z /= length;
-                        m_normals[linenumber - m_numVertices - 2 - 1] = normal;
+                        glm::vec3 normal = glm::normalize(glm::cross(v1 - v2, v3 - v2));
+                        m_surfaceNormals[linenumber - m_numVertices - 2 - 1] = normal;
                     }
 
                     break;
@@ -115,6 +96,25 @@ void Mesh::loadOff(const string& filename)
         
         linenumber++;
     }
+    
+    computeVertexNormals();
+}
+
+void Mesh::computeVertexNormals()
+{
+    m_vertexNormals = new glm::vec3[m_numVertices];
+    
+    for (int i = 0; i < m_numFaces; i++)
+    {
+        m_vertexNormals[m_faces[i].index1] += m_surfaceNormals[i];
+        m_vertexNormals[m_faces[i].index2] += m_surfaceNormals[i];
+        m_vertexNormals[m_faces[i].index3] += m_surfaceNormals[i];
+    }
+    
+    for (int i = 0; i < m_numVertices; i++)
+    {
+        m_vertexNormals[i] = glm::normalize(m_vertexNormals[i]);
+    }
 }
 
 void Mesh::renderFlat()
@@ -123,10 +123,10 @@ void Mesh::renderFlat()
     {
         for (int i = 0; i < m_numFaces; i++)
         {
-            glNormal3f(m_normals[i].x, m_normals[i].y, m_normals[i].z);
-            glVertex3f(m_vertices[m_faces[i].index1].x, m_vertices[m_faces[i].index1].y, m_vertices[m_faces[i].index1].z);
-            glVertex3f(m_vertices[m_faces[i].index2].x, m_vertices[m_faces[i].index2].y, m_vertices[m_faces[i].index2].z);
-            glVertex3f(m_vertices[m_faces[i].index3].x, m_vertices[m_faces[i].index3].y, m_vertices[m_faces[i].index3].z);
+            glNormal3fv(glm::value_ptr(m_surfaceNormals[i]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index1]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index2]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
         }
     }
     glEnd();
@@ -134,5 +134,17 @@ void Mesh::renderFlat()
 
 void Mesh::renderSmooth()
 {
-    
+    glBegin(GL_TRIANGLES);
+    {
+        for (int i = 0; i < m_numFaces; i++)
+        {
+            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index1]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index1]));
+            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index2]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index2]));
+            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index3]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
+        }
+    }
+    glEnd();
 }

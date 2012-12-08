@@ -13,7 +13,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <math.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #ifdef __APPLE__
 #include <GL/glew.h>
@@ -24,18 +25,6 @@
 #endif
 
 using namespace std;
-
-typedef struct {
-    float x;
-    float y;
-    float z;
-} Vertex;
-
-typedef struct {
-    float x;
-    float y;
-    float z;
-} Normal;
 
 typedef struct {
     int index1;
@@ -52,11 +41,14 @@ public:
     void renderFlat();
     void renderSmooth();
 private:
-    Vertex* m_vertices;
-    Normal* m_normals;
+    glm::vec3* m_vertices;
+    glm::vec3* m_surfaceNormals;
+    glm::vec3* m_vertexNormals;
     Face* m_faces;
     int m_numVertices;
     int m_numFaces;
+    
+    void computeVertexNormals();
 };
 
 #endif
