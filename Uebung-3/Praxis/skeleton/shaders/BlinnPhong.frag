@@ -15,11 +15,12 @@
 
 // variables that are interpolated to the fragment shader
 varying vec4 vertColor;
+varying vec3 normal;
 
 void main(){
 	//TODO : IMPLEMENT THE PHONG SHADING MODEL
 
 	// Set the color of the fragment
-	gl_FragColor = vertColor;
+	gl_FragColor = vec4(normal, 1.0);
 }
 	

@@ -16,10 +16,12 @@
 
 // variables that are interpolated to the fragment shader
 varying vec4 vertColor;
+varying vec3 normal;
 
 void main(){
 	vertColor = gl_Vertex;
 	// 	TODO : TRANSFORM THE VERTICES AND NORMALS AND PASS THEM TO THE RASTERIZATION STAGE
-	gl_Position = gl_Vertex;
+    normal = gl_NormalMatrix * gl_Normal;
+	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }
 

@@ -146,5 +146,27 @@ void Mesh::renderSmooth()
             glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
         }
     }
+    glEnd();    
+}
+
+void Mesh::renderBlinnPhong()
+{
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, 0, glm::value_ptr(m_vertexNormals[0]));
+    
+    glBegin(GL_TRIANGLES);
+    {
+        for (int i = 0; i < m_numFaces; i++)
+        {
+            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index1]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index1]));
+            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index2]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index2]));
+            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index3]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
+        }
+    }
     glEnd();
+
+    glDisableClientState(GL_NORMAL_ARRAY);
 }

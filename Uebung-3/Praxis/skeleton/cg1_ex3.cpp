@@ -71,6 +71,9 @@ bool rightButtondown = false;
 bool leftButtondown = false;
 bool midButtondown = false;
 int oldX,oldY;
+bool renderFlat = false;
+bool renderGouraud = false;
+bool renderBlinnPhong = false;
 
 ///////////////////
 // View variables
@@ -188,12 +191,21 @@ void display(){
 	switch(currentRenderer){
 		case FLAT:
 			// TODO ENABLE PER FACE LIGHTING
+            renderFlat = true;
+            renderGouraud = false;
+            renderBlinnPhong = false;
 		break;
 		case GOURAUD:
 			// TODO ENABLE PER VERTEX LIGHTING
+            renderFlat = false;
+            renderGouraud = true;
+            renderBlinnPhong = false;
 		break;
 		case BLINN_PHONG:
 			// ENABLE PER FRAGMENT LIGHTING
+            renderFlat = false;
+            renderGouraud = false;
+            renderBlinnPhong = true;
 			blinnPhongShader.bindShader();
 		break;
 		break;
@@ -212,9 +224,22 @@ void display(){
 //	glVertex3f(0,1,0);
 //	glVertex3f(0,0,1);
 //	glEnd();
-//    mesh.renderFlat();
-    mesh.renderSmooth();
-
+    
+    if (renderFlat)
+    {
+        mesh.renderFlat();
+    }
+    
+    if (renderGouraud)
+    {
+        mesh.renderSmooth();
+    }
+    
+    if (renderBlinnPhong)
+    {
+        mesh.renderBlinnPhong();
+    }
+    
 	// disable program object to avoid side effects
 	glUseProgramObjectARB( 0);
 	glPopMatrix();
