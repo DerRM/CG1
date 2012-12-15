@@ -1,0 +1,134 @@
+\documentclass[12pt]{scrreprt}
+
+\usepackage[ngerman]{babel}
+\usepackage{textcomp}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{color,fancyvrb}
+\usepackage{lmodern}
+
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+%\graphicspath{{../latex/}}
+
+%% Quellcode auszeichnung %%
+\usepackage{minted}
+\makeatletter
+\minted@define@extra{label}
+\makeatother
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+\usemintedstyle{manni}
+\newminted{c}{fontfamily=helvetica, fontsize=\scriptsize, tabsize=8,
+samepage, frame=single, bgcolor=bg,label=Quellcode,
+numbersep=5pt, xrightmargin=0mm, xleftmargin=4mm, linenos}
+
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage[font=small,labelfont=bf,textfont=sf]{caption}
+\usepackage{placeins}
+\usepackage{multirow}
+\setlength{\parskip}{3ex plus 2ex minus 2ex}
+\widowpenalty=300
+\clubpenalty=300
+
+\newcommand{\comment}[1]{}
+\setcounter{secnumdepth}{6}
+
+% header and footer
+\usepackage{fancyhdr}
+\setlength{\headheight}{18pt}
+\renewcommand{\headrulewidth}{0.3pt}
+\pagestyle{fancyplain}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\fancyhf{}
+\cfoot{\thepage}
+
+% make internal and external links
+\usepackage{hyperref} % load this at the end of all packages, but
+%before the options, not true here at the moment tough
+
+\hypersetup{
+%    bookmarks=true,         % show bookmarks bar? - is already true
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={CG 1 - Exercise},    % title
+    pdfauthor={CG 1 - Gruppe 6},     % author
+    pdfsubject={},   % subject of the document
+    pdfcreator={CG 1 - Gruppe 6},   % creator of the document
+    pdfproducer={Producer}, % producer of the document
+    pdfkeywords={CG 1} {Computer Graphics I} {TU Berlin}, % list of keywords
+    pdfnewwindow=true,      % links in new window
+    colorlinks=false,       % false: boxed links; true: colored links
+    linkcolor=red,          % color of internal links
+    citecolor=green,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=cyan           % color of external links
+}
+
+\begin{document}
+
+\input{../../latex/title_cg.tex}
+\pagenumbering{arabic}
+
+\chapter*{Aufgabe 1 - Praktischer Teil}
+
+siehe Quellcode
+
+\chapter*{Aufgabe 2 - Theoriefragen}
+\section*{1.}
+Phänomenologie von Beleuchtungsmodellen.
+\subsection*{(a)}
+Ein Dreieck wird mittels Gouraud-Shading gezeichnet. Welches Bild ist zu erwarten, wenn eine Normale in Richtung Lichtquelle zeigt und die anderen Normalen davon abweichen. (0.5 Punkte)
+An der Ecke, wo die Normale zur Lichtquelle zeigt trifft das Licht auf das Dreieck, was dadurch entsprechend aufgehellt wird (sehr hell). Von dort aus wird interpoliert, wodurch der Rest des Dreiecks von der Ecke aus gesehen immer dunkeler wird.
+
+\subsection*{(b)}
+Auf welche der Beleuchtungskomponenten ambient, difus, spekulär hat die Position des Betrachters bei einer ansonsten statischen Szene Einﬂuss? Begründen Sie Ihre Antwort. (0.5 Punkte)
+
+Nur bei der spekulären Reflektion hat die Position des Betrachters Auswirkungen auf die Szene. Da der Lichtstrahl bei der Reflektionsform direkt und ohne Streuung von dem Objekt reflektiert wird, kann es sein, dass bei einem Positionswechsel des Betrachters die Reflektion des Lichtstrahls nicht wahrgenommen werden kann.
+
+\section*{2.}
+In 1978 führte Jim Blinn „bump mapping“ in der Computergraﬁk ein. Nennen Sie Vor- und Nachteile des Verfahrens. Warum wird es insbesondere im Bereich von Computerspielen häuﬁg verwendet? (1 Punkt)
+Vorteile:
+-Verbessert die Qualität und den Realismus einer Darstellung, da deren Oberfläche strukturiert und nicht glatt erscheint
+-Vergleichsweise schnell
+-Reduziert die Anzahl der benötigten Polygone um eine ähnliche Darstellung hinzubekommen
+
+Nachteile:
+-Bei sehr flachen Betrachtungswinkeln kann man erkennen, dass keine wirkliche Struktur auf dem Objekt vorhanden ist
+-Die Kanten von Objekten, die mit bump mapping bearbeitet wurden, sind weiterhin scharf und unstrukturiert
+
+Bumpmapping wird wahrscheinlich in Computerspielen verwendet um Objekte mit relative geringem Mehraufwand besser aussehen zu lassen. Bei schnellen Bewegungen sollten die genannten Nachteile auch nicht sichtbar sein. Ein weiterer Grund könnten Restriktonen beim Speicherplatz sein, so dass man keine Aufwändigen Polygon Modelle speichern muss.
+
+\section*{3.}
+Erläutern Sie die Unterschiede zwischen uniform, attribute und varying Variablen in GLSL (1 Punkt)
+Alle 3 sind In- und Outputs von Shadern und werden global deklariert.
+
+Uniform Variablen verändern sich während dem Rendern nicht. Ein Beispiel sind Position und Farbe des Lichts. Sie sind readonly
+Attribute Variablen werden bei Vertex Shadern genutzt und ändern die Vertices. Ein Beispiel sind Vertex Positionen und Normalen. Attributes sind ebenfalls readonly.
+Varying Variablen werden zur Kommunika
+Varyings are used for passing data from a vertex shader to a fragment shader. Varyings are (perspective correct) interpolated across the primitive. Varyings are read-only in fragment shader but are read- and writeable in vertex shader (but be careful, reading a varying type before writing to it will return an undefined value). If you want to use varyings you have to declare the same varying in your vertex shader and in your fragment shader.
+
+\section*{4.}
+Aus welchem Grund werden beim Aufbau eines BSP Baumes aus einem Dreicksnetz oftmals die enthaltenen Dreiecke selbst zum Spannen der Partitionierungsebene verwendet? Nennen sie mindestens eine weitere Möglichkeit, Partitionierungsebenen zu bestimmen. (1 Punkt)
+Man verwendet die Dreiecke zum Spannen indem man die für die Splitting Planes die Planes der Dreiecke verwendet (Polygon-aligned). Dies ermöglicht ein genaues/eindeutiges Sortieren, ist aber auch vergleichsweise aufwändig.
+
+Andere Möglichkeit Axis-Aligned: Hierbei wird die Szene mit einem Bounding Voulume umschlossen, welches dann in immer kleinere Voulumes geteilt wird und so den BSP Baum bildet.
+
+\section*{5.}
+In der Vorlesung wurde das Phong Shadingmodell diskutiert. Eine alternative Formulierung, ebenfalls von Blinn, verwendet den „half vector“.
+
+\subsection*{(a)}
+Was ist der half vector und welche Vorteile bietet er? (0.5 Punkte)
+\subsection*{(b)}
+Leiten Sie das Phong Shadingmodell unter Verwendung des half vectors her. (0.5 Punkte)
+\subsection*{(c)}
+Was ist bei der Verwendung des half vectors zu beachten? (0.5 Punkte)
+\subsection*{(d)}
+Die „Half-Vektor“-Formulierung ist von der „Micro-Facet“-Model inspiriert. Erklären Sie kurz
+das „Micro-Facet“-Model und warum es für physikalisch basiertes Rendering geeignet ist. (0.5
+Punkte)
+\end{document}
