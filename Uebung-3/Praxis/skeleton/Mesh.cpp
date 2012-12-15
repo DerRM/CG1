@@ -85,7 +85,7 @@ void Mesh::loadOff(const string& filename)
                         glm::vec3 v2 = m_vertices[face.index2];
                         glm::vec3 v3 = m_vertices[face.index3];
                         
-                        glm::vec3 normal = glm::normalize(glm::cross(v1 - v2, v3 - v2));
+                        glm::vec3 normal = glm::normalize(glm::cross(v3 - v2, v1 - v2));
                         m_surfaceNormals[linenumber - m_numVertices - 2 - 1] = normal;
                     }
 

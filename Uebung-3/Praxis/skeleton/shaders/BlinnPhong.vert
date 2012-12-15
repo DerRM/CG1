@@ -15,13 +15,16 @@
 
 
 // variables that are interpolated to the fragment shader
-varying vec4 vertColor;
+varying vec3 vertex_to_light_vector;
 varying vec3 normal;
+varying vec3 eye_vec;
 
 void main(){
-	vertColor = gl_Vertex;
 	// 	TODO : TRANSFORM THE VERTICES AND NORMALS AND PASS THEM TO THE RASTERIZATION STAGE
     normal = gl_NormalMatrix * gl_Normal;
+	vec4 vertex_in_modelview_space = gl_ModelViewMatrix * gl_Vertex;
+	eye_vec = vec3(-vertex_in_modelview_space);
+	vertex_to_light_vector = vec3(gl_LightSource[0].position - vertex_in_modelview_space);
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }
 

@@ -397,8 +397,8 @@ void mouseMoved(int x, int y)
 		objectMatrix = glm::rotate(rotx,vec3(1,0,0)) * glm::rotate(roty,vec3(0,1,0)) * glm::scale(vec3(s,1,1));;
 
 		// rotate the light
-		lightDirection = glm::rotateX(lightDirection,0.05f*(y-oldY));
-		lightDirection = glm::rotateY(lightDirection,0.05f*(x-oldX));
+		//lightDirection = glm::rotateX(lightDirection,0.05f*(y-oldY));
+		//lightDirection = glm::rotateY(lightDirection,0.05f*(x-oldX));
 	}else if(midButtondown){
 		fovy += 0.5*(y-oldY);
 		fovy = glm::max(fovy,20.0f);
