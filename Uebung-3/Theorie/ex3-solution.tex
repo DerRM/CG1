@@ -84,55 +84,57 @@ Phänomenologie von Beleuchtungsmodellen.
 \subsection*{(a)}
 Ein Dreieck wird mittels Gouraud-Shading gezeichnet. Welches Bild ist zu erwarten, wenn eine Normale in Richtung Lichtquelle zeigt und die anderen Normalen davon abweichen. (0.5 Punkte)
 
-In der Ecke, wo die Normale zur Lichtquelle zeigt trifft das Licht auf das Dreieck, was dadurch entsprechend aufgehellt wird (sehr hell). Von dort aus wird linear interpoliert, wodurch der Rest des Dreiecks von der Ecke aus gesehen immer dunkeler wird.
+In der Ecke, wo die Normale zur Lichtquelle zeigt trifft das Licht direkt auf, dadurch findet eine entsprechend starke Aufhellung statt (sehr hell). Die Helligkeit an den anderen Eckpunkt ist geringer. Dazwischen wird linear interpoliert, wodurch der Rest des Dreiecks von der Ecke (mit der Normalen in Richtung Lichtquelle) aus gesehen immer dunkler wird.
 
 \subsection*{(b)}
-Auf welche der Beleuchtungskomponenten ambient, difus, spekulär hat die Position des Betrachters bei einer ansonsten statischen Szene Einfluss? Begründen Sie Ihre Antwort. (0.5 Punkte)
+Auf welche der Beleuchtungskomponenten ambient, diffus, spekulär hat die Position des Betrachters bei einer ansonsten statischen Szene Einfluss? Begründen Sie Ihre Antwort. (0.5 Punkte)
 
-Nur bei der spekulären Reflektion hat die Position des Betrachters Auswirkungen auf die Szene. Da der Lichtstrahl bei der Reflektionsform direkt und ohne Streuung von dem Objekt reflektiert wird, kann es sein, dass bei einem Positionswechsel des Betrachters die Reflektion des Lichtstrahls nicht wahrgenommen werden kann.
+Die Position des Betrachters hat zum einen Einfluss auf den spekulären Anteil der Beleuchtung, weiterhin wird die diffuse Reflektion unterteilt in ideal diffus und gerichtet diffus. Auch die gerichtet diffuse Reflektion hängt von der Position des Betrachters ab, denn auch hier wird bei der Berechnung die Position des Betrachters einkalkuliert. Bei diesen beiden Beleuchtungskomponenten kommt es darauf an, wieviel Licht aus der Quelle von der Oberfläche eines Objektes in Richtung des Betrachters reflektiert wird.
+Der ideal diffuse Anteil hingegen ist, ebenso wie der ambiente, unabhängig vom Betrachter.
+>>>>>>> Stashed changes
+
 
 \section*{2.}
 In 1978 führte Jim Blinn „bump mapping“ in der Computergrafik ein. Nennen Sie Vor- und Nachteile des Verfahrens. Warum wird es insbesondere im Bereich von Computerspielen häufig verwendet? (1 Punkt)
-Vorteile:
--Verbessert die Qualität und den Realismus einer Darstellung, da deren Oberfläche strukturiert und nicht glatt erscheint
--Vergleichsweise schnell
--Reduziert die Anzahl der benötigten Polygone um eine ähnliche Darstellung hinzubekommen
 
-Nachteile:
--Bei sehr flachen Betrachtungswinkeln kann man erkennen, dass keine wirkliche Struktur auf dem Objekt vorhanden ist
--Die Kanten von Objekten, die mit bump mapping bearbeitet wurden, sind weiterhin scharf und unstrukturiert
+\subsubsection*{Vorteile:}
 
-Bumpmapping wird wahrscheinlich in Computerspielen verwendet um Objekte mit relative geringem Mehraufwand besser aussehen zu lassen. Bei schnellen Bewegungen sollten die genannten Nachteile auch nicht sichtbar sein. Ein weiterer Grund könnten Restriktonen beim Speicherplatz sein, so dass man keine Aufwändigen Polygon Modelle speichern muss.
+\begin{itemize}
+  \item deutliche Verbesserung des visuellen Eindruckes, da die
+    Plastizität der dargestellten Objekte verbessert wird
+  \item sehr schnell, da keine zusätzliche Geometrie erzeugt werden muss
+  \item benötigt nur geringe Ressourcen
+\end{itemize}
+
+\subsubsection*{Nachteile:}
+
+\begin{itemize}
+  \item An den Silhouetten ist erkennbar, das die Objektstruktur noch immer flach ist
+  \item keine Selbstverschattung
+  \item keine Selbstokklusion
+\end{itemize}
+
+
+Bumpmapping wird in Computerspielen verwendet um Objekte mit relative geringem Mehraufwand besser aussehen zu lassen. Bei schnellen Bewegungen sollten die genannten Nachteile auch nicht sichtbar sein.
+Ein weiterer Grund könnten Restriktionen beim Speicherplatz und Rechenleistung sein, so dass man keine Aufwändigen Polygon Modelle speichern muss. Somit kann auch noch auf vergleichsweise schwacher Hardware ein
+zufriedenstellendes Ergebnis erzielt werden. Damit steigt die Zahl
+potentieller Kunden für ein Spiel und somit der Gewinn des Unternehmens.
+
 
 \section*{3.}
 Erläutern Sie die Unterschiede zwischen uniform, attribute und varying Variablen in GLSL (1 Punkt)
-Alle 3 sind In- und Outputs von Shadern und werden global deklariert.
 
-Uniform Variablen verändern sich während dem Rendern nicht. Ein Beispiel sind Position und Farbe des Lichts. Sie sind readonly
-Attribute Variablen werden bei Vertex Shadern genutzt und ändern die Vertices. Ein Beispiel sind Vertex Positionen und Normalen. Attributes sind ebenfalls readonly.
-Varying Variablen werden zur Datenweitergabe von Vertex zum Fragment Shader genutzt. Sie können nur im Vertex Shader geschrieben werden, und sind in den Fragment Shadern readonly. Sie müssen im Vertex und Fragment Shader deklariert werden.
+Uniforms werden benötigt, um Daten, welche konstant für alle Vertices oder Fragmente sind, aus der Anwendung in die Shader hinein zu geben. Dies sind z.B. die Matrizen oder entsprechende Berechnungsparameter wie Materialeigenschaften oder Lichtdämpfung. Uniform Variablen verändern sich während dem Rendern nicht. Sie sind readonly.
 
 
-Uniforms werden benötigt, um Daten, welche konstant für alle Vertices
-oder Fragmente sind, aus der Anwendung in die Shader hinein zu geben.
-Dies sind z.B. die Matrizen oder entsprechende Berechnungsparameter wie
-Materialeigenschaften oder Lichtdämpfung.
+Als Attribute ausgezeichnete Variablen werden benutzt, um Werte pro Vertex in den Vertex-Shader hinein zu geben. Dazu gehören Positionsdaten, Normale, Texturkoordinaten oder Farbwerte. Diese Daten werden üblicherweise durch Buffer-Objekte bereit gestellt. Attributes sind ebenfalls readonly.
 
-Als Attribute ausgezeichnete Variablen werden benutzt, um Werte pro
-Vertex in den Vertex-Shader hinein zu geben. Dazu gehören Positions-
-daten, Normale, Texturkoordinaten oder Farbwerte. Diese Daten werden
-üblicherweise durch Buffer-Objekte bereit gestellt.
-
-Bei Varyings handelt es sich um eine Art Container, um Werte aus
-dem Vertex- in den Fragment-Shader zu transportieren. Wie im Kapitel
-zur Rasterisierung bereits erwähnt wurde, werden die Werte für die Frag-
-mente, welche sich zwischen den Vertex-Positionen befinden, interpoliert.
-Wichtig ist, dass Name und Typ der deklarierten Variable in beiden Sha-
-dern übereinstimmen. Eine Besonderheit für varyings ist, dass diese als in-
-variant gekennzeichnet werden können. Dies kann bei multi-pass-Shadern
-benutzt werden, um eventuelle Schwankungen aufgrund von Compileropti-
-mierungen bei wiederholter Berechnung zu vermeiden.
-
+Bei Varyings handelt es sich um eine Art Container, um Werte aus dem Vertex- in den Fragment-Shader zu transportieren.
+Sie werden im Vertex Shader geschrieben und sind in den Fragment Shadern readonly.
+Die Werte werden für die Fragmente, welche sich zwischen den Vertex-Positionen befinden, interpoliert.
+Wichtig ist, dass Name und Typ der deklarierten Variable in beiden Shadern übereinstimmen.
+Eine Besonderheit für varyings ist, dass diese als invariant gekennzeichnet werden können.
+Dies kann bei multi-pass-Shadern benutzt werden, um eventuelle Schwankungen aufgrund von Compileroptimierungen bei wiederholter Berechnung zu vermeiden.
 
 
 \section*{4.}
@@ -141,27 +143,59 @@ Aus welchem Grund werden beim Aufbau eines BSP Baumes aus einem Dreicksnetz oftm
 Man verwendet die Dreiecke zum Spannen indem man die für die Splitting Planes die Planes der Dreiecke verwendet (Polygon-aligned). Dies ermöglicht ein genaues/eindeutiges Sortieren, ist aber auch vergleichsweise aufwändig.
 Ausserdem ist dieses Vorgehen speichereffizient.
 
-Andere Möglichkeit: Axis-Aligned: Hierbei wird die Szene mit einem Bounding Volume umschlossen, welches dann in immer kleinere Voulumes geteilt wird und so den BSP Baum bildet.
-Man könnte auch anstatt der sich aus den vorhandenen Dreicken ergebenden Ebenen einfach beliebige Ebenen wählen.
-
+Andere Möglichkeit: Axis-Aligned: Hierbei wird die Szene mit einem Bounding Volume umschlossen, welches dann in immer kleinere Volumes geteilt wird und so den BSP Baum bildet.
 
 \section*{5.}
 In der Vorlesung wurde das Phong Shadingmodell diskutiert. Eine alternative Formulierung, ebenfalls von Blinn, verwendet den „half vector“.
 
 \subsection*{(a)}
 Was ist der half vector und welche Vorteile bietet er? (0.5 Punkte)
+
 Der Halfvektor liegt in der Mitte des durch die Lichtquelle und Betrachterposition aufgespannten Winkels.
 
-Bei diesem Verfahren muss, wenn Betrachter und Lichtquelle im Unendlichen liegen, muss der Halfvektor nur einmal berechnet werden, da dieser sich nicht ändert (Vorrausgesetzt Betrachter und Lichtquelle bleiben relativ gesehen an der gleichen Position).
+\begin{itemize}
+  \item die Berechnung vereinfacht sich, wenn Beobachter und
+    Lichtquelle in der Unendlichkeit angenommen werden, es reicht dann
+    eine einmalige Berechnung
+  \item das Beleuchtungsresultat entspricht besser dem Original im
+    Bezug auf das Reflexionsverhalten von Oberflächen eines Materials
+\end{itemize}
+
 \subsection*{(b)}
 Leiten Sie das Phong Shadingmodell unter Verwendung des half vectors her. (0.5 Punkte)
 
+Beim Phong Beleuchtungsmodel berechnet sich die spekuläre Leuchtdichte \(D_s\)
+nach folgender Formel:
+\[
+D_s = r_s * D * cos^m \gamma
+\]
+\(\gamma\) kann unter der Vorraussetzung, dass sich Beobachtungsrichtung,
+Lichtquellenrichtung, Normalenvektor der reflektierenden Fläche und
+Reflexionsrichtung in einer Ebene befinden, berechnet werden mit:
+\[
+\gamma = H * N, wobei:  H = \frac{L + V}{|L + V|}
+\]
+
+\begin{itemize}
+  \item \(r_s\) der Reflexionsgrad,
+  \item D die Leuchtdichte der Lichtquelle,
+  \item N die normalisierte Normale der Ebene,
+  \item L der normalisierte Vektor in Lichtquellenrichtung und
+  \item V der normalisierte Vektor in Richtung des Beobachters ist
+\end{itemize}
 
 
 \subsection*{(c)}
 Was ist bei der Verwendung des half vectors zu beachten? (0.5 Punkte)
 
-Dass das Skalarprodukt aus Halbierungsvektor und Normalenvektor > 0 sein muss.???
+\begin{itemize}
+  \item siehe oben, die Vektoren muessen in einer Ebene liegen
+  \item man muss mit Einheitsvektoren rechnen
+  \item das Ergebnis bei Verwendung des half vectors unterscheidet
+    sich etwas vom Ergebnis bei Phong Shading
+\end{itemize}
+
+
 \subsection*{(d)}
 Die „Half-Vektor“-Formulierung ist von der „Micro-Facet“-Model inspiriert. Erklären Sie kurz
 das „Micro-Facet“-Model und warum es für physikalisch basiertes Rendering geeignet ist. (0.5
