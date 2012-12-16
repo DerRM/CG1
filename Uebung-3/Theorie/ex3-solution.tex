@@ -83,7 +83,7 @@ siehe Quellcode
 Phänomenologie von Beleuchtungsmodellen.
 \subsection*{(a)}
 Ein Dreieck wird mittels Gouraud-Shading gezeichnet. Welches Bild ist zu erwarten, wenn eine Normale in Richtung Lichtquelle zeigt und die anderen Normalen davon abweichen. (0.5 Punkte)
-An der Ecke, wo die Normale zur Lichtquelle zeigt trifft das Licht auf das Dreieck, was dadurch entsprechend aufgehellt wird (sehr hell). Von dort aus wird interpoliert, wodurch der Rest des Dreiecks von der Ecke aus gesehen immer dunkeler wird.
+In der Ecke, wo die Normale zur Lichtquelle zeigt trifft das Licht auf das Dreieck, was dadurch entsprechend aufgehellt wird (sehr hell). Von dort aus wird linear interpoliert, wodurch der Rest des Dreiecks von der Ecke aus gesehen immer dunkeler wird.
 
 \subsection*{(b)}
 Auf welche der Beleuchtungskomponenten ambient, difus, spekulär hat die Position des Betrachters bei einer ansonsten statischen Szene Einﬂuss? Begründen Sie Ihre Antwort. (0.5 Punkte)
@@ -109,26 +109,35 @@ Alle 3 sind In- und Outputs von Shadern und werden global deklariert.
 
 Uniform Variablen verändern sich während dem Rendern nicht. Ein Beispiel sind Position und Farbe des Lichts. Sie sind readonly
 Attribute Variablen werden bei Vertex Shadern genutzt und ändern die Vertices. Ein Beispiel sind Vertex Positionen und Normalen. Attributes sind ebenfalls readonly.
-Varying Variablen werden zur Kommunika
-Varyings are used for passing data from a vertex shader to a fragment shader. Varyings are (perspective correct) interpolated across the primitive. Varyings are read-only in fragment shader but are read- and writeable in vertex shader (but be careful, reading a varying type before writing to it will return an undefined value). If you want to use varyings you have to declare the same varying in your vertex shader and in your fragment shader.
+Varying Variablen werden zur Datenweitergabe von Vertex zum Fragment Shader genutzt. Sie können nur im Vertex Shader geschrieben werden, und sind in den Fragment Shadern readonly. Sie müssen im Vertex und Fragment Shader deklariert werden.
 
 \section*{4.}
 Aus welchem Grund werden beim Aufbau eines BSP Baumes aus einem Dreicksnetz oftmals die enthaltenen Dreiecke selbst zum Spannen der Partitionierungsebene verwendet? Nennen sie mindestens eine weitere Möglichkeit, Partitionierungsebenen zu bestimmen. (1 Punkt)
 Man verwendet die Dreiecke zum Spannen indem man die für die Splitting Planes die Planes der Dreiecke verwendet (Polygon-aligned). Dies ermöglicht ein genaues/eindeutiges Sortieren, ist aber auch vergleichsweise aufwändig.
 
-Andere Möglichkeit Axis-Aligned: Hierbei wird die Szene mit einem Bounding Voulume umschlossen, welches dann in immer kleinere Voulumes geteilt wird und so den BSP Baum bildet.
+Andere Möglichkeit: Axis-Aligned: Hierbei wird die Szene mit einem Bounding Voulume umschlossen, welches dann in immer kleinere Voulumes geteilt wird und so den BSP Baum bildet.
 
 \section*{5.}
 In der Vorlesung wurde das Phong Shadingmodell diskutiert. Eine alternative Formulierung, ebenfalls von Blinn, verwendet den „half vector“.
 
 \subsection*{(a)}
 Was ist der half vector und welche Vorteile bietet er? (0.5 Punkte)
+Der Halfvektor liegt in der Mitte des durch die Lichtquelle und Betrachterposition aufgespannten Winkels.
+
+Bei diesem Verfahren muss, wenn Betrachter und Lichtquelle im Unendlichen liegen, muss der Halfvektor nur einmal berechnet werden, da dieser sich nicht ändert (Vorrausgesetzt Betrachter und Lichtquelle bleiben relativ gesehen an der gleichen Position).
 \subsection*{(b)}
 Leiten Sie das Phong Shadingmodell unter Verwendung des half vectors her. (0.5 Punkte)
+
+
+
 \subsection*{(c)}
 Was ist bei der Verwendung des half vectors zu beachten? (0.5 Punkte)
+
+Dass das Skalarprodukt aus Halbierungsvektor und Normalenvektor > 0 sein muss.???
 \subsection*{(d)}
 Die „Half-Vektor“-Formulierung ist von der „Micro-Facet“-Model inspiriert. Erklären Sie kurz
 das „Micro-Facet“-Model und warum es für physikalisch basiertes Rendering geeignet ist. (0.5
 Punkte)
+
+Bei dem Micro-Facet Model wird davon ausgegangen, dass die Oberfläche von objekten aus mikroskopisch kleinen Unebenheiten besteht, bei der jede Unebenheit das Licht gemäß ihrer eigenen Normalen reflektiert. Diese Technik ist für physikalisch basiertes Rendering geeignet, da alle Flächen in der Realität auch von mikroskopisch kleine Unebenheiten durchzogen sind.
 \end{document}
