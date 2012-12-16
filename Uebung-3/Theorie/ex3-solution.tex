@@ -83,6 +83,7 @@ siehe Quellcode
 Phänomenologie von Beleuchtungsmodellen.
 \subsection*{(a)}
 Ein Dreieck wird mittels Gouraud-Shading gezeichnet. Welches Bild ist zu erwarten, wenn eine Normale in Richtung Lichtquelle zeigt und die anderen Normalen davon abweichen. (0.5 Punkte)
+
 In der Ecke, wo die Normale zur Lichtquelle zeigt trifft das Licht auf das Dreieck, was dadurch entsprechend aufgehellt wird (sehr hell). Von dort aus wird linear interpoliert, wodurch der Rest des Dreiecks von der Ecke aus gesehen immer dunkeler wird.
 
 \subsection*{(b)}
@@ -111,11 +112,38 @@ Uniform Variablen verändern sich während dem Rendern nicht. Ein Beispiel sind 
 Attribute Variablen werden bei Vertex Shadern genutzt und ändern die Vertices. Ein Beispiel sind Vertex Positionen und Normalen. Attributes sind ebenfalls readonly.
 Varying Variablen werden zur Datenweitergabe von Vertex zum Fragment Shader genutzt. Sie können nur im Vertex Shader geschrieben werden, und sind in den Fragment Shadern readonly. Sie müssen im Vertex und Fragment Shader deklariert werden.
 
+
+Uniforms werden benötigt, um Daten, welche konstant für alle Vertices
+oder Fragmente sind, aus der Anwendung in die Shader hinein zu geben.
+Dies sind z.B. die Matrizen oder entsprechende Berechnungsparameter wie
+Materialeigenschaften oder Lichtdämpfung.
+
+Als Attribute ausgezeichnete Variablen werden benutzt, um Werte pro
+Vertex in den Vertex-Shader hinein zu geben. Dazu gehören Positions-
+daten, Normale, Texturkoordinaten oder Farbwerte. Diese Daten werden
+üblicherweise durch Buffer-Objekte bereit gestellt.
+
+Bei Varyings handelt es sich um eine Art Container, um Werte aus
+dem Vertex- in den Fragment-Shader zu transportieren. Wie im Kapitel
+zur Rasterisierung bereits erwähnt wurde, werden die Werte für die Frag-
+mente, welche sich zwischen den Vertex-Positionen befinden, interpoliert.
+Wichtig ist, dass Name und Typ der deklarierten Variable in beiden Sha-
+dern übereinstimmen. Eine Besonderheit für varyings ist, dass diese als in-
+variant gekennzeichnet werden können. Dies kann bei multi-pass-Shadern
+benutzt werden, um eventuelle Schwankungen aufgrund von Compileropti-
+mierungen bei wiederholter Berechnung zu vermeiden.
+
+
+
 \section*{4.}
 Aus welchem Grund werden beim Aufbau eines BSP Baumes aus einem Dreicksnetz oftmals die enthaltenen Dreiecke selbst zum Spannen der Partitionierungsebene verwendet? Nennen sie mindestens eine weitere Möglichkeit, Partitionierungsebenen zu bestimmen. (1 Punkt)
-Man verwendet die Dreiecke zum Spannen indem man die für die Splitting Planes die Planes der Dreiecke verwendet (Polygon-aligned). Dies ermöglicht ein genaues/eindeutiges Sortieren, ist aber auch vergleichsweise aufwändig.
 
-Andere Möglichkeit: Axis-Aligned: Hierbei wird die Szene mit einem Bounding Voulume umschlossen, welches dann in immer kleinere Voulumes geteilt wird und so den BSP Baum bildet.
+Man verwendet die Dreiecke zum Spannen indem man die für die Splitting Planes die Planes der Dreiecke verwendet (Polygon-aligned). Dies ermöglicht ein genaues/eindeutiges Sortieren, ist aber auch vergleichsweise aufwändig.
+Ausserdem ist dieses Vorgehen speichereffizient.
+
+Andere Möglichkeit: Axis-Aligned: Hierbei wird die Szene mit einem Bounding Volume umschlossen, welches dann in immer kleinere Voulumes geteilt wird und so den BSP Baum bildet.
+Man könnte auch anstatt der sich aus den vorhandenen Dreicken ergebenden Ebenen einfach beliebige Ebenen wählen.
+
 
 \section*{5.}
 In der Vorlesung wurde das Phong Shadingmodell diskutiert. Eine alternative Formulierung, ebenfalls von Blinn, verwendet den „half vector“.
