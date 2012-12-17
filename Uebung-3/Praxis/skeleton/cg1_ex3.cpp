@@ -230,14 +230,9 @@ void display(){
         mesh.renderFlat();
     }
     
-    if (renderGouraud)
+    if (renderGouraud || renderBlinnPhong)
     {
         mesh.renderSmooth();
-    }
-    
-    if (renderBlinnPhong)
-    {
-        mesh.renderBlinnPhong();
     }
     
 	// disable program object to avoid side effects

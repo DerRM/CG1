@@ -41,6 +41,6 @@ void main(){
 	}
 
 	// Set the color of the fragment
-	gl_FragColor = gl_FrontMaterial.ambient + diffuseTerm * gl_FrontMaterial.diffuse + light_spec;
+	gl_FragColor = gl_LightSource[0].ambient * gl_FrontMaterial.ambient + diffuseTerm * gl_LightSource[0].diffuse * gl_FrontMaterial.diffuse + light_spec;
 }
 	

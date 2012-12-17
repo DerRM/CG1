@@ -40,7 +40,6 @@ public:
     void loadOff(const string& filename);
     void renderFlat();
     void renderSmooth();
-    void renderBlinnPhong();
 private:
     glm::vec3* m_vertices;
     glm::vec3* m_surfaceNormals;
