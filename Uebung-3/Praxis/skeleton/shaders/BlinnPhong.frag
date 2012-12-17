@@ -21,9 +21,6 @@ varying vec3 eye_vec;
 void main(){
 	//TODO : IMPLEMENT THE PHONG SHADING MODEL
 
-	float n = 100.0;
-	float light = 0.4;
-
 	vec3 normalized_normal = normalize(normal);
 	vec3 normalized_light_dir = normalize(vertex_to_light_vector);
 
@@ -33,14 +30,14 @@ void main(){
 	
 	float half_dot_normal = dot(half_vec, normalized_normal);
 
-	float light_spec = 0.0;
+	vec4 light_spec = vec4(0.0, 0.0, 0.0, 0.0);
 
 	if (half_dot_normal > 0.0)
 	{
-		light_spec = diffuseTerm * light * pow(half_dot_normal, n);
+		light_spec = diffuseTerm * gl_FrontLightProduct[0].specular * pow(half_dot_normal, gl_FrontMaterial.shininess);
 	}
 
 	// Set the color of the fragment
-	gl_FragColor = gl_LightSource[0].ambient * gl_FrontMaterial.ambient + diffuseTerm * gl_LightSource[0].diffuse * gl_FrontMaterial.diffuse + light_spec;
+	gl_FragColor = gl_FrontLightProduct[0].ambient + diffuseTerm * gl_FrontLightProduct[0].diffuse + light_spec;
 }
 	
