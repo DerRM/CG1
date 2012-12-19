@@ -95,7 +95,23 @@ GLuint m_MVHandle;
 GLuint m_MVPHandle;
 GLuint m_NormalMatrixHandle;
 GLuint m_lightPosition;
+GLuint m_lightAmbient;
+GLuint m_lightDiffuse;
+GLuint m_lightSpecular;
+GLuint m_MaterialAmbient;
+GLuint m_MaterialDiffuse;
+GLuint m_MaterialSpecular;
+GLuint m_MaterialShininess;
 
+// material parameters
+GLfloat mat_ambient[] = {0.3, 0.3, 0.3, 1.0};
+GLfloat mat_diffuse[] = {0.5, 0.5, 0.5, 1.0};
+GLfloat mat_specular[] = {0.4f, 0.4f, 0.4f, 1};
+GLfloat mat_shininess[] = { 128 };
+// light parameters
+GLfloat light_diffuse[] = {0.5, 0.5, 0.5, 1.0};
+GLfloat light_ambient[] = { 0.2, 0.2, 0.2 };
+GLfloat light_position[] = { -5.0, 5.0, 5.0, 0.0 };
 
 enum RenderMode{
 	FLAT,
@@ -145,34 +161,34 @@ void setOpenGLStates(){
 	glColor3f( 1.0, 0.0, 0.0);
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 
-	// material parameters 
-	GLfloat mat_ambient[] = {0.3, 0.3, 0.3, 1.0};
-	GLfloat mat_diffuse[] = {0.5, 0.5, 0.5, 1.0};
-	GLfloat mat_specular[] = {0.4f, 0.4f, 0.4f, 1};
-	GLfloat mat_shininess[] = { 128 };
-	// light parameters
-	GLfloat light_diffuse[] = {0.5, 0.5, 0.5, 1.0};
-	GLfloat light_ambient[] = { 0.2, 0.2, 0.2 };
-	GLfloat light_position[] = { -5.0, 5.0, 5.0, 0.0 };
+//	// material parameters 
+//	GLfloat mat_ambient[] = {0.3, 0.3, 0.3, 1.0};
+//	GLfloat mat_diffuse[] = {0.5, 0.5, 0.5, 1.0};
+//	GLfloat mat_specular[] = {0.4f, 0.4f, 0.4f, 1};
+//	GLfloat mat_shininess[] = { 128 };
+//	// light parameters
+//	GLfloat light_diffuse[] = {0.5, 0.5, 0.5, 1.0};
+//	GLfloat light_ambient[] = { 0.2, 0.2, 0.2 };
+//	GLfloat light_position[] = { -5.0, 5.0, 5.0, 0.0 };
 
-	// Set fixed pipeline opengl material states
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
-	
-	// Set fixed pipeline opengl light states
-	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, light_diffuse);
-	glLightfv(GL_LIGHT0, GL_POSITION, &lightDirection[0]);
-
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(vec4(0,0,0,1)));
-	
-
-	// Enable fixed pipeline lighting
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+//	// Set fixed pipeline opengl material states
+//	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+//	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+//	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+//	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+//	
+//	// Set fixed pipeline opengl light states
+//	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+//	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+//	glLightfv(GL_LIGHT0, GL_SPECULAR, light_diffuse);
+//	glLightfv(GL_LIGHT0, GL_POSITION, &lightDirection[0]);
+//
+//	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(vec4(0,0,0,1)));
+//	
+//
+//	// Enable fixed pipeline lighting
+//	glEnable(GL_LIGHTING);
+//	glEnable(GL_LIGHT0);
 
 	//glutReportErrors();
 
@@ -184,7 +200,7 @@ void setOpenGLStates(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void display(){
 	// set OpenGL states
-	//setOpenGLStates();
+	setOpenGLStates();
 
 	// Clear the color and depth buffer
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -196,7 +212,17 @@ void display(){
     glUniformMatrix4fv(m_MVHandle, 1, GL_FALSE, glm::value_ptr(modelViewMatrix));
     glUniformMatrix4fv(m_MVPHandle, 1, GL_FALSE, glm::value_ptr(modelViewProjectionMatrix));
     glUniformMatrix4fv(m_NormalMatrixHandle, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+    
     glUniform4fv(m_lightPosition, 1, glm::value_ptr(lightDirection));
+    glUniform4f(m_lightAmbient, light_ambient[0], light_ambient[1], light_ambient[2], 1.0f);
+    glUniform4fv(m_lightDiffuse, 1, light_diffuse);
+    glUniform4fv(m_lightSpecular, 1, light_diffuse);
+    
+    glUniform4fv(m_MaterialAmbient, 1, mat_ambient);
+    glUniform4fv(m_MaterialDiffuse, 1, mat_diffuse);
+    glUniform4fv(m_MaterialSpecular, 1, mat_specular);
+    glUniform1f(m_MaterialShininess, mat_shininess[0]);
+
     
 	// Set the render states for the current rendering technique
 //	switch(currentRenderer){
@@ -308,7 +334,16 @@ main( int argc, char** argv) {
     m_MVHandle = glGetUniformLocation(blinnPhongShader.getProgramObject(), "uMVMatrix");
     m_MVPHandle = glGetUniformLocation(blinnPhongShader.getProgramObject(), "uMVPMatrix");
     m_NormalMatrixHandle = glGetUniformLocation(blinnPhongShader.getProgramObject(), "uNormalMatrix");
+    
     m_lightPosition = glGetUniformLocation(blinnPhongShader.getProgramObject(), "uLightPosition");
+    m_lightAmbient = glGetUniformLocation(blinnPhongShader.getProgramObject(), "my_light.ambient");
+    m_lightDiffuse = glGetUniformLocation(blinnPhongShader.getProgramObject(), "my_light.diffuse");
+    m_lightSpecular = glGetUniformLocation(blinnPhongShader.getProgramObject(), "my_light.specular");
+    
+    m_MaterialAmbient = glGetUniformLocation(blinnPhongShader.getProgramObject(), "my_material.ambient");
+    m_MaterialDiffuse = glGetUniformLocation(blinnPhongShader.getProgramObject(), "my_material.diffuse");
+    m_MaterialSpecular = glGetUniformLocation(blinnPhongShader.getProgramObject(), "my_material.specular");
+    m_MaterialShininess = glGetUniformLocation(blinnPhongShader.getProgramObject(), "my_material.shininess");
     
 	// TODO LOAD MESH
     mesh.loadOff("meshes/camel_head.off", blinnPhongShader.getProgramObject());
@@ -393,15 +428,18 @@ void initOpenGLContext(int argc, char **argv){
 
 void GLFWCALL reshape(int width, int height)
 {
-	glViewport( 0, 0, width, height );
+    winWidth = width;
+    winHeight = height;
+    
+	glViewport( 0, 0, winWidth, winHeight );
     
     glMatrixMode( GL_PROJECTION ); //Switch to setting the camera perspective
     //Set the camera perspective
     glLoadIdentity(); //reset the camera
-    gluPerspective( 45.0f,                      //camera angle
-                   (GLfloat)width/(GLfloat)height, //The width to height ratio
-                   1.0f,                          //The near z clipping coordinate
-                   100.0f );
+    gluPerspective( fovy,                      //camera angle
+                   (GLfloat)winWidth/(GLfloat)winHeight, //The width to height ratio
+                   0.1f,                          //The near z clipping coordinate
+                   10.0f );
 }
 
 

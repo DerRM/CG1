@@ -137,12 +137,14 @@ void Mesh::createVBO(GLuint program)
     glBindBuffer(GL_ARRAY_BUFFER, m_nbo);
     glBufferData(GL_ARRAY_BUFFER, m_numVertices * sizeof(glm::vec3), glm::value_ptr(m_vertexNormals[0]), GL_STATIC_DRAW);
     
+    m_normalHandle = glGetAttribLocation(program, "aNormal");
+    glVertexAttribPointer(m_normalHandle, 3, GL_FLOAT, GL_FALSE, 4 * 3, 0);
+    glEnableVertexAttribArray(m_normalHandle);
+
+    
     glGenBuffers(1, &m_ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numFaces * sizeof(Face), &m_faces[0], GL_STATIC_DRAW);
-    
-    
-    m_normalHandle = glGetAttribLocation(program, "aNormal");
     
     errorCheckValues = glGetError();
     if (errorCheckValues != GL_NO_ERROR) {
