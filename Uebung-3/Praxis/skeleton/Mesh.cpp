@@ -106,9 +106,25 @@ void Mesh::computeVertexNormals()
     
     for (int i = 0; i < m_numFaces; i++)
     {
-        m_vertexNormals[m_faces[i].index1] += m_surfaceNormals[i];
-        m_vertexNormals[m_faces[i].index2] += m_surfaceNormals[i];
-        m_vertexNormals[m_faces[i].index3] += m_surfaceNormals[i];
+        glm::vec3 v0 = m_vertices[m_faces[i].index1];
+        glm::vec3 v1 = m_vertices[m_faces[i].index2];
+        glm::vec3 v2 = m_vertices[m_faces[i].index3];
+        
+        glm::vec3 edge0 = v0 - v1;
+        glm::vec3 edge1 = v1 - v2;
+        glm::vec3 edge2 = v2 - v0;
+
+        float l0 = glm::dot(edge0, edge0);
+        float l1 = glm::dot(edge1, edge1);
+        float l2 = glm::dot(edge2, edge2);
+        
+        float f0 = 1 / l0 * l1;
+        float f1 = 1 / l1 * l2;
+        float f2 = 1 / l2 * l0;
+        
+        m_vertexNormals[m_faces[i].index1] += m_surfaceNormals[i] * f0;
+        m_vertexNormals[m_faces[i].index2] += m_surfaceNormals[i] * f1;
+        m_vertexNormals[m_faces[i].index3] += m_surfaceNormals[i] * f2;
     }
     
     for (int i = 0; i < m_numVertices; i++)

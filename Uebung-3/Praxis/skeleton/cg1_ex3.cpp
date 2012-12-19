@@ -292,7 +292,7 @@ main( int argc, char** argv) {
 	// load ressources
 	blinnPhongShader.load("shaders/BlinnPhong");
 	// TODO LOAD MESH
-    mesh.loadOff("meshes/camel_head.off");
+    mesh.loadOff("meshes/eight.off");
     
 	// register glut callbacks
 	glutDisplayFunc( display);
