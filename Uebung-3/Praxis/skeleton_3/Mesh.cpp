@@ -11,7 +11,7 @@
 Mesh::Mesh()
 {}
 
-void Mesh::loadOff(const string& filename)
+void Mesh::loadOff(const string& filename, GLuint program)
 {
     ifstream input(filename.c_str());
     
@@ -98,7 +98,7 @@ void Mesh::loadOff(const string& filename)
     }
     
     computeVertexNormals();
-    createVBO();
+    createVBO(program);
 }
 
 void Mesh::computeVertexNormals()
@@ -118,7 +118,7 @@ void Mesh::computeVertexNormals()
     }
 }
 
-void Mesh::createVBO()
+void Mesh::createVBO(GLuint program)
 {
     GLenum errorCheckValues = glGetError();
  
@@ -129,6 +129,10 @@ void Mesh::createVBO()
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, m_numVertices * sizeof(glm::vec3), glm::value_ptr(m_vertices[0]), GL_STATIC_DRAW);
     
+    m_positionHandle = glGetAttribLocation(program, "aPosition");
+    glVertexAttribPointer(m_positionHandle, 3, GL_FLOAT, GL_FALSE, 4 * 3, 0);
+    glEnableVertexAttribArray(m_positionHandle);
+    
     glGenBuffers(1, &m_nbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_nbo);
     glBufferData(GL_ARRAY_BUFFER, m_numVertices * sizeof(glm::vec3), glm::value_ptr(m_vertexNormals[0]), GL_STATIC_DRAW);
@@ -136,6 +140,9 @@ void Mesh::createVBO()
     glGenBuffers(1, &m_ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numFaces * sizeof(Face), &m_faces[0], GL_STATIC_DRAW);
+    
+    
+    m_normalHandle = glGetAttribLocation(program, "aNormal");
     
     errorCheckValues = glGetError();
     if (errorCheckValues != GL_NO_ERROR) {
@@ -161,17 +168,23 @@ void Mesh::renderFlat()
 
 void Mesh::renderSmooth()
 {
-    glBegin(GL_TRIANGLES);
-    {
-        for (int i = 0; i < m_numFaces; i++)
-        {
-            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index1]));
-            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index1]));
-            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index2]));
-            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index2]));
-            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index3]));
-            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
-        }
-    }
-    glEnd();    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+    glDrawElements(GL_TRIANGLES, m_numFaces * 3, GL_UNSIGNED_INT, 0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    
+//    glBegin(GL_TRIANGLES);
+//    {
+//        for (int i = 0; i < m_numFaces; i++)
+//        {
+//            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index1]));
+//            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index1]));
+//            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index2]));
+//            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index2]));
+//            glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index3]));
+//            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
+//        }
+//    }
+//    glEnd();    
 }

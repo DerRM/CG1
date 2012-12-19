@@ -27,9 +27,9 @@
 using namespace std;
 
 typedef struct {
-    int index1;
-    int index2;
-    int index3;
+    GLuint index1;
+    GLuint index2;
+    GLuint index3;
 } Face;
 
 class Mesh
@@ -37,7 +37,7 @@ class Mesh
 public:
     Mesh();
     ~Mesh(){};
-    void loadOff(const string& filename);
+    void loadOff(const string& filename, GLuint program);
     void renderFlat();
     void renderSmooth();
 private:
@@ -56,7 +56,7 @@ private:
     
 private:
     void computeVertexNormals();
-    void createVBO();
+    void createVBO(GLuint program);
 };
 
 #endif

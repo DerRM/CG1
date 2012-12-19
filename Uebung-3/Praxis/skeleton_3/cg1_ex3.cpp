@@ -91,6 +91,10 @@ vec4 lightColor(0.7f,0.7f,0.7f,1.0f);
 // variables, global
 GLSLShader blinnPhongShader;
 Mesh mesh;
+GLuint m_MVHandle;
+GLuint m_MVPHandle;
+GLuint m_NormalMatrixHandle;
+GLuint m_lightPosition;
 
 
 enum RenderMode{
@@ -121,6 +125,7 @@ void reshape(int width, int height);
 void setOpenGLStates(){
 	glClearColor( 0.0, 0.0, 0.0, 1.0);
 
+    glEnable(GL_PROGRAM_POINT_SIZE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
@@ -179,36 +184,45 @@ void setOpenGLStates(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void display(){
 	// set OpenGL states
-	setOpenGLStates();
+	//setOpenGLStates();
 
 	// Clear the color and depth buffer
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    mat4 modelViewMatrix = viewMatrix * objectMatrix;
+    mat4 modelViewProjectionMatrix = projectionMatrix * modelViewMatrix;
+    mat4 normalMatrix = glm::transpose(glm::inverse(modelViewMatrix));
+    
+    glUniformMatrix4fv(m_MVHandle, 1, GL_FALSE, glm::value_ptr(modelViewMatrix));
+    glUniformMatrix4fv(m_MVPHandle, 1, GL_FALSE, glm::value_ptr(modelViewProjectionMatrix));
+    glUniformMatrix4fv(m_NormalMatrixHandle, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+    glUniform4fv(m_lightPosition, 1, glm::value_ptr(lightDirection));
+    
 	// Set the render states for the current rendering technique
-	switch(currentRenderer){
-		case FLAT:
-			// TODO ENABLE PER FACE LIGHTING
-            renderFlat = true;
-            renderGouraud = false;
-            renderBlinnPhong = false;
-		break;
-		case GOURAUD:
-			// TODO ENABLE PER VERTEX LIGHTING
-            renderFlat = false;
-            renderGouraud = true;
-            renderBlinnPhong = false;
-		break;
-		case BLINN_PHONG:
-			// ENABLE PER FRAGMENT LIGHTING
-            renderFlat = false;
-            renderGouraud = false;
-            renderBlinnPhong = true;
+//	switch(currentRenderer){
+//		case FLAT:
+//			// TODO ENABLE PER FACE LIGHTING
+//            renderFlat = true;
+//            renderGouraud = false;
+//            renderBlinnPhong = false;
+//		break;
+//		case GOURAUD:
+//			// TODO ENABLE PER VERTEX LIGHTING
+//            renderFlat = false;
+//            renderGouraud = true;
+//            renderBlinnPhong = false;
+//		break;
+//		case BLINN_PHONG:
+//			// ENABLE PER FRAGMENT LIGHTING
+//            renderFlat = false;
+//            renderGouraud = false;
+//            renderBlinnPhong = true;
 			blinnPhongShader.bindShader();
-		break;
-		break;
-		default:
-			break;
-	}
+//		break;
+//		break;
+//		default:
+//			break;
+//	}
 
 	//glPushMatrix();
 	// Rotate the object
@@ -227,16 +241,16 @@ void display(){
         //mesh.renderFlat();
     }
     
-    if (renderGouraud || renderBlinnPhong)
-    {
-        //mesh.renderSmooth();
-    }
+    //if (renderGouraud || renderBlinnPhong)
+    //{
+        mesh.renderSmooth();
+    //}
     
 	// disable program object to avoid side effects
 	//glUseProgramObjectARB( 0);
 	//glPopMatrix();
 
-	//glFlush();
+	glFlush();
 
 	//glutPostRedisplay();
 	//glutSwapBuffers();
@@ -269,7 +283,7 @@ keyboard(unsigned char key, int /*x*/, int /*y*/) {
       break;
    }
 
-   glutPostRedisplay();
+   //glutPostRedisplay();
 }
 
 
@@ -290,8 +304,14 @@ main( int argc, char** argv) {
  
 	// load ressources
 	blinnPhongShader.load("shaders/BlinnPhong");
+    
+    m_MVHandle = glGetUniformLocation(blinnPhongShader.getProgramObject(), "uMVMatrix");
+    m_MVPHandle = glGetUniformLocation(blinnPhongShader.getProgramObject(), "uMVPMatrix");
+    m_NormalMatrixHandle = glGetUniformLocation(blinnPhongShader.getProgramObject(), "uNormalMatrix");
+    m_lightPosition = glGetUniformLocation(blinnPhongShader.getProgramObject(), "uLightPosition");
+    
 	// TODO LOAD MESH
-    mesh.loadOff("meshes/camel_head.off");
+    mesh.loadOff("meshes/camel_head.off", blinnPhongShader.getProgramObject());
     
 	// register glut callbacks
 	//glutDisplayFunc( display);
@@ -301,10 +321,11 @@ main( int argc, char** argv) {
 	//glutReshapeFunc(reshape);
 
     glfwSetWindowSizeCallback(reshape);
+    glfwSetMousePosCallback(mouseMoved);
     
 	// let's rock ...
 	//glutMainLoop();
-    while (true) {
+    while (running) {
         display();
         glfwSwapBuffers();
         running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
@@ -357,17 +378,17 @@ void initOpenGLContext(int argc, char **argv){
     
     fprintf(stderr, "OpenGL version recieved: %d.%d.%d\n", major, minor, rev);
 
-    glewExperimental = GL_TRUE;
+    glewExperimental = GL_TRUE; // needs to be set for 3.2 profile or higher
 	// get extensions
 	// has to be done after basic GL init
 	if (GLEW_OK != glewInit()) {
 		std::cerr << "Error init GLEW." << std::endl;
 		exit( 0);
 	}
-//	if( ! GLEW_ARB_shader_objects) {
-//		std::cerr << "Your graphics board does not support GLSLang. Exit.";
-//		exit( EXIT_SUCCESS);
-//	}
+	if( ! GLEW_ARB_shader_objects) {
+		std::cerr << "Your graphics board does not support GLSLang. Exit.";
+		exit( EXIT_SUCCESS);
+	}
 }
 
 void GLFWCALL reshape(int width, int height)
@@ -398,9 +419,12 @@ void mousePressed(int button, int state, int x, int y)
 }
  
 
-void mouseMoved(int x, int y)
+void GLFWCALL mouseMoved(int x, int y)
 {
-	if(rightButtondown){
+    int rightButton = glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT);
+    int leftButton = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+    
+	if(rightButton){
 		vec3 rayOrigin = vec3(0,0,2);
 		vec3 rayDir = glm::unProject(vec3(x,y,1),viewMatrix,projectionMatrix,vec4(0, 0, winWidth, winHeight));
 		rayDir = -normalize(rayDir-rayOrigin);
@@ -419,7 +443,7 @@ void mouseMoved(int x, int y)
 		lightDirection = vec4(rayOrigin+t*rayDir,0);
 		lightDirection[1] = -lightDirection[1];
 
-	}else if(leftButtondown){
+	}else if(leftButton){
 		rotx += 0.05*(y-oldY);
 		roty += 0.05*(x-oldX);
 
