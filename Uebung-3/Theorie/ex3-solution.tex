@@ -91,7 +91,6 @@ Auf welche der Beleuchtungskomponenten ambient, diffus, spekulär hat die Positi
 
 Die Position des Betrachters hat zum einen Einfluss auf den spekulären Anteil der Beleuchtung, weiterhin wird die diffuse Reflektion unterteilt in ideal diffus und gerichtet diffus. Auch die gerichtet diffuse Reflektion hängt von der Position des Betrachters ab, denn auch hier wird bei der Berechnung die Position des Betrachters einkalkuliert. Bei diesen beiden Beleuchtungskomponenten kommt es darauf an, wieviel Licht aus der Quelle von der Oberfläche eines Objektes in Richtung des Betrachters reflektiert wird.
 Der ideal diffuse Anteil hingegen ist, ebenso wie der ambiente, unabhängig vom Betrachter.
->>>>>>> Stashed changes
 
 
 \section*{2.}
@@ -111,7 +110,7 @@ In 1978 führte Jim Blinn „bump mapping“ in der Computergrafik ein. Nennen S
 \begin{itemize}
   \item An den Silhouetten ist erkennbar, das die Objektstruktur noch immer flach ist
   \item keine Selbstverschattung
-  \item keine Selbstokklusion
+  \item keine Selbstverdeckung / Selbstokklusion
 \end{itemize}
 
 
@@ -133,7 +132,7 @@ Bei Varyings handelt es sich um eine Art Container, um Werte aus dem Vertex- in 
 Sie werden im Vertex Shader geschrieben und sind in den Fragment Shadern readonly.
 Die Werte werden für die Fragmente, welche sich zwischen den Vertex-Positionen befinden, interpoliert.
 Wichtig ist, dass Name und Typ der deklarierten Variable in beiden Shadern übereinstimmen.
-Eine Besonderheit für varyings ist, dass diese als invariant gekennzeichnet werden können.
+Eine Besonderheit für Varyings ist, dass diese als invariant gekennzeichnet werden können.
 Dies kann bei multi-pass-Shadern benutzt werden, um eventuelle Schwankungen aufgrund von Compileroptimierungen bei wiederholter Berechnung zu vermeiden.
 
 
@@ -146,53 +145,51 @@ Ausserdem ist dieses Vorgehen speichereffizient.
 Andere Möglichkeit: Axis-Aligned: Hierbei wird die Szene mit einem Bounding Volume umschlossen, welches dann in immer kleinere Volumes geteilt wird und so den BSP Baum bildet.
 
 \section*{5.}
-In der Vorlesung wurde das Phong Shadingmodell diskutiert. Eine alternative Formulierung, ebenfalls von Blinn, verwendet den „half vector“.
+In der Vorlesung wurde das Phong Shadingmodell diskutiert. Eine alternative Formulierung, ebenfalls von Blinn, verwendet den \emph{„half vector“}.
 
 \subsection*{(a)}
-Was ist der half vector und welche Vorteile bietet er? (0.5 Punkte)
+Was ist der \emph{half vector} und welche Vorteile bietet er? (0.5 Punkte)
 
-Der Halfvektor liegt in der Mitte des durch die Lichtquelle und Betrachterposition aufgespannten Winkels.
+Der \emph{half vector} liegt in der Mitte des durch die Lichtquelle und Betrachterposition aufgespannten Winkels.
 
 \begin{itemize}
-  \item die Berechnung vereinfacht sich, wenn Beobachter und
-    Lichtquelle in der Unendlichkeit angenommen werden, es reicht dann
-    eine einmalige Berechnung
-  \item das Beleuchtungsresultat entspricht besser dem Original im
-    Bezug auf das Reflexionsverhalten von Oberflächen eines Materials
+  \item im Blinn Phong Modell kann durch den \emph{half vector} auf die Berechnung des reflektierten Strahls verzichtet werden, dadurch vereinfacht sich der Rechenaufwand
+  \item die Berechnung vereinfacht sich, wenn Beobachter und Lichtquelle in der Unendlichkeit angenommen werden, es reicht dann eine einmalige Berechnung
+  %\item das Beleuchtungsresultat entspricht besser dem Original im Bezug auf das Reflexionsverhalten von Oberflächen eines Materials
 \end{itemize}
 
 \subsection*{(b)}
-Leiten Sie das Phong Shadingmodell unter Verwendung des half vectors her. (0.5 Punkte)
+Leiten Sie das Phong Shadingmodell unter Verwendung des \emph{half vectors} her. (0.5 Punkte)
 
 Beim Phong Beleuchtungsmodel berechnet sich die spekuläre Leuchtdichte \(D_s\)
 nach folgender Formel:
 \[
-D_s = r_s * D * cos^m \gamma
+D_s = r_s * D * (cos \gamma)^n
 \]
 \(\gamma\) kann unter der Vorraussetzung, dass sich Beobachtungsrichtung,
 Lichtquellenrichtung, Normalenvektor der reflektierenden Fläche und
 Reflexionsrichtung in einer Ebene befinden, berechnet werden mit:
 \[
-\gamma = H * N, wobei:  H = \frac{L + V}{|L + V|}
+\cos\gamma = \vec{H} \cdot \vec{N}, wobei:  \vec{H} = \frac{\vec{L} + \vec{V}}{|\vec{L} + \vec{V}|}
 \]
 
 \begin{itemize}
-  \item \(r_s\) der Reflexionsgrad,
+  \item $r_s$ der Reflexionsgrad,
   \item D die Leuchtdichte der Lichtquelle,
-  \item N die normalisierte Normale der Ebene,
-  \item L der normalisierte Vektor in Lichtquellenrichtung und
-  \item V der normalisierte Vektor in Richtung des Beobachters ist
+  \item $\vec{N}$ die normalisierte Normale der Ebene,
+  \item $\vec{L}$ der normalisierte Vektor in Lichtquellenrichtung und
+  \item $\vec{V}$ der normalisierte Vektor in Richtung des Beobachters ist
+  \item $n$ Bündelung des reflektierten Lichts
 \end{itemize}
 
 
 \subsection*{(c)}
-Was ist bei der Verwendung des half vectors zu beachten? (0.5 Punkte)
+Was ist bei der Verwendung des \emph{half vectors} zu beachten? (0.5 Punkte)
 
 \begin{itemize}
-  \item siehe oben, die Vektoren muessen in einer Ebene liegen
-  \item man muss mit Einheitsvektoren rechnen
-  \item das Ergebnis bei Verwendung des half vectors unterscheidet
-    sich etwas vom Ergebnis bei Phong Shading
+  \item der \emph{half vector} muss Einheitslänge haben
+  \item siehe oben, die Vektoren müssen in einer Ebene liegen
+  \item das Ergebnis bei Verwendung des \emph{half vectors} unterscheidet sich etwas vom Ergebnis bei Phong Shading
 \end{itemize}
 
 
