@@ -118,9 +118,9 @@ void Mesh::computeVertexNormals()
         float l1 = glm::dot(edge1, edge1);
         float l2 = glm::dot(edge2, edge2);
         
-        float f0 = 1 / l0 * l1;
-        float f1 = 1 / l1 * l2;
-        float f2 = 1 / l2 * l0;
+        float f0 = 1 / l0 * l2;
+        float f1 = 1 / l1 * l0;
+        float f2 = 1 / l2 * l1;
         
         m_vertexNormals[m_faces[i].index1] += m_surfaceNormals[i] * f0;
         m_vertexNormals[m_faces[i].index2] += m_surfaceNormals[i] * f1;

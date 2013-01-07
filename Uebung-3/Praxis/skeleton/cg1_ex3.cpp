@@ -117,6 +117,8 @@ void mouseMoved(int x, int y);
 // window reshape callback
 void reshape(int width, int height);
 
+void specialInput(int key, int x, int y);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //! Init OpenGL
@@ -275,6 +277,26 @@ keyboard(unsigned char key, int /*x*/, int /*y*/) {
    glutPostRedisplay();
 }
 
+float x = 0.0f, y = 0.0f, z = 0.0f;
+
+void specialInput(int key, int x, int y)
+{
+    switch (key){
+        case GLUT_KEY_UP:
+            fovy -= 0.5;
+            fovy = glm::max(fovy,20.0f);
+            break;
+        case GLUT_KEY_DOWN:
+            fovy += 0.5;
+            fovy = glm::min(fovy,120.0f);
+            break;
+        default:
+            
+            break;
+    }
+
+    glutPostRedisplay();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //! Program main
@@ -292,7 +314,7 @@ main( int argc, char** argv) {
 	// load ressources
 	blinnPhongShader.load("shaders/BlinnPhong");
 	// TODO LOAD MESH
-    mesh.loadOff("meshes/eight.off");
+    mesh.loadOff("meshes/camel_head.off");
     
 	// register glut callbacks
 	glutDisplayFunc( display);
@@ -300,6 +322,7 @@ main( int argc, char** argv) {
 	glutMouseFunc(mousePressed);
 	glutMotionFunc(mouseMoved);
 	glutReshapeFunc(reshape);
+    glutSpecialFunc(specialInput);
 
 	// let's rock ...
 	glutMainLoop();
@@ -389,7 +412,7 @@ void mouseMoved(int x, int y)
 		rotx += 0.05*(y-oldY);
 		roty += 0.05*(x-oldX);
 
-		objectMatrix = glm::rotate(rotx,vec3(1,0,0)) * glm::rotate(roty,vec3(0,1,0)) * glm::scale(vec3(s,1,1));;
+		objectMatrix = glm::rotate(rotx,vec3(1,0,0)) * glm::rotate(roty,vec3(0,1,0)) * glm::scale(vec3(s,1,1));
 
 		// rotate the light
 		//lightDirection = glm::rotateX(lightDirection,0.05f*(y-oldY));
