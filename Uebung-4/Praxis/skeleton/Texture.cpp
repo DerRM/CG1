@@ -366,7 +366,6 @@ void World::display(void){
 
   glColor3f(1,1,1);
 
-
   if(drawRect){
 
     // draw a textured quad
@@ -386,8 +385,6 @@ void World::display(void){
 
   // END XXX
     
-
-
   glutSwapBuffers();
 }
 
@@ -462,7 +459,7 @@ void World::menu(int value){
   case 11:
   case 12:
   case 13:
-    // load model from textures[value]
+    // load model from models[value]
     // XXX
 
     // INSERT YOUR CODE HERE

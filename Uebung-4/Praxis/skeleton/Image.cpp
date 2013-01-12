@@ -14,6 +14,7 @@
 #ifdef __APPLE__ 
 #include <GL/freeglut.h>
 #elif _WIN32
+ #include <GL/glew.h>
 #include "win32/freeglut.h"
 #else
 #include <GL/freeglut.h>
@@ -120,8 +121,7 @@ void Image::setModulation(GLuint modulation){
 void Image::bind(){
   // bind texture
   // XXX
-  
-  // INSERT YOUR CODE HERE
+   // INSERT YOUR CODE HERE
 
   // END XXX
 
@@ -145,7 +145,7 @@ void Image::unbind(){
 
 // read a pixel from image
 // XXX: NEEDS TO BE IMPLEMENTED
-vec4 Image::get(int x, int y){
+vec4 Image::get(unsigned int x, unsigned int y){
   
   // XXX
   
@@ -157,7 +157,7 @@ vec4 Image::get(int x, int y){
 
 // draw in texture
 // XXX: NEEDS TO BE IMPLEMENTED
-void Image::paint(int x, int y){
+void Image::paint(float x, float y){
   // XXX
   
   // INSERT YOUR CODE HERE
@@ -167,7 +167,7 @@ void Image::paint(int x, int y){
 
 // erase drawing from texture
 // XXX: NEEDS TO BE IMPLEMENTED
-void Image::erase(int x, int y){
+void Image::erase(float x, float y){
   // XXX
   
   // INSERT YOUR CODE HERE

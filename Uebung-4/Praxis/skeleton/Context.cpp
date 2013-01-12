@@ -9,10 +9,13 @@
    ------------------------------------------------------------- */
 
 #ifdef __APPLE__ 
+  #include <GL/glew.h>
 #include <GL/freeglut.h>
 #elif _WIN32
+  #include "win32/glew.h"
 #include "win32/freeglut.h"
 #else
+  #include <GL/glew.h>
 #include <GL/freeglut.h>
 #endif
 
@@ -157,14 +160,6 @@ void Context::init(int argc, char **argv){
 
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
-  // generate texture ID
-  // XXX
-  
-  // INSERT YOUR CODE HERE
-  //    glGenTextures(1, &Context::textureID);
-  
-  // END XXX
-
   // general GL settings
   glEnable(GL_LIGHT_MODEL_LOCAL_VIEWER);
   glShadeModel(GL_SMOOTH);
@@ -174,6 +169,13 @@ void Context::init(int argc, char **argv){
  
   // some normals of our example models are flipped :/
   glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 1);
+
+  display();
+
+GLenum err = glewInit();
+  if(err != GLEW_OK){
+    cerr << "GLEW not available! That means no environment mapping for you" << endl;
+  }
 
   // some output to console
   cout << "--------------------------------------------\n";

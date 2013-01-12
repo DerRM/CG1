@@ -14,13 +14,11 @@
     <ClCompile Include="cg1_ex4.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="Image.cpp" />
-    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Context.hpp" />
     <ClInclude Include="Image.hpp" />
-    <ClInclude Include="Model.hpp" />
     <ClInclude Include="Texture.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -55,7 +53,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>glm-0.9.4.1;./win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>glm-0.9.4.0;./win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

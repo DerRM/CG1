@@ -54,10 +54,10 @@ public:
   void generateTexture();
 
   // draw in texture
-  void paint(int x, int y);
+  void paint(float x, float y);
 
   // erase drawing from texture
-  void erase(int x, int y);
+  void erase(float x, float y);
 
 protected:
 
@@ -76,7 +76,7 @@ protected:
   GLuint modulate;
 
   // read a pixel from image
-  glm::vec4 get(int x, int y);
+  glm::vec4 get(unsigned int x, unsigned int y);
 
   // parse ppm format
   void loadPPM(const std::string& filename);
