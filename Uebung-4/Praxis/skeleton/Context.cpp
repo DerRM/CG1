@@ -1,26 +1,26 @@
 /* ----------------------------------------------------------------
    name:           Context.cpp
    purpose:        GL context creation, windowing, GLUT stuff
-   version:	   SKELETON CODE
-   TODO:           nothing 
+   version:        SKELETON CODE
+   TODO:           nothing
    author:         katrin lang
    computer graphics
    tu berlin
    ------------------------------------------------------------- */
 
-#ifdef __APPLE__ 
+#ifdef __APPLE__
   #include <GL/glew.h>
-#include <GL/freeglut.h>
+  #include <GL/freeglut.h>
 #elif _WIN32
   #include "win32/glew.h"
-#include "win32/freeglut.h"
+  #include "win32/freeglut.h"
 #else
   #include <GL/glew.h>
-#include <GL/freeglut.h>
+  #include <GL/freeglut.h>
 #endif
 
 #include <iostream>
- 
+
 #include "glm/glm.hpp"
 
 #include "Context.hpp"
@@ -62,7 +62,7 @@ void Context::display(void){
   // clear color and depth buffer
   glClearColor(0.8, 0.8, 0.8, 0.0);
   glClear(GL_COLOR_BUFFER_BIT);
-  
+
   glutSwapBuffers();
 
   // select texture window
@@ -96,7 +96,7 @@ static void reshape(int width, int height){
 
   // select texture window
   glutSetWindow(textureWindow);
-  glutPositionWindow(GAP, GAP); 
+  glutPositionWindow(GAP, GAP);
   glutReshapeWindow(width, height);
   Texture::reshape(width, height);
   // request redisplay
@@ -166,7 +166,7 @@ void Context::init(int argc, char **argv){
 
   // enable normalization of vertex normals
   glEnable(GL_NORMALIZE);
- 
+
   // some normals of our example models are flipped :/
   glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 1);
 
