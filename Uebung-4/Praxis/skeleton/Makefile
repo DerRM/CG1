@@ -1,6 +1,6 @@
 EXECUTABLE = cg1_ex4
 CC = g++
-CPPFLAGS = -O3 -Iglm-0.9.4.0
+CPPFLAGS = -g3 -Iglm-0.9.4.0 #exchanged O for g for debugging without optimization
 DEPS = glm-0.9.4.0/glm/glm.hpp glm-0.9.4.0/glm/gtc/constants.inl Context.h Texture.h Image.hpp GLSLShader.h
 OBJ = cg1_ex4.o Context.o Texture.o Image.o GLSLShader.o
 LIBS = -lGLEW -lGLU -lGL -lglut

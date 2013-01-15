@@ -57,6 +57,11 @@ ipch/
 cg1_ex1_mac
 cg1_ex2
 cg1_ex2_mac
+cg1_ex3
+cg1_ex4
+cg1_ex5
+
+core
 
 # generated latex files
 *.aux
