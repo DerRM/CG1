@@ -1,16 +1,16 @@
 /* ----------------------------------------------------------------
    name:           Texture.cpp
-   purpose:        texturing tutorial 
-   'introduction to computer graphics' 
+   purpose:        texturing tutorial
+   'introduction to computer graphics'
    winter term 2012/2013, assignment 4
-   version:	   SKELETON CODE
+   version:    SKELETON CODE
    TODO:           see XXX
    author:         katrin lang
    computer graphics
    tu berlin
    ------------------------------------------------------------- */
 
-#ifdef __APPLE__ 
+#ifdef __APPLE__
 #include <GL/freeglut.h>
 #elif _WIN32
 #include "win32/freeglut.h"
@@ -94,7 +94,7 @@ void Common::keyPressed(unsigned char key, int x, int y){
   case 'Q':
     exit(EXIT_SUCCESS);
     break;
-	  
+
   case 'r':
     reset();
     break;
@@ -106,35 +106,83 @@ void Common::keyPressed(unsigned char key, int x, int y){
   case 'S':
     scale*=1.1;
     break;
-	  
-  default: 
+
+  default:
     break;
   }
 
   Context::display();
 }
 
+/*  Create checkerboard texture  */
+#define checkImageWidth 64
+#define checkImageHeight 64
+static GLubyte checkImage[checkImageHeight][checkImageWidth][4];
+
+static GLuint texName;
+
+void makeCheckImage(void)
+{
+
+    cout<<"void makeCheckImage(void)"<<endl;
+    int i, j, c;
+
+    for (i = 0; i < checkImageHeight; i++) {
+        for (j = 0; j < checkImageWidth; j++) {
+            c = ((((i&0x8)==0)^((j&0x8))==0))*255;
+            checkImage[i][j][0] = (GLubyte) c;
+            checkImage[i][j][1] = (GLubyte) c;
+            checkImage[i][j][2] = (GLubyte) c;
+            checkImage[i][j][3] = (GLubyte) 255;
+            //            cout << checkImage[i][j][0] << " " << checkImage[i][j][1] << " " << checkImage[i][j][2] << " " << checkImage[i][j][3] << endl;
+        }
+    }
+}
+
 // draw a full screen quad
 // XXX: NEEDS TO BE IMPLEMENTED
 static void fullScreenQuad(){
-  // XXX
+    // XXX
 
-  // INSERT YOUR CODE HERE
+    //glDisable ( GL_LIGHTING ) ;
+    //glColor3f(0.7, 0.25, 0.3);
+    // glutSolidTeapot(0.35);
 
+    glBegin(GL_QUADS);
+    /*
+    glTexCoord2f(0.0, 0.0); glVertex3f(-2.0, -2.0, -3.0);
+    glTexCoord2f(0.0, 2.0); glVertex3f(-2.0, 2.0, -3.0);
+    glTexCoord2f(2.0, 2.0); glVertex3f(2.0, 2.0, -3.0);
+    glTexCoord2f(2.0, 0.0); glVertex3f(2.0, -2.0, -3.0);
 
-  // END XXX
+    * ///*
+    glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, -3.0);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, 1.0, -3.0);
+    glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, -3.0);
+    glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, -3.0);
+    *///*
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(-2.0, -2.0, -4.0);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-2.0, 2.0, -4.0);
+    glTexCoord2f(1.0, 1.0); glVertex3f(2.0, 2.0, -4.0);
+    glTexCoord2f(1.0, 0.0); glVertex3f(2.0, -2.0, -4.0);
+
+    glEnd();
+
+    glFlush();
+
 }
 
 // -------------------------------------------------------
 // TEXTURE WINDOW
 // -------------------------------------------------------
 
-int Texture::menuOptions[]=  {0, 17, 18, 0, 1, 2, 3, 4, 5, 0, 6, 7, 8, 9, 10, 11, 12, 0, 13, 14, 15, 16, 0, 19, 20, 21, 22, 23, 24, 25, 26}; 
-string Texture::menuText[]= {"TOOLS:", "    Pen", "    Eraser", 
-			     "SPHERICAL TEXTURES:", "    Earth", "    Earth (ice)", "    Earth (night)", "    Saturn", "    Marble", 
-			     "ENVIRONMENT TEXTURES:", "    St Peters dome", "    Uffizium", "    Supernova", "    Landscape", "    Forest", "    Spectrum", "    Phong Light",
-			     "MISC TEXTURES", "    Checkerboard", "    Grid1", "    Grid2", "    Nemo",
-			     "FILTERING", "    mag: NEAREST",  "    mag: LINEAR", "    min: NEAREST" , "    min: LINEAR", "    min: NEAREST_MIPMAP_NEAREST  ", "    min: LINEAR_MIPMAP_NEAREST", "    min: NEAREST_MIPMAP_LINEAR", "    min: LINEAR_MIPMAP_LINEAR"};
+int Texture::menuOptions[]=  {0, 17, 18, 0, 1, 2, 3, 4, 5, 0, 6, 7, 8, 9, 10, 11, 12, 0, 13, 14, 15, 16, 0, 19, 20, 21, 22, 23, 24, 25, 26};
+string Texture::menuText[]= {"TOOLS:", "    Pen", "    Eraser",
+                 "SPHERICAL TEXTURES:", "    Earth", "    Earth (ice)", "    Earth (night)", "    Saturn", "    Marble",
+                 "ENVIRONMENT TEXTURES:", "    St Peters dome", "    Uffizium", "    Supernova", "    Landscape", "    Forest", "    Spectrum", "    Phong Light",
+                 "MISC TEXTURES", "    Checkerboard", "    Grid1", "    Grid2", "    Nemo",
+                 "FILTERING", "    mag: NEAREST",  "    mag: LINEAR", "    min: NEAREST" , "    min: LINEAR", "    min: NEAREST_MIPMAP_NEAREST  ", "    min: LINEAR_MIPMAP_NEAREST", "    min: NEAREST_MIPMAP_LINEAR", "    min: LINEAR_MIPMAP_LINEAR"};
 int Texture::numOptions= 31;
 
 string textures[]= {"", "data/earthcyl2.ppm", "data/earth2.ppm", "data/earthlights.ppm", "data/saturncyl1.ppm", "data/marble.ppm", "data/stpeters.ppm", "data/uffizi.ppm", "data/supernova.ppm", "data/test5b.ppm", "data/test7b.ppm", "data/test2b.ppm", "data/test6b.ppm", "data/checker2.ppm", "data/test3b.ppm", "data/test4b.ppm", "data/test8b.ppm"};
@@ -152,6 +200,23 @@ void Texture::reshape(int width, int height){
   gluOrtho2D(0, width, 0, height);
 
   screen= vec2(width, height);
+  cout<<"reshape"<<endl;
+  //  makeCheckImage();
+  /*
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+  glGenTextures(1, &texName);
+  glBindTexture(GL_TEXTURE_2D, texName);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, checkImageWidth, checkImageHeight,
+               0, GL_RGBA, GL_UNSIGNED_BYTE,
+               checkImage);
+  */
 }
 
 // display texture
@@ -167,8 +232,13 @@ void Texture::display(void){
 
   // display texture
   // XXX
+  glEnable(GL_TEXTURE_2D);
+  //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+  //glBindTexture(GL_TEXTURE_2D, texName);
+  texture.bind();
+  fullScreenQuad();
 
-  // INSERT YOUR CODE HERE
+  glDisable(GL_TEXTURE_2D);
 
   // END XXX
 
@@ -191,8 +261,8 @@ void Texture::mouseDragged(int x, int y){
 
   // END XXX
 
-  updateCursor(x, y);		
-		
+  updateCursor(x, y);
+
   previousMouse= vec2(x, y);
 
   Context::display();
@@ -217,9 +287,9 @@ void Texture::menu(int value){
   case 4:
   case 5:
   case 6:
-  case 7:	
+  case 7:
   case 8:
-  case 9:	
+  case 9:
   case 10:
   case 11:
   case 12:
@@ -245,7 +315,7 @@ void Texture::menu(int value){
     // INSERT YOUR CODE HERE
 
     // END XXX
-  default: 
+  default:
     break;
   }
 
@@ -257,10 +327,10 @@ void Texture::menu(int value){
 // -------------------------------------------------------
 
 int World::menuOptions[]= {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-			   0, 15, 16, 17, 18, 19, 20, 21};
+               0, 15, 16, 17, 18, 19, 20, 21};
 string World::menuText[]= {"MODEL", "   Plane", "   Spiky Sphere", "   Car", "   Bunny", "   Cone", "   Cow", "   Cowboy Hat", "   Dragon", "   Chess", "   Temple", "   Cup", "   Space Shuttle", "   Sphere", "   None",
-			   "RENDERING", "   Lighting on/off", "   Texture on/off", "   Coordinate System on/off", "   Origin on/off", 
-			   "   Texture Mode (DECAL/MODULATE) ", "   Texture Coordinate Correction on/off  ", "   Environment mapping on/off"};
+               "RENDERING", "   Lighting on/off", "   Texture on/off", "   Coordinate System on/off", "   Origin on/off",
+               "   Texture Mode (DECAL/MODULATE) ", "   Texture Coordinate Correction on/off  ", "   Environment mapping on/off"};
 
 static string models[]= {"", "", "data/4cow.off", "data/auto3.off", "data/bunny2.off", "data/cone.off", "data/cow.off", "data/cowboyhut.off", "data/MEGADRACHE.off", "data/Schachfigur.off", "data/tempel.off", "data/tasse.off", "data/spaceshuttle.off", "data/sphere.off"};
 
@@ -292,7 +362,7 @@ void World::display(void){
 
   glClearColor(0.2, 0.2, 0.2, 0.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   //position the camera at (0,0,cameraZ) looking down the
@@ -330,7 +400,7 @@ void World::display(void){
     glVertex3f(0.0, 0.0, 0.0);
     glVertex3f(0.0, 0.0, 1.0);
     glEnd();
-  }		
+  }
 
   // show center of spherical mapping
   if(showOrigin){
@@ -338,7 +408,7 @@ void World::display(void){
     glDisable(GL_TEXTURE_2D);
     glColor3f(1.0, 1.0, 0.0);
     glPushMatrix();
-   
+
     glutSolidSphere(0.05f, 20, 20);
     glPopMatrix();
   }
@@ -351,7 +421,7 @@ void World::display(void){
   // END XXX
 
   glScalef(scale, scale, scale);
-	
+
   if(doLighting) glEnable(GL_LIGHTING);
   else glDisable(GL_LIGHTING);
 
@@ -371,7 +441,7 @@ void World::display(void){
     // draw a textured quad
     // XXX
 
-    // INSERT YOUR CODE HERE     
+    // INSERT YOUR CODE HERE
 
 
     // END XXX
@@ -381,10 +451,16 @@ void World::display(void){
   // XXX
 
   // INSERT YOUR CODE HERE
-    
+
+  glBegin(GL_TRIANGLES);                      // Drawing Using Triangles
+  glColor3f(0.1, 0.2, 0.3);
+  glVertex3f(0, 0, 0);
+  glVertex3f(1, 0, 0);
+  glVertex3f(0, 1, 0);
+  glEnd();
 
   // END XXX
-    
+
   glutSwapBuffers();
 }
 
@@ -398,13 +474,13 @@ void World::mousePressed(int button, int state, int x, int y){
       previousMouse= vec2(x, y);
       modifier = glutGetModifiers();
       if(modifier & GLUT_ACTIVE_CTRL)
-	drag = SHIFT_XY;
+    drag = SHIFT_XY;
       else if(modifier & GLUT_ACTIVE_SHIFT)
-	drag = SHIFT_Z;
+    drag = SHIFT_Z;
       else if(modifier & GLUT_ACTIVE_ALT)
-	drag = SCALE;
+    drag = SCALE;
       else
-	drag = ROTATE;
+    drag = ROTATE;
     }
     else if(state == GLUT_UP){
       drag = NO_DRAG;
@@ -441,7 +517,7 @@ void World::mouseDragged(int x, int y){
 // menu callback
 // XXX: NEEDS TO BE IMPLEMENTED
 void World::menu(int value){
-   
+
   switch(value){
   case 0:
   case 1:
@@ -449,8 +525,8 @@ void World::menu(int value){
     break;
   case 2:
   case 3:
-  case 4:	
-  case 5:	
+  case 4:
+  case 5:
   case 6:
   case 7:
   case 8:

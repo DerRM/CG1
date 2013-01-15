@@ -1,9 +1,9 @@
 /* ----------------------------------------------------------------
    name:           Image.cpp
-   purpose:        texturing tutorial 
-   'introduction to computer graphics' 
+   purpose:        texturing tutorial
+   'introduction to computer graphics'
    winter term 2012/2013, assignment 4
-   version:	   SKELETON CODE
+   version:    SKELETON CODE
    TODO:           texture and mipmap generation, texture filtering, modulation, texel get, painting in texture
    author:         katrin lang
    computer graphics
@@ -11,7 +11,7 @@
    ------------------------------------------------------------- */
 
 
-#ifdef __APPLE__ 
+#ifdef __APPLE__
 #include <GL/freeglut.h>
 #elif _WIN32
  #include <GL/glew.h>
@@ -27,6 +27,9 @@
 
 #include "Image.hpp"
 #include "Context.hpp"
+
+#include "glm/glm.hpp"
+
 
 using namespace std;
 using namespace glm;
@@ -54,35 +57,45 @@ Image::~Image(){
 
 // generate OpenGL texture
 // XXX: NEEDS TO BE IMPLEMENTED
-void Image::generateTexture(){ 
+void Image::generateTexture(){
+
+  cout << "generating texture... " << endl;
 
   if(textureID==0){
-    // generate texture id
-    // XXX
+      // generate texture id
+      // XXX
+      glGenTextures(1, &textureID);
+      glBindTexture(GL_TEXTURE_2D, textureID);
+      // END XXX
 
-    // INSERT YOUR CODE HERE
 
-    // END XXX
   }
 
   // texture filtering and repeat
   // XXX
-
-  // INSERT YOUR CODE HERE
-
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   // END XXX
 
   //enable automatic mipmap generation
   // XXX
-
-  // INSERT YOUR CODE HERE
+  //  glGenerateMipmap(GL_TEXTURE_2D);
+  //  gluBuild2DMipmaps( GL_TEXTURE_2D, 3, width, height, GL_RGB, GL_UNSIGNED_BYTE, data );
 
   // END XXX
 
   // upload texture data
   // XXX
 
-  // INSERT YOUR CODE HERE
+  //  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  //glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+  //glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+  //glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_INT, &data[0]);
+
 
   // END XXX
 }
@@ -92,6 +105,8 @@ void Image::setMinFilter(GLuint min){
 
   // set texture parameter
   // XXX
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->min);
 
   // INSERT YOUR CODE HERE
 
@@ -106,6 +121,7 @@ void Image::setMagFilter(GLuint mag){
 
   // set texture parameter
   // XXX
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->mag);
 
   // INSERT YOUR CODE HERE
 
@@ -122,12 +138,14 @@ void Image::bind(){
   // bind texture
   // XXX
    // INSERT YOUR CODE HERE
+    // "Bind" the newly created texture : all future texture functions will modify this texture
+    glBindTexture(GL_TEXTURE_2D, textureID);
 
   // END XXX
 
   // set modulation
   // XXX
-  
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
   // INSERT YOUR CODE HERE
 
   // END XXX
@@ -137,21 +155,21 @@ void Image::bind(){
 // XXX: NEEDS TO BE IMPLEMENTED
 void Image::unbind(){
   // XXX
-  
-  // INSERT YOUR CODE HERE
 
+  // INSERT YOUR CODE HERE
+    //    glDeleteTextures( 1, &textureID );
   // END XXX
 }
 
 // read a pixel from image
 // XXX: NEEDS TO BE IMPLEMENTED
 vec4 Image::get(unsigned int x, unsigned int y){
-  
+
   // XXX
-  
-  // INSERT YOUR CODE HERE 
+
+  // INSERT YOUR CODE HERE
   return vec4(0);
-  
+
   // END XXX
 }
 
@@ -159,9 +177,9 @@ vec4 Image::get(unsigned int x, unsigned int y){
 // XXX: NEEDS TO BE IMPLEMENTED
 void Image::paint(float x, float y){
   // XXX
-  
+
   // INSERT YOUR CODE HERE
-  
+
   // END XXX
 }
 
@@ -169,14 +187,15 @@ void Image::paint(float x, float y){
 // XXX: NEEDS TO BE IMPLEMENTED
 void Image::erase(float x, float y){
   // XXX
-  
+
   // INSERT YOUR CODE HERE
-  
+
   // END XXX
 }
 
 void Image::load(const std::string& filename){
 
+    cout << "loading texture..." << endl;
   data.clear();
 
   if(filename.substr(filename.size()-4, 4) == ".ppm") loadPPM(filename);
@@ -189,12 +208,12 @@ void Image::load(const std::string& filename){
 void Image::loadPPM(const std::string& filename){
 
   ifstream file(filename.c_str(), ios::binary);
-    
+
   if(!file.is_open()){
     cerr << "opening file " << filename << " failed" << endl;
     return;
   }
-    
+
   // grab first two chars of the file and make sure that it has the
   // correct magic cookie for a raw PPM file.
   string magic;
@@ -226,8 +245,9 @@ void Image::loadPPM(const std::string& filename){
   for(int y = 0; y < height; y++){
     for(int x = 0; x < width; x++){
       data[y*width+x]= vec4((unsigned char)raw[(height - y-1) * width * 3 + 3*x], (unsigned char)raw[(height - y-1) * width * 3 + 3*x + 1], (unsigned char)raw[(height - y-1) * width * 3 + 3*x + 2], maxValue);
-      data[y*width+x]/= maxValue; 
-      //cout << data[i].r << " " + data[i].g << " " + data[i].b << " " + data[i].a << endl;
+      data[y*width+x]/= maxValue;
+      int i = y*width+x;
+      //cout << data[i].r << " " << data[i].g << " " << data[i].b << " " << data[i].a << endl;
     }
   }
 
