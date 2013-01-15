@@ -52,6 +52,8 @@ Image::Image(const std::string& filename) : wrap(GL_CLAMP_TO_BORDER), min(GL_LIN
     load(filename);
 }
 
+GLuint a = 5120;
+
 Image::~Image(){
 }
 
@@ -94,7 +96,16 @@ void Image::generateTexture(){
     //glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
     //glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_INT, &data[0]);
+    //Ignore surface color
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    a++;
+    //    cout<<"a " << a << "   --- " << GL_RGBA8 << " ubyte " << GL_UNSIGNED_BYTE <<
+    //  " short " << GL_SHORT << " int " << GL_INT << " float " << GL_FLOAT << endl;
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, &data[0]);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_INT, &data[0]);
+    //    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_INT, &data[0]);
 
 
     // END XXX
@@ -145,7 +156,7 @@ void Image::bind(){
 
     // set modulation
     // XXX
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+    //    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     // INSERT YOUR CODE HERE
 
     // END XXX
