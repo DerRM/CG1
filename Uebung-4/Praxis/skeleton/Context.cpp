@@ -122,7 +122,7 @@ static void createWindows(void){
     glutKeyboardFunc(Common::keyPressed);
 
     float subWidth= (screen.x - 3*GAP)/2;
-    float subHeight= screen.y - 2*GAP;
+    float subHeight= screen.y - 3*GAP;
 
 
     glutSetOption(GLUT_RENDERING_CONTEXT, GLUT_USE_CURRENT_CONTEXT);

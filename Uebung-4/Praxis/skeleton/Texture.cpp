@@ -200,7 +200,6 @@ void Texture::reshape(int width, int height){
     gluOrtho2D(0, width, 0, height);
 
     screen= vec2(width, height);
-    cout<<"reshape"<<endl;
     //  makeCheckImage();
     /*
       glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
