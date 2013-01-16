@@ -84,10 +84,7 @@ void Image::generateTexture(){
     //  glGenerateMipmap(GL_TEXTURE_2D);
     int mipmapOk = gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_FLOAT, &data[0] );
 
-    cout << "mipmapOk " << mipmapOk << endl;
-    //    int gluBuild2DMipmaps(GLenum target, GLint components, GLint width,
-    //                    GLint height, GLenum format, GLenum type,
-    //                    void *data);
+    //cout << "mipmapOk " << mipmapOk << endl;
     // END XXX
 
     // upload texture data
@@ -163,9 +160,7 @@ void Image::bind(){
 // XXX: NEEDS TO BE IMPLEMENTED
 void Image::unbind(){
     // XXX
-
-    // INSERT YOUR CODE HERE
-    //    glDeleteTextures( 1, &textureID );
+    glBindTexture(GL_TEXTURE_2D, 0);
     // END XXX
 }
 
@@ -175,9 +170,17 @@ vec4 Image::get(unsigned int x, unsigned int y){
 
     // XXX
 
-    // INSERT YOUR CODE HERE
-    return vec4(0);
+    // maybe I should just directly look into the data array ??
 
+
+    // b/c this does not seem to really make sense
+    glm::vec4 pixel(4);
+    // the texture to which is copied
+    GLuint readPixel;
+    glGenTextures(1, &readPixel);
+    glBindTexture(GL_TEXTURE_2D, readPixel);
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 1, 1, 0);
+    return pixel;
     // END XXX
 }
 
@@ -185,8 +188,13 @@ vec4 Image::get(unsigned int x, unsigned int y){
 // XXX: NEEDS TO BE IMPLEMENTED
 void Image::paint(float x, float y){
     // XXX
+    glm::vec4 blackPixel(1, 1, 1, 1);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_RGBA, GL_FLOAT, &blackPixel[0]);
 
-    // INSERT YOUR CODE HERE
+    //void glTexSubImage2D(GLenum target, GLint level, GLint xoffset,
+    //                   GLint yoffset, GLsizei width, GLsizei height,
+    //                   GLenum format, GLenum type, const GLvoid *pixels);
+
 
     // END XXX
 }
@@ -196,7 +204,13 @@ void Image::paint(float x, float y){
 void Image::erase(float x, float y){
     // XXX
 
-    // INSERT YOUR CODE HERE
+    // just redraw original texture to delete what was painted
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, &data[0]);
+
+
+    // or do the mean that we erase the color of the texture like a rubber
+
 
     // END XXX
 }
