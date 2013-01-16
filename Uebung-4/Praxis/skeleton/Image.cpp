@@ -52,8 +52,6 @@ Image::Image(const std::string& filename) : wrap(GL_CLAMP_TO_BORDER), min(GL_LIN
     load(filename);
 }
 
-GLuint a = 5120;
-
 Image::~Image(){
 }
 
@@ -69,8 +67,6 @@ void Image::generateTexture(){
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
         // END XXX
-
-
     }
 
     // texture filtering and repeat
@@ -99,14 +95,7 @@ void Image::generateTexture(){
     //Ignore surface color
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-    a++;
-    //    cout<<"a " << a << "   --- " << GL_RGBA8 << " ubyte " << GL_UNSIGNED_BYTE <<
-    //  " short " << GL_SHORT << " int " << GL_INT << " float " << GL_FLOAT << endl;
-
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, &data[0]);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_INT, &data[0]);
-    //    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_INT, &data[0]);
-
 
     // END XXX
 }

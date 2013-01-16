@@ -326,10 +326,20 @@ void Texture::menu(int value){
 // -------------------------------------------------------
 
 int World::menuOptions[]= {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-                           0, 15, 16, 17, 18, 19, 20, 21};
-string World::menuText[]= {"MODEL", "   Plane", "   Spiky Sphere", "   Car", "   Bunny", "   Cone", "   Cow", "   Cowboy Hat", "   Dragon", "   Chess", "   Temple", "   Cup", "   Space Shuttle", "   Sphere", "   None",
-                           "RENDERING", "   Lighting on/off", "   Texture on/off", "   Coordinate System on/off", "   Origin on/off",
-                           "   Texture Mode (DECAL/MODULATE) ", "   Texture Coordinate Correction on/off  ", "   Environment mapping on/off"};
+                           0, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+                           27, 28, 29, 30, 31};
+string World::menuText[]= {"MODEL", "   Plane", "   Spiky Sphere", "   Car",
+                           "   Bunny", "   Cone", "   Cow", "   Cowboy Hat",
+                           "   Dragon", "   Chess", "   Temple", "   Cup",
+                           "   Space Shuttle", "   Sphere", "   None",
+                           "RENDERING",
+                           "   Lighting on/off",
+                           "   Texture on/off",
+                           "   Coordinate System on/off",
+                           "   Origin on/off",
+                           "   Texture Mode (DECAL/MODULATE) ",
+                           "   Texture Coordinate Correction on/off  ",
+                           "   Environment mapping on/off"};
 
 static string models[]= {"", "", "data/4cow.off", "data/auto3.off", "data/bunny2.off", "data/cone.off", "data/cow.off", "data/cowboyhut.off", "data/MEGADRACHE.off", "data/Schachfigur.off", "data/tempel.off", "data/tasse.off", "data/spaceshuttle.off", "data/sphere.off"};
 
@@ -428,9 +438,8 @@ void World::display(void){
 
     // if showTexture is true, enable texturing in opengl
     // XXX
-
-    // INSERT YOUR CODE HERE
-
+    if(showTexture) glEnable(GL_TEXTURE_2D);
+    else glDisable(GL_TEXTURE_2D);
     // END XXX
 
     glColor3f(1,1,1);
@@ -439,9 +448,14 @@ void World::display(void){
 
         // draw a textured quad
         // XXX
+        texture.bind();
 
-        // INSERT YOUR CODE HERE
-
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, 0.0);
+        glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, 1.0, 0.0);
+        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0.0);
+        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, 0.0);
+        glEnd();
 
         // END XXX
     }
@@ -450,13 +464,6 @@ void World::display(void){
     // XXX
 
     // INSERT YOUR CODE HERE
-
-    glBegin(GL_TRIANGLES);                      // Drawing Using Triangles
-    glColor3f(0.1, 0.2, 0.3);
-    glVertex3f(0, 0, 0);
-    glVertex3f(1, 0, 0);
-    glVertex3f(0, 1, 0);
-    glEnd();
 
     // END XXX
 
