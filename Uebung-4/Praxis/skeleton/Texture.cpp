@@ -26,6 +26,7 @@
 #include "Context.hpp"
 #include "Texture.hpp"
 #include "Image.hpp"
+#include "Mesh.h"
 
 using namespace glm;
 using namespace std;
@@ -114,63 +115,16 @@ void Common::keyPressed(unsigned char key, int x, int y){
     Context::display();
 }
 
-/*  Create checkerboard texture  */
-#define checkImageWidth 64
-#define checkImageHeight 64
-static GLubyte checkImage[checkImageHeight][checkImageWidth][4];
-
-static GLuint texName;
-
-void makeCheckImage(void)
-{
-
-    cout<<"void makeCheckImage(void)"<<endl;
-    int i, j, c;
-
-    for (i = 0; i < checkImageHeight; i++) {
-        for (j = 0; j < checkImageWidth; j++) {
-            c = ((((i&0x8)==0)^((j&0x8))==0))*255;
-            checkImage[i][j][0] = (GLubyte) c;
-            checkImage[i][j][1] = (GLubyte) c;
-            checkImage[i][j][2] = (GLubyte) c;
-            checkImage[i][j][3] = (GLubyte) 255;
-            //            cout << checkImage[i][j][0] << " " << checkImage[i][j][1] << " " << checkImage[i][j][2] << " " << checkImage[i][j][3] << endl;
-        }
-    }
-}
-
 // draw a full screen quad
 // XXX: NEEDS TO BE IMPLEMENTED
 static void fullScreenQuad(){
     // XXX
-
-    //glDisable ( GL_LIGHTING ) ;
-    //glColor3f(0.7, 0.25, 0.3);
-    // glutSolidTeapot(0.35);
-
     glBegin(GL_QUADS);
-    /*
-      glTexCoord2f(0.0, 0.0); glVertex3f(-2.0, -2.0, -3.0);
-      glTexCoord2f(0.0, 2.0); glVertex3f(-2.0, 2.0, -3.0);
-      glTexCoord2f(2.0, 2.0); glVertex3f(2.0, 2.0, -3.0);
-      glTexCoord2f(2.0, 0.0); glVertex3f(2.0, -2.0, -3.0);
-
-      * ///*
-      glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, -3.0);
-      glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, 1.0, -3.0);
-      glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, -3.0);
-      glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, -3.0);
-    *///*
-
-        glTexCoord2f(0.0, 0.0); glVertex3f(-2.0, -2.0, -4.0);
-        glTexCoord2f(0.0, 1.0); glVertex3f(-2.0, 2.0, -4.0);
-        glTexCoord2f(1.0, 1.0); glVertex3f(2.0, 2.0, -4.0);
-        glTexCoord2f(1.0, 0.0); glVertex3f(2.0, -2.0, -4.0);
-
-        glEnd();
-
-        glFlush();
-
+    glTexCoord2f(0.0, 0.0); glVertex3f(-2.0, -2.0, -4.0);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-2.0, 2.0, -4.0);
+    glTexCoord2f(1.0, 1.0); glVertex3f(2.0, 2.0, -4.0);
+    glTexCoord2f(1.0, 0.0); glVertex3f(2.0, -2.0, -4.0);
+    glEnd();
 }
 
 // -------------------------------------------------------

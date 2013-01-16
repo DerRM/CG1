@@ -28,8 +28,6 @@
 #include "Image.hpp"
 #include "Context.hpp"
 
-#include "glm/glm.hpp"
-
 
 using namespace std;
 using namespace glm;
@@ -256,7 +254,7 @@ void Image::loadPPM(const std::string& filename){
         for(int x = 0; x < width; x++){
             data[y*width+x]= vec4((unsigned char)raw[(height - y-1) * width * 3 + 3*x], (unsigned char)raw[(height - y-1) * width * 3 + 3*x + 1], (unsigned char)raw[(height - y-1) * width * 3 + 3*x + 2], maxValue);
             data[y*width+x]/= maxValue;
-            int i = y*width+x;
+            //int i = y*width+x;
             //cout << data[i].r << " " << data[i].g << " " << data[i].b << " " << data[i].a << endl;
         }
     }
