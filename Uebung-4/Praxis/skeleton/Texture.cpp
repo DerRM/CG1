@@ -64,7 +64,7 @@ static GLfloat nearPlane;
 static GLfloat farPlane;
 
 static Image texture;
-
+static Mesh mesh;
 
 /*************************************************************************************/
 
@@ -479,6 +479,7 @@ void World::display(void){
 
     // else draw model
     // XXX
+    mesh.renderFlat();
 
     // INSERT YOUR CODE HERE
 
@@ -560,7 +561,7 @@ void World::menu(int value){
     case 13:
         // load model from models[value]
         // XXX
-
+        mesh.loadOff(models[value]);
         // INSERT YOUR CODE HERE
 
         // END XXX
