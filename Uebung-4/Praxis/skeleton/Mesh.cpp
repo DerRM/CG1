@@ -28,6 +28,9 @@
 Mesh::Mesh()
 {}
 
+// Projection plane
+GLfloat zPlane[] = { 0.0f, 0.0f, 1.0f, 0.0f };
+
 void Mesh::loadOff(const string& filename)
 {
     ifstream input(filename.c_str());
@@ -115,6 +118,24 @@ void Mesh::loadOff(const string& filename)
     }
 
     computeVertexNormals();
+    /*
+
+    // Object Linear
+    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+    glTexGenfv(GL_S, GL_OBJECT_PLANE, zPlane);
+    glTexGenfv(GL_T, GL_OBJECT_PLANE, zPlane);
+
+    // Eye Linear
+    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+    glTexGenfv(GL_S, GL_EYE_PLANE, zPlane);
+    glTexGenfv(GL_T, GL_EYE_PLANE, zPlane);
+    */
+
+    // Sphere Map
+    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
 }
 
 void Mesh::computeVertexNormals()

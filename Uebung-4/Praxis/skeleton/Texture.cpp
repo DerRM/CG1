@@ -221,8 +221,12 @@ void Texture::display(void){
     // display texture
     // XXX
     glEnable(GL_TEXTURE_2D);
-    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-    //glBindTexture(GL_TEXTURE_2D, texName);
+
+
+    // We will specify texture coordinates
+    glDisable(GL_TEXTURE_GEN_S);
+    glDisable(GL_TEXTURE_GEN_T);
+
     texture.bind();
     fullScreenQuad();
 
@@ -479,7 +483,10 @@ void World::display(void){
 
     // else draw model
     // XXX
-    mesh.renderFlat();
+
+    glEnable(GL_TEXTURE_GEN_S);
+    glEnable(GL_TEXTURE_GEN_T);
+    mesh.renderSmooth();
 
     // INSERT YOUR CODE HERE
 
