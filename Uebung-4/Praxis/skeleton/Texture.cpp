@@ -177,15 +177,50 @@ static void fullScreenQuad(){
 // TEXTURE WINDOW
 // -------------------------------------------------------
 
-int Texture::menuOptions[]=  {0, 17, 18, 0, 1, 2, 3, 4, 5, 0, 6, 7, 8, 9, 10, 11, 12, 0, 13, 14, 15, 16, 0, 19, 20, 21, 22, 23, 24, 25, 26};
-string Texture::menuText[]= {"TOOLS:", "    Pen", "    Eraser",
-                             "SPHERICAL TEXTURES:", "    Earth", "    Earth (ice)", "    Earth (night)", "    Saturn", "    Marble",
-                             "ENVIRONMENT TEXTURES:", "    St Peters dome", "    Uffizium", "    Supernova", "    Landscape", "    Forest", "    Spectrum", "    Phong Light",
-                             "MISC TEXTURES", "    Checkerboard", "    Grid1", "    Grid2", "    Nemo",
-                             "FILTERING", "    mag: NEAREST",  "    mag: LINEAR", "    min: NEAREST" , "    min: LINEAR", "    min: NEAREST_MIPMAP_NEAREST  ", "    min: LINEAR_MIPMAP_NEAREST", "    min: NEAREST_MIPMAP_LINEAR", "    min: LINEAR_MIPMAP_LINEAR"};
+int Texture::menuOptions[]=  {0, 17, 18, 0, 1, 2, 3, 4, 5, 0, 6,
+                              7, 8, 9, 10, 11, 12, 0, 13, 14, 15,
+                              16, 0, 19, 20, 21, 22, 23, 24, 25, 26};
+string Texture::menuText[]= {"TOOLS:",
+                             "    Pen",
+                             "    Eraser",
+                             "SPHERICAL TEXTURES:",
+                             "    Earth",
+                             "    Earth (ice)",
+                             "    Earth (night)",
+                             "    Saturn",
+                             "    Marble",
+                             "ENVIRONMENT TEXTURES:",
+                             "    St Peters dome",
+                             "    Uffizium",
+                             "    Supernova",
+                             "    Landscape",
+                             "    Forest",
+                             "    Spectrum",
+                             "    Phong Light",
+                             "MISC TEXTURES",
+                             "    Checkerboard",
+                             "    Grid1",
+                             "    Grid2",
+                             "    Nemo",
+                             "FILTERING",
+                             "    mag: NEAREST",
+                             "    mag: LINEAR",
+                             "    min: NEAREST" ,
+                             "    min: LINEAR",
+                             "    min: NEAREST_MIPMAP_NEAREST  ",
+                             "    min: LINEAR_MIPMAP_NEAREST",
+                             "    min: NEAREST_MIPMAP_LINEAR",
+                             "    min: LINEAR_MIPMAP_LINEAR"};
 int Texture::numOptions= 31;
 
-string textures[]= {"", "data/earthcyl2.ppm", "data/earth2.ppm", "data/earthlights.ppm", "data/saturncyl1.ppm", "data/marble.ppm", "data/stpeters.ppm", "data/uffizi.ppm", "data/supernova.ppm", "data/test5b.ppm", "data/test7b.ppm", "data/test2b.ppm", "data/test6b.ppm", "data/checker2.ppm", "data/test3b.ppm", "data/test4b.ppm", "data/test8b.ppm"};
+string textures[]= {"", "data/earthcyl2.ppm", "data/earth2.ppm",
+                    "data/earthlights.ppm", "data/saturncyl1.ppm",
+                    "data/marble.ppm", "data/stpeters.ppm",
+                    "data/uffizi.ppm", "data/supernova.ppm",
+                    "data/test5b.ppm", "data/test7b.ppm",
+                    "data/test2b.ppm", "data/test6b.ppm",
+                    "data/checker2.ppm", "data/test3b.ppm",
+                    "data/test4b.ppm", "data/test8b.ppm"};
 
 vec2 Texture::previousMouse; // previous mouse position
 
@@ -307,12 +342,40 @@ void Texture::menu(int value){
     case 18:
         drag= ERASE;
         break;
-
         // add cases for texture filtering
         // XXX
-
-        // INSERT YOUR CODE HERE
-
+    case 19:
+        // mag: NEAREST
+        texture.setMagFilter(GL_NEAREST);
+        break;
+    case 20:
+        // mag: LINEAR
+        texture.setMagFilter(GL_LINEAR);
+        break;
+    case 21:
+        // min: NEAREST
+        texture.setMinFilter(GL_NEAREST);
+        break;
+    case 22:
+        // min: LINEAR
+        texture.setMinFilter(GL_LINEAR);
+        break;
+    case 23:
+        // min: NEAREST_MIPMAP_NEAREST
+        texture.setMinFilter(GL_NEAREST_MIPMAP_NEAREST);
+        break;
+    case 24:
+        // min: LINEAR_MIPMAP_NEAREST
+        texture.setMinFilter(GL_LINEAR_MIPMAP_NEAREST);
+        break;
+    case 25:
+        // min: NEAREST_MIPMAP_LINEAR
+        texture.setMinFilter(GL_NEAREST_MIPMAP_LINEAR);
+        break;
+    case 26:
+        // min: LINEAR_MIPMAP_LINEAR
+        texture.setMinFilter(GL_LINEAR_MIPMAP_LINEAR);
+        break;
         // END XXX
     default:
         break;

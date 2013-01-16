@@ -73,15 +73,23 @@ void Image::generateTexture(){
     // XXX
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    setMinFilter(GL_NEAREST);
+    setMagFilter(GL_NEAREST);
+
+    //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     // END XXX
 
     //enable automatic mipmap generation
     // XXX
     //  glGenerateMipmap(GL_TEXTURE_2D);
-    //  gluBuild2DMipmaps( GL_TEXTURE_2D, 3, width, height, GL_RGB, GL_UNSIGNED_BYTE, data );
+    int mipmapOk = gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_FLOAT, &data[0] );
 
+    cout << "mipmapOk " << mipmapOk << endl;
+    //    int gluBuild2DMipmaps(GLenum target, GLint components, GLint width,
+    //                    GLint height, GLenum format, GLenum type,
+    //                    void *data);
     // END XXX
 
     // upload texture data
@@ -93,7 +101,9 @@ void Image::generateTexture(){
     //glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
 
     //Ignore surface color
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, &data[0]);
 
