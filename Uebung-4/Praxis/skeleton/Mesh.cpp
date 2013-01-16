@@ -28,8 +28,13 @@
 Mesh::Mesh()
 {}
 
-// Projection plane
-GLfloat zPlane[] = { 0.0f, 0.0f, 1.0f, 0.0f };
+/*  planes for texture coordinate generation  */
+static GLfloat xequalzero[] = {1.0, 0.0, 0.0, 0.0};
+static GLfloat slanted[] = {1.0, 1.0, 1.0, 0.0};
+static GLfloat zPlane[] = { 0.0f, 0.0f, 2.0f, 0.0f };
+static GLfloat *currentCoeff;
+static GLenum currentPlane;
+static GLint currentGenMode;
 
 void Mesh::loadOff(const string& filename)
 {
@@ -131,11 +136,36 @@ void Mesh::loadOff(const string& filename)
     glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
     glTexGenfv(GL_S, GL_EYE_PLANE, zPlane);
     glTexGenfv(GL_T, GL_EYE_PLANE, zPlane);
-    */
 
     // Sphere Map
     glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
     glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+    */
+
+
+    //currentGenMode = GL_EYE_LINEAR;
+    currentPlane = GL_EYE_PLANE;
+
+    currentGenMode = GL_OBJECT_LINEAR;
+    //currentPlane = GL_OBJECT_PLANE;
+
+    //currentCoeff = slanted;
+    //currentCoeff = xequalzero;
+    currentCoeff = zPlane;
+
+    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, currentGenMode);
+    glTexGenfv(GL_S, currentPlane, currentCoeff);
+
+    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, currentGenMode);
+    glTexGenfv(GL_T, currentPlane, currentCoeff);
+    /*
+
+    glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, currentGenMode);
+    glTexGenfv(GL_R, currentPlane, currentCoeff);
+
+    glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, currentGenMode);
+    glTexGenfv(GL_Q, currentPlane, currentCoeff);
+    */
 }
 
 void Mesh::computeVertexNormals()

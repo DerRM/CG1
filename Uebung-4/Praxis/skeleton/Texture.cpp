@@ -486,6 +486,9 @@ void World::display(void){
 
     glEnable(GL_TEXTURE_GEN_S);
     glEnable(GL_TEXTURE_GEN_T);
+    glEnable(GL_TEXTURE_GEN_R);
+    //glEnable(GL_TEXTURE_GEN_Q);
+
     mesh.renderSmooth();
 
     // INSERT YOUR CODE HERE
@@ -577,7 +580,6 @@ void World::menu(int value){
     case 14:
         // no model should be displayed with this option selected
         // XXX
-
         // INSERT YOUR CODE HERE
 
         // END XXX
