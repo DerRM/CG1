@@ -229,6 +229,10 @@ void Mesh::computeTexCoords()
         
         uv_coord.x = (M_PI + atan2(y_minus_y_s, x_minus_x_s)) / (2 * M_PI);
         uv_coord.y = atan2(sqrt(pow(x_minus_x_s, 2.0) + pow(y_minus_y_s, 2.0)), z_minus_z_s) / M_PI;
+        
+        // flip coordinates
+        //uv_coord.x = 1.0 - uv_coord.x;
+        uv_coord.y = 1.0 - uv_coord.y;
         m_texCoords[i] = uv_coord;
     }
 }
