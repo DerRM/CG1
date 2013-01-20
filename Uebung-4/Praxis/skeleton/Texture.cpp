@@ -484,11 +484,12 @@ void World::display(void){
     // else draw model
     // XXX
 
-    glEnable(GL_TEXTURE_GEN_S);
-    glEnable(GL_TEXTURE_GEN_T);
-    glEnable(GL_TEXTURE_GEN_R);
+    //glEnable(GL_TEXTURE_GEN_S);
+    //glEnable(GL_TEXTURE_GEN_T);
+    //glEnable(GL_TEXTURE_GEN_R);
     //glEnable(GL_TEXTURE_GEN_Q);
 
+    texture.bind();
     mesh.renderSmooth();
 
     // INSERT YOUR CODE HERE

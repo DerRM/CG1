@@ -32,11 +32,15 @@ private:
     glm::vec3* m_vertices;
     glm::vec3* m_surfaceNormals;
     glm::vec3* m_vertexNormals;
+    glm::vec2* m_texCoords;
     Face* m_faces;
     int m_numVertices;
     int m_numFaces;
+    glm::vec3 m_boundingSphereCenter;
 
     void computeVertexNormals();
+    void computeBoundingSphereCenter();
+    void computeTexCoords();
 };
 
 #endif

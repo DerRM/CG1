@@ -123,6 +123,8 @@ void Mesh::loadOff(const string& filename)
     }
 
     computeVertexNormals();
+    computeBoundingSphereCenter();
+    computeTexCoords();
     /*
 
     // Object Linear
@@ -150,14 +152,14 @@ void Mesh::loadOff(const string& filename)
     //currentPlane = GL_OBJECT_PLANE;
 
     //currentCoeff = slanted;
-    //currentCoeff = xequalzero;
-    currentCoeff = zPlane;
+    currentCoeff = xequalzero;
+    //currentCoeff = zPlane;
 
-    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, currentGenMode);
-    glTexGenfv(GL_S, currentPlane, currentCoeff);
+    //glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, currentGenMode);
+    //glTexGenfv(GL_S, currentPlane, currentCoeff);
 
-    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, currentGenMode);
-    glTexGenfv(GL_T, currentPlane, currentCoeff);
+    //glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, currentGenMode);
+    //glTexGenfv(GL_T, currentPlane, currentCoeff);
     /*
 
     glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, currentGenMode);
@@ -201,6 +203,36 @@ void Mesh::computeVertexNormals()
     }
 }
 
+// sum of all vertices and the average
+void Mesh::computeBoundingSphereCenter()
+{
+    m_boundingSphereCenter = glm::vec3();
+    
+    for (int i = 0; i < m_numVertices; i++)
+    {
+        m_boundingSphereCenter += m_vertices[i];
+    }
+    
+    m_boundingSphereCenter /= m_numVertices;
+}
+
+void Mesh::computeTexCoords()
+{
+    m_texCoords = new glm::vec2[m_numVertices];
+    
+    for (int i = 0; i < m_numVertices; i++)
+    {
+        double x_minus_x_s = m_vertices[i].x - m_boundingSphereCenter.x;
+        double y_minus_y_s = m_vertices[i].y - m_boundingSphereCenter.y;
+        double z_minus_z_s = m_vertices[i].z - m_boundingSphereCenter.z;
+        glm::vec2 uv_coord = m_texCoords[i];
+        
+        uv_coord.x = (M_PI + atan2(y_minus_y_s, x_minus_x_s)) / (2 * M_PI);
+        uv_coord.y = atan2(sqrt(pow(x_minus_x_s, 2.0) + pow(y_minus_y_s, 2.0)), z_minus_z_s) / M_PI;
+        m_texCoords[i] = uv_coord;
+    }
+}
+
 void Mesh::renderFlat()
 {
     glBegin(GL_TRIANGLES);
@@ -222,10 +254,13 @@ void Mesh::renderSmooth()
     {
         for (int i = 0; i < m_numFaces; i++)
         {
+            glTexCoord2d(m_texCoords[m_faces[i].index1].x, m_texCoords[m_faces[i].index1].y);
             glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index1]));
             glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index1]));
+            glTexCoord2d(m_texCoords[m_faces[i].index2].x, m_texCoords[m_faces[i].index2].y);
             glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index2]));
             glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index2]));
+            glTexCoord2d(m_texCoords[m_faces[i].index3].x, m_texCoords[m_faces[i].index3].y);
             glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index3]));
             glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
         }
