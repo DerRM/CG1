@@ -79,5 +79,12 @@ numbersep=5pt, xrightmargin=0mm, xleftmargin=4mm, linenos}
 siehe Quellcode
 
 \chapter*{Aufgabe 2 - Theoriefragen}
-
+\section*{1.}
+Das Problem entsteht dadurch, dass bei der linearen Interpolation nicht die perspektivische Verzerrung berücksichtigt wird. Das bedeutet, dass eine Strecke die weiter entfernt ist länger ist in der Projektion als ein Strecke die näher am Betrachter liegt. 
+Diese lineare Interpolation findet nach der Projektion in den Raum statt, wird also demnach nicht mehr bei der Berechnung berücksichtigt.
+\section*{2.}
+Mipmaps werden dazu benutzt um Artefakte in Aliasing zu minimieren. Es werden mehrere Auflösungen des gleichen Bildes in der Mipmap gespeichert. Die erwähnten Artefakte kommen z.B. dazu zustande, wenn an ein texturiertes Objekt herangezoomt wird. Je näher man dem Objekt kommt, desto eher kann es passieren, dass die Textur verpixelt erscheint. Wird aus dem Objekt herausgezoomt, kann es zu Aliasing kommen, wodurch es erscheint, dass die Textur zu flimmern beginnt. Diese Effekte werden durch Mipmaps verringert. Außerdem wird dadurch der Texturlookup verkürzt, da schon alle Zoomstufen der Textur in der Mipmap enthalten sind.
+\section*{3.}
+\section*{4.}
+\section*{5.}
 \end{document}

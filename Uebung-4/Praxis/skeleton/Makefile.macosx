@@ -1,8 +1,8 @@
 EXECUTABLE = cg1_ex4_mac
 CC = g++
 CPPFLAGS= -O3 -DMACOSX -Iglm-0.9.4.0 -I/usr/X11R6/include/
-DEPS = glm-0.9.4.0/glm/glm.hpp glm-0.9.4.0/glm/gtc/constants.inl Context.h Texture.h Image.hpp GLSLShader.h
-OBJ = cg1_ex4.o Context.o Texture.o Image.o GLSLShader.o
+DEPS = glm-0.9.4.0/glm/glm.hpp glm-0.9.4.0/glm/gtc/constants.inl Context.h Texture.h Image.hpp GLSLShader.h Mesh.h
+OBJ = cg1_ex4.o Context.o Texture.o Image.o GLSLShader.o Mesh.o
 LIBS= -framework OpenGL -lglew -L/usr/X11R6/lib -lglut
 
 %.o: %.c $(DEPS)
