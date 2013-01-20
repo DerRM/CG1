@@ -91,5 +91,7 @@ Die Familie der Objekte, die sich bijektiv auf eine Kugel abbilden lassen, sind 
 Die Verzerrungen kommen dadurch zu Stande, da die Environment Map auf eine Kugel abgebildet wird. Da eine Kugel eine runde Oberfläche besitzt, kommt es zu Verzerrungen, wenn diese auf eine planare Ebene abgebildet werden muss. Vorallem sind diese Verzerrungen am Rand der Textur zu erkennen.
 \section*{5.}
 \subsection*{a)}
+Das \emph{Projective Texture Mapping} ähnelt bei Transformieren der Texturkoordinaten sehr stark der Transformation der Vertices, die bei einer Kamera stattfindet. Es wird demnach eine \emph{ModelViewProjection} Matrix erzeugt, wobei die \emph{View} und die \emph{Projection} Matrix mit der Position des Lichts erzeugt werden, anstelle der Position des Betrachters, wie in der Kameratransformation. Zusätzlich dazu wird noch ein Tiefentest gemacht um den \emph{z}-Wert zu bestimmen.
 \subsection*{b)}
+Um dieses Verfahren zu erweitern und Schatten darstellen zu können, wird ein Sichtbarkeitstest eingeführt. Dieser ordnet die \emph{z}-Werte nach Größe. Der Wert, der am nächsten zur Lichtquelle ist bekommt den Farbwert der Textur, alle Werte dahinter erhalten einen schwarzen Farbwert bzw. den Wert 0.
 \end{document}
