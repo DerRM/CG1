@@ -63,7 +63,8 @@ void Image::generateTexture(){
         // generate texture id
         // XXX
         glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        bind();
+        //glBindTexture(GL_TEXTURE_2D, textureID);
         // END XXX
     }
 
@@ -71,94 +72,75 @@ void Image::generateTexture(){
     // XXX
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
     setMinFilter(GL_NEAREST);
     setMagFilter(GL_NEAREST);
-
-    //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     // END XXX
 
     //enable automatic mipmap generation
     // XXX
     //  glGenerateMipmap(GL_TEXTURE_2D);
     int mipmapOk = gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_FLOAT, &data[0] );
-
     //cout << "mipmapOk " << mipmapOk << endl;
     // END XXX
 
     // upload texture data
     // XXX
-
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     //glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
     //glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
     //glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
 
     //Ignore surface color
-    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    setModulation(GL_DECAL);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, &data[0]);
 
     // END XXX
 }
 
+// set texture parameter
 void Image::setMinFilter(GLuint min){
     this->min= min;
 
-    // set texture parameter
     // XXX
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->min);
-
-    // INSERT YOUR CODE HERE
-
     // END XXX
 }
 
 // set magnifying filter
 // XXX: NEEDS TO BE IMPLEMENTED
 void Image::setMagFilter(GLuint mag){
-
     this->mag= mag;
 
-    // set texture parameter
     // XXX
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->mag);
-
-    // INSERT YOUR CODE HERE
-
     // END XXX
 }
 
+// set modulation
 void Image::setModulation(GLuint modulation){
     this->modulate= modulation;
+
+    cout << "modulation " << this->modulate<<endl;
+    // XXX
+    // GL_DECAL, GL_REPLACE, GL_MODULATE, or GL_BLEND
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, this->modulate );
+    // END XXX
 }
 
 // bind texture
 // XXX: NEEDS TO BE IMPLEMENTED
 void Image::bind(){
-    // bind texture
+
     // XXX
-    // INSERT YOUR CODE HERE
-    // "Bind" the newly created texture : all future texture functions will modify this texture
     glBindTexture(GL_TEXTURE_2D, textureID);
-
-    // END XXX
-
-    // set modulation
-    // XXX
-    //    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-    // INSERT YOUR CODE HERE
-
     // END XXX
 }
 
 // unbind texture
 // XXX: NEEDS TO BE IMPLEMENTED
 void Image::unbind(){
+
     // XXX
     glBindTexture(GL_TEXTURE_2D, 0);
     // END XXX

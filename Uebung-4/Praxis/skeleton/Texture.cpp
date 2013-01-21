@@ -189,7 +189,7 @@ vec2 Texture::previousMouse; // previous mouse position
 
 void Texture::reshape(int width, int height){
 
-    cout << "reshape texture" << endl;
+    //    cout << "reshape texture" << endl;
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -207,7 +207,7 @@ void Texture::reshape(int width, int height){
 void Texture::display(void){
 
     Texture::reshape(screen.x, screen.y);
-    cout << "display texture" << endl;
+    //    cout << "display texture" << endl;
 
     // setup model matrix
     glMatrixMode(GL_MODELVIEW);
@@ -366,7 +366,7 @@ vec2 World::previousMouse;
 
 void World::reshape(int width, int height){
 
-    cout << "reshape world" << endl;
+    //    cout << "reshape world" << endl;
 
     // setup projection matrix
     glMatrixMode(GL_PROJECTION);
@@ -390,7 +390,7 @@ void World::reshape(int width, int height){
 void World::display(void){
 
     World::reshape(screen.x, screen.y);
-    cout << "display world" << endl;
+    //    cout << "display world" << endl;
 
     glClearColor(0.2, 0.2, 0.2, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
