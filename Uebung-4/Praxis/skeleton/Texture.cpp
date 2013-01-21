@@ -119,11 +119,20 @@ void Common::keyPressed(unsigned char key, int x, int y){
 // XXX: NEEDS TO BE IMPLEMENTED
 static void fullScreenQuad(){
     // XXX
+
+    //    glTranslatef (0.375, 0.375, 0.);
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 0.0); glVertex3f(-2.0, -2.0, -4.0);
-    glTexCoord2f(0.0, 1.0); glVertex3f(-2.0, 2.0, -4.0);
-    glTexCoord2f(1.0, 1.0); glVertex3f(2.0, 2.0, -4.0);
-    glTexCoord2f(1.0, 0.0); glVertex3f(2.0, -2.0, -4.0);
+    glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0);
+    glTexCoord2f(1.0, 0.0); glVertex2f(screen.x, 0.0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(screen.x, screen.y);
+    glTexCoord2f(0.0, 1.0); glVertex2f(0.0, screen.y);
+    /*
+      glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, -2.0);
+      glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, 1.0, -2.0);
+      glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, -2.0);
+      glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, -2.0);
+
+     */
     glEnd();
 }
 
@@ -180,6 +189,8 @@ vec2 Texture::previousMouse; // previous mouse position
 
 void Texture::reshape(int width, int height){
 
+    cout << "reshape texture" << endl;
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
@@ -189,27 +200,14 @@ void Texture::reshape(int width, int height){
     gluOrtho2D(0, width, 0, height);
 
     screen= vec2(width, height);
-    //  makeCheckImage();
-    /*
-      glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-      glGenTextures(1, &texName);
-      glBindTexture(GL_TEXTURE_2D, texName);
-
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, checkImageWidth, checkImageHeight,
-      0, GL_RGBA, GL_UNSIGNED_BYTE,
-      checkImage);
-    */
 }
 
 // display texture
 // XXX: NEEDS TO BE IMPLEMENTED
 void Texture::display(void){
+
+    Texture::reshape(screen.x, screen.y);
+    cout << "display texture" << endl;
 
     // setup model matrix
     glMatrixMode(GL_MODELVIEW);
@@ -222,16 +220,14 @@ void Texture::display(void){
     // XXX
     glEnable(GL_TEXTURE_2D);
 
-
     // We will specify texture coordinates
-    glDisable(GL_TEXTURE_GEN_S);
-    glDisable(GL_TEXTURE_GEN_T);
+    //    glDisable(GL_TEXTURE_GEN_S);
+    //    glDisable(GL_TEXTURE_GEN_T);
 
     texture.bind();
     fullScreenQuad();
 
     glDisable(GL_TEXTURE_2D);
-
     // END XXX
 
     glutSwapBuffers();
@@ -370,7 +366,10 @@ vec2 World::previousMouse;
 
 void World::reshape(int width, int height){
 
-    // setup projection matrix  glMatrixMode(GL_PROJECTION);
+    cout << "reshape world" << endl;
+
+    // setup projection matrix
+    glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
     // Set the viewport to be the entire window
@@ -389,6 +388,9 @@ void World::reshape(int width, int height){
 // display callback
 // XXX: NEEDS TO BE IMPLEMENTED
 void World::display(void){
+
+    World::reshape(screen.x, screen.y);
+    cout << "display world" << endl;
 
     glClearColor(0.2, 0.2, 0.2, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -497,6 +499,9 @@ void World::display(void){
     // END XXX
 
     glutSwapBuffers();
+    //glDisable(GL_DEPTH_TEST);//sly
+    //glDisable(GL_LIGHT0);
+    //glTranslatef(-shift.x, -shift.y, -shift.z);
 }
 
 void World::mousePressed(int button, int state, int x, int y){

@@ -98,7 +98,7 @@ static void reshape(int width, int height){
     glutSetWindow(textureWindow);
     glutPositionWindow(GAP, GAP);
     glutReshapeWindow(width, height);
-    Texture::reshape(width, height);
+    //Texture::reshape(width, height);
     // request redisplay
     glutPostRedisplay();
 
@@ -106,7 +106,7 @@ static void reshape(int width, int height){
     glutSetWindow(worldWindow);
     glutPositionWindow(width+2*GAP, GAP);
     glutReshapeWindow(width, height);
-    World::reshape(width, height);
+    //World::reshape(width, height);
     // request redisplay
     glutPostRedisplay();
 }
@@ -122,8 +122,7 @@ static void createWindows(void){
     glutKeyboardFunc(Common::keyPressed);
 
     float subWidth= (screen.x - 3*GAP)/2;
-    float subHeight= screen.y - 3*GAP;
-
+    float subHeight= screen.y - 2*GAP;
 
     glutSetOption(GLUT_RENDERING_CONTEXT, GLUT_USE_CURRENT_CONTEXT);
 
