@@ -28,14 +28,6 @@
 Mesh::Mesh()
 {}
 
-/*  planes for texture coordinate generation  */
-static GLfloat xequalzero[] = {1.0, 0.0, 0.0, 0.0};
-static GLfloat slanted[] = {1.0, 1.0, 1.0, 0.0};
-static GLfloat zPlane[] = { 0.0f, 0.0f, 2.0f, 0.0f };
-static GLfloat *currentCoeff;
-static GLenum currentPlane;
-static GLint currentGenMode;
-
 void Mesh::loadOff(const string& filename)
 {
     ifstream input(filename.c_str());
@@ -125,49 +117,6 @@ void Mesh::loadOff(const string& filename)
     computeVertexNormals();
     computeBoundingSphereCenter();
     computeTexCoords();
-    /*
-
-    // Object Linear
-    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-    glTexGenfv(GL_S, GL_OBJECT_PLANE, zPlane);
-    glTexGenfv(GL_T, GL_OBJECT_PLANE, zPlane);
-
-    // Eye Linear
-    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-    glTexGenfv(GL_S, GL_EYE_PLANE, zPlane);
-    glTexGenfv(GL_T, GL_EYE_PLANE, zPlane);
-
-    // Sphere Map
-    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-    */
-
-
-    //currentGenMode = GL_EYE_LINEAR;
-    currentPlane = GL_EYE_PLANE;
-
-    currentGenMode = GL_OBJECT_LINEAR;
-    //currentPlane = GL_OBJECT_PLANE;
-
-    //currentCoeff = slanted;
-    currentCoeff = xequalzero;
-    //currentCoeff = zPlane;
-
-    //glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, currentGenMode);
-    //glTexGenfv(GL_S, currentPlane, currentCoeff);
-
-    //glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, currentGenMode);
-    //glTexGenfv(GL_T, currentPlane, currentCoeff);
-    /*
-
-    glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, currentGenMode);
-    glTexGenfv(GL_R, currentPlane, currentCoeff);
-
-    glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, currentGenMode);
-    glTexGenfv(GL_Q, currentPlane, currentCoeff);
-    */
 }
 
 void Mesh::computeVertexNormals()
@@ -207,29 +156,29 @@ void Mesh::computeVertexNormals()
 void Mesh::computeBoundingSphereCenter()
 {
     m_boundingSphereCenter = glm::vec3();
-    
+
     for (int i = 0; i < m_numVertices; i++)
     {
         m_boundingSphereCenter += m_vertices[i];
     }
-    
+
     m_boundingSphereCenter /= m_numVertices;
 }
 
 void Mesh::computeTexCoords()
 {
     m_texCoords = new glm::vec2[m_numVertices];
-    
+
     for (int i = 0; i < m_numVertices; i++)
     {
         double x_minus_x_s = m_vertices[i].x - m_boundingSphereCenter.x;
         double y_minus_y_s = m_vertices[i].y - m_boundingSphereCenter.y;
         double z_minus_z_s = m_vertices[i].z - m_boundingSphereCenter.z;
         glm::vec2 uv_coord = m_texCoords[i];
-        
+
         uv_coord.x = (M_PI + atan2(y_minus_y_s, x_minus_x_s)) / (2 * M_PI);
         uv_coord.y = atan2(sqrt(pow(x_minus_x_s, 2.0) + pow(y_minus_y_s, 2.0)), z_minus_z_s) / M_PI;
-        
+
         // flip coordinates
         //uv_coord.x = 1.0 - uv_coord.x;
         uv_coord.y = 1.0 - uv_coord.y;
