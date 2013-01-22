@@ -119,20 +119,11 @@ void Common::keyPressed(unsigned char key, int x, int y){
 // XXX: NEEDS TO BE IMPLEMENTED
 static void fullScreenQuad(){
     // XXX
-
-    //    glTranslatef (0.375, 0.375, 0.);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0);
-    glTexCoord2f(1.0, 0.0); glVertex2f(screen.x, 0.0);
-    glTexCoord2f(1.0, 1.0); glVertex2f(screen.x, screen.y);
     glTexCoord2f(0.0, 1.0); glVertex2f(0.0, screen.y);
-    /*
-      glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, -2.0);
-      glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, 1.0, -2.0);
-      glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, -2.0);
-      glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, -2.0);
-
-     */
+    glTexCoord2f(1.0, 1.0); glVertex2f(screen.x, screen.y);
+    glTexCoord2f(1.0, 0.0); glVertex2f(screen.x, 0.0);
     glEnd();
 }
 
@@ -236,6 +227,15 @@ void Texture::display(void){
 void Texture::mousePressed(int button, int state, int x, int y){
 
     if(button == GLUT_DOWN) previousMouse= vec2(x, y);
+
+    if(drag == DRAW) {
+        texture.paint(x, screen.y - y);
+    }
+    if (drag == ERASE) {
+        texture.erase(x, screen.y - y);
+    }
+
+    Context::display();
 }
 
 // mouse dragged callback
@@ -244,6 +244,12 @@ void Texture::mouseDragged(int x, int y){
 
     // paint on texture
     // XXX
+    if(drag == DRAW) {
+        texture.paint(x, screen.y - y);
+    }
+    if (drag == ERASE) {
+        texture.erase(x, screen.y - y);
+    }
 
     // INSERT YOUR CODE HERE
 

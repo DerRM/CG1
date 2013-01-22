@@ -151,33 +151,38 @@ void Image::unbind(){
 vec4 Image::get(unsigned int x, unsigned int y){
 
     // XXX
-
-    // maybe I should just directly look into the data array ??
-
-
-    // b/c this does not seem to really make sense
-    glm::vec4 pixel(4);
-    // the texture to which is copied
-    GLuint readPixel;
-    glGenTextures(1, &readPixel);
-    glBindTexture(GL_TEXTURE_2D, readPixel);
-    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 1, 1, 0);
+    glm::vec4 pixel;
+    pixel = data[height*y+x];
+    //    cout << "pixel x " << pixel.x << ", y:" << pixel.y << ", z:" << pixel.z << ", w:" << pixel.w << endl;
     return pixel;
     // END XXX
 }
+
+bool pen = false;
+const int size = 10;
+GLubyte subImage[size][size][4];
+
 
 // draw in texture
 // XXX: NEEDS TO BE IMPLEMENTED
 void Image::paint(float x, float y){
     // XXX
-    glm::vec4 blackPixel(1, 1, 1, 1);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_RGBA, GL_FLOAT, &blackPixel[0]);
 
-    //void glTexSubImage2D(GLenum target, GLint level, GLint xoffset,
-    //                   GLint yoffset, GLsizei width, GLsizei height,
-    //                   GLenum format, GLenum type, const GLvoid *pixels);
+    //    cout<<"paint " << x << "/" << y <<endl;
+    if(!pen) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                subImage[i][j][0] = (GLubyte) 33;
+                subImage[i][j][1] = (GLubyte) 100;
+                subImage[i][j][2] = (GLubyte) 10;
+                subImage[i][j][3] = (GLubyte) 255;
+            }
+        }
+        pen = true;
+        cout<<"thing set up"<<endl;
+    }
 
-
+    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, size, size, GL_RGBA, GL_UNSIGNED_BYTE, subImage);
     // END XXX
 }
 
@@ -185,15 +190,15 @@ void Image::paint(float x, float y){
 // XXX: NEEDS TO BE IMPLEMENTED
 void Image::erase(float x, float y){
     // XXX
+    //cout << "erase " << x << "/" << y << endl;
 
     // just redraw original texture to delete what was painted
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, &data[0]);
+    //    glBindTexture(GL_TEXTURE_2D, textureID);
+    //    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, &data[0]);
 
-
-    // or do the mean that we erase the color of the texture like a rubber
-
-
+    // erase the previously painted dots from the texture like a rubber
+    glm::vec4 subImg = get(x,y);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_RGBA, GL_FLOAT, &subImg[0]);
     // END XXX
 }
 

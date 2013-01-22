@@ -34,7 +34,7 @@ static vec2 screen= vec2(1024, 512);
 
 
 // initial window position
-static const vec2 position= vec2(2100, 100);
+static const vec2 position= vec2(100, 100);
 
 // gap between subwindows
 static const int GAP= 3;
