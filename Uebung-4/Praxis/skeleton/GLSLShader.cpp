@@ -5,6 +5,8 @@
 #include "GLSLShader.h"
 
 
+static bool loaded = false;
+
 GLSLShader::GLSLShader():
     vs_object(0),
     fs_object(0)
@@ -19,6 +21,11 @@ GLSLShader::~GLSLShader()
     glDeleteProgram(prog_object);
 }
 
+bool GLSLShader::notLoaded()
+{
+    return !loaded;
+}
+
 void GLSLShader::load(const string& name)
 {
     vs_object = createShader(GL_VERTEX_SHADER, name+string(".vert"));
@@ -29,6 +36,7 @@ void GLSLShader::load(const string& name)
     if(fs_object)glAttachShader(prog_object, fs_object);
     glLinkProgram(prog_object);
 
+    loaded = true;
     printProgramLog(prog_object);
 }
 

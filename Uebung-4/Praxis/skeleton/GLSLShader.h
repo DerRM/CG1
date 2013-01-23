@@ -39,6 +39,9 @@ class GLSLShader
     GLSLShader();
     ~GLSLShader();
 
+    // check if shader is allready loaded
+    bool notLoaded();
+
     // Load the shader from it's name (the path to the shader without extension .frag or .vert)
     void load(const string& name);
 

@@ -66,6 +66,7 @@ static GLfloat farPlane;
 
 static Image texture;
 static Mesh mesh;
+static GLSLShader shader;
 
 /*************************************************************************************/
 
@@ -408,6 +409,11 @@ void World::display(void){
     World::reshape(screen.x, screen.y);
     //    cout << "display world" << endl;
 
+    if (shader.notLoaded()) {
+        //cout<<"loading shader"<<endl;
+        shader.load("shaders/BlinnPhong");
+    }
+
     glClearColor(0.2, 0.2, 0.2, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -501,6 +507,9 @@ void World::display(void){
 
         // END XXX
     }
+
+    if(environmentMapping) shader.bindShader();
+    else shader.unbindShader();
 
     // else draw model
     // XXX
