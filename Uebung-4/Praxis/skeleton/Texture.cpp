@@ -10,6 +10,17 @@
    tu berlin
    ------------------------------------------------------------- */
 
+
+/** a little ToDo list
+    - do we need to hide a model when the plane is activated or can we show both?
+    - the cursor is not at the correct position in the model
+    - does the plane also have a cursor???
+    - remove seam from sphere mapping texture
+    - write shader for environment maps
+    - part No.5
+ */
+
+
 #ifdef __APPLE__
 #include <GL/freeglut.h>
 #elif _WIN32
