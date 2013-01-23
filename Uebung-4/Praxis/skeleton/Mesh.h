@@ -28,6 +28,8 @@ public:
     void loadOff(const string& filename);
     void renderFlat();
     void renderSmooth();
+
+    glm::vec3 m_boundingSphereCenter;
 private:
     glm::vec3* m_vertices;
     glm::vec3* m_surfaceNormals;
@@ -36,7 +38,6 @@ private:
     Face* m_faces;
     int m_numVertices;
     int m_numFaces;
-    glm::vec3 m_boundingSphereCenter;
 
     void computeVertexNormals();
     void computeBoundingSphereCenter();
