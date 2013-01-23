@@ -12,17 +12,12 @@
 #endif
 
 #ifdef __APPLE__
-  #include <GL/glew.h>
   #include <GL/freeglut.h>
 #elif _WIN32
-  #include "win32/glew.h"
   #include "win32/freeglut.h"
 #else
-  #include <GL/glew.h>
   #include <GL/freeglut.h>
 #endif
-
-#include "glm/glm.hpp"
 
 using namespace std;
 

@@ -158,6 +158,14 @@ void Context::init(int argc, char **argv){
 
     createWindows();
 
+    // as suggested from forum, doesnt seem to make a difference tough
+    GLenum errGlew = glewInit();
+    if (GLEW_OK != errGlew) {
+        /* Problem: glewInit failed, something is seriously wrong. */
+        fprintf(stderr, "Error: %s\n", glewGetErrorString(errGlew));
+    }
+    fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
     // general GL settings

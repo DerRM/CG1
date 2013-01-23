@@ -27,6 +27,7 @@
 #include "Texture.hpp"
 #include "Image.hpp"
 #include "Mesh.h"
+#include "GLSLShader.h"
 
 using namespace glm;
 using namespace std;
