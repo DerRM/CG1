@@ -168,9 +168,11 @@ void Mesh::computeBoundingSphereCenter()
 void Mesh::computeTexCoords()
 {
     m_texCoords = new glm::vec2[m_numVertices];
+    glm::vec3 texCoords;
 
     for (int i = 0; i < m_numVertices; i++)
     {
+        /*
         double x_minus_x_s = m_vertices[i].x - m_boundingSphereCenter.x;
         double y_minus_y_s = m_vertices[i].y - m_boundingSphereCenter.y;
         double z_minus_z_s = m_vertices[i].z - m_boundingSphereCenter.z;
@@ -183,6 +185,33 @@ void Mesh::computeTexCoords()
         //uv_coord.x = 1.0 - uv_coord.x;
         uv_coord.y = 1.0 - uv_coord.y;
         m_texCoords[i] = uv_coord;
+        */
+        // another approch I found somewhere...
+        texCoords = glm::vec3(m_vertices[i]);
+        m_texCoords[i] = glm::vec2((atan2(texCoords.y, texCoords.x) / 3.1415926 + 1.0) * 0.5,
+                                      (asin(texCoords.z) / 3.1415926 + 0.5));
+
+        /*
+        // how does this work and what is it for => I dont know
+        float u, v;
+        if (fixupMethod == EdgeFixup_Stretch) {
+            // Transform x,y to [-1, 1] range, match up edges exactly.
+            u = float(x) * 2.0f / (edgeLength - 1) - 1.0f;
+            v = float(y) * 2.0f / (edgeLength - 1) - 1.0f;
+        }
+        else {
+            // Transform x,y to [-1, 1] range, offset by 0.5 to point to texel center.
+            u = (float(x) + 0.5f) * (2.0f / edgeLength) - 1.0f;
+            v = (float(y) + 0.5f) * (2.0f / edgeLength) - 1.0f;
+        }
+
+        if (fixupMethod == EdgeFixup_Warp) {
+            // Warp texel centers in the proximity of the edges.
+            float a = powf(float(edgeLength), 2.0f) / powf(float(edgeLength - 1), 3.0f);
+            u = a * powf(u, 3) + u;
+            v = a * powf(v, 3) + v;
+        }
+        */
     }
 }
 
@@ -201,6 +230,22 @@ void Mesh::renderFlat()
     glEnd();
 }
 
+// fix_cube_lookup
+// (http://www.altdevblogaday.com/2012/03/03/seamless-cube-map-filtering/)
+// this would be the second part of something where I dont know how to do the 1st
+glm::vec3 fcl(glm::vec3 v) {
+
+    float cube_size = 100.; // need the correct size
+    //    v = glm::vec3(m_vertices[m_faces[i].index1]);
+    float M = max(max(abs(v.x), abs(v.y)), abs(v.z));
+    float scale = (cube_size - 1) / cube_size;
+    if (abs(v.x) != M) v.x *= scale;
+    if (abs(v.y) != M) v.y *= scale;
+    if (abs(v.z) != M) v.z *= scale;
+
+   return v;
+}
+
 void Mesh::renderSmooth()
 {
     glBegin(GL_TRIANGLES);
@@ -210,12 +255,15 @@ void Mesh::renderSmooth()
             glTexCoord2d(m_texCoords[m_faces[i].index1].x, m_texCoords[m_faces[i].index1].y);
             glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index1]));
             glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index1]));
+            //glVertex3fv(glm::value_ptr(fcl(m_vertices[m_faces[i].index1])));
             glTexCoord2d(m_texCoords[m_faces[i].index2].x, m_texCoords[m_faces[i].index2].y);
             glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index2]));
             glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index2]));
+            //glVertex3fv(glm::value_ptr(fcl(m_vertices[m_faces[i].index2])));
             glTexCoord2d(m_texCoords[m_faces[i].index3].x, m_texCoords[m_faces[i].index3].y);
             glNormal3fv(glm::value_ptr(m_vertexNormals[m_faces[i].index3]));
             glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
+            //glVertex3fv(glm::value_ptr(fcl(m_vertices[m_faces[i].index3])));
         }
     }
     glEnd();
