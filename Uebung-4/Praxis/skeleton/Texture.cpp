@@ -12,8 +12,6 @@
 
 
 /** a little ToDo list
-    - show no model if none is choosen
-    - do we need to hide a model when the plane is activated or can we show both?
     - the cursor is not at the correct position in the model
     - does the plane also have a cursor???
     - remove seam from sphere mapping texture
@@ -61,6 +59,7 @@ static bool showCoordinates= true;
 static bool showOrigin= true;
 static bool environmentMapping= false;
 static bool drawRect= false;
+static bool renderModel = true;
 
 static GLuint modulation= GL_MODULATE;
 
@@ -518,22 +517,24 @@ void World::display(void){
         glEnd();
 
         // END XXX
-    }
 
     // else draw model
-    // XXX
-
-    if(environmentMapping) {
-        shader.bindShader();
-        const char* samplerName = "EnvMap";
-        shader.setIntParam(samplerName, 0);
     } else {
-        shader.unbindShader();
-        texture.bind();
-    }
 
-    mesh.renderSmooth();
-    // END XXX
+        // XXX
+        texture.bind();
+
+        if(environmentMapping) {
+            shader.bindShader();
+            const char* samplerName = "EnvMap";
+            shader.setIntParam(samplerName, 0);
+        } else {
+            shader.unbindShader();
+        }
+
+        if (renderModel) mesh.renderSmooth();
+        // END XXX
+    }
 
     glutSwapBuffers();
     shader.unbindShader();
@@ -620,13 +621,14 @@ void World::menu(int value){
         // INSERT YOUR CODE HERE
 
         // END XXX
+        renderModel = true;
         drawRect= false;
         break;
     case 14:
         // no model should be displayed with this option selected
         // XXX
-        // INSERT YOUR CODE HERE
-
+        renderModel = false;
+        drawRect= false;
         // END XXX
         break;
     case 15:
