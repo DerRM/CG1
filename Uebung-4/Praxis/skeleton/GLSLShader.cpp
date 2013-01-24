@@ -51,6 +51,7 @@ void GLSLShader::compileFromSource(const char* vertexShaderSource, const char* f
     glLinkProgram(prog_object);
 
     printProgramLog(prog_object);
+    cout << "printed shader program log" << endl;
 }
 
 void GLSLShader::bindShader()const
@@ -61,6 +62,13 @@ void GLSLShader::bindShader()const
 void GLSLShader::unbindShader()const
 {
     glUseProgram(0);
+}
+
+void GLSLShader::setIntParam(const char* pname, const int& value)
+{
+    GLfloat id = glGetUniformLocation(this->prog_object, pname);
+    // Set the value
+    glUniform1i(id, value);
 }
 
 void GLSLShader::setFloatParam(const char* pname, const float& value)

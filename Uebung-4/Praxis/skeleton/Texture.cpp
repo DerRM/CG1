@@ -12,6 +12,7 @@
 
 
 /** a little ToDo list
+    - show no model if none is choosen
     - do we need to hide a model when the plane is activated or can we show both?
     - the cursor is not at the correct position in the model
     - does the plane also have a cursor???
@@ -422,7 +423,7 @@ void World::display(void){
 
     if (shader.notLoaded()) {
         //cout<<"loading shader"<<endl;
-        shader.load("shaders/BlinnPhong");
+        shader.load("shaders/Environment");
     }
 
     glClearColor(0.2, 0.2, 0.2, 0.0);
@@ -519,16 +520,24 @@ void World::display(void){
         // END XXX
     }
 
-    if(environmentMapping) shader.bindShader();
-    else shader.unbindShader();
-
     // else draw model
     // XXX
-    texture.bind();
+
+    if(environmentMapping) {
+        shader.bindShader();
+        const char* samplerName = "EnvMap";
+        shader.setIntParam(samplerName, 0);
+    } else {
+        shader.unbindShader();
+        texture.bind();
+    }
+
     mesh.renderSmooth();
     // END XXX
 
     glutSwapBuffers();
+    shader.unbindShader();
+
     //glDisable(GL_DEPTH_TEST);//sly
     //glDisable(GL_LIGHT0);
     //glTranslatef(-shift.x, -shift.y, -shift.z);
