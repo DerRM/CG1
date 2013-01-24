@@ -28,14 +28,17 @@ public:
     void loadOff(const string& filename);
     void renderFlat();
     void renderSmooth();
+    void computeSupplementalVertices();
 
     glm::vec3 m_boundingSphereCenter;
 private:
     glm::vec3* m_vertices;
+    glm::vec3* m_vertices_new;
     glm::vec3* m_surfaceNormals;
     glm::vec3* m_vertexNormals;
     glm::vec2* m_texCoords;
     Face* m_faces;
+    Face* m_faces_new;
     int m_numVertices;
     int m_numFaces;
 

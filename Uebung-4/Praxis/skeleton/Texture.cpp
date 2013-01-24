@@ -79,6 +79,9 @@ static Image texture;
 static Mesh mesh;
 static GLSLShader shader;
 
+bool defaultTexture = true;//false;
+bool defaultModel = false;
+
 /*************************************************************************************/
 
 // calculate cursor position
@@ -221,6 +224,14 @@ void Texture::display(void){
 
     Texture::reshape(screen.x, screen.y);
     //    cout << "display texture" << endl;
+
+
+    // load a default
+    if(!defaultTexture) {
+        texture.load(textures[13]);
+        texture.generateTexture();
+        defaultTexture = true;
+    }
 
     // setup model matrix
     glMatrixMode(GL_MODELVIEW);
@@ -420,6 +431,12 @@ void World::display(void){
     World::reshape(screen.x, screen.y);
     //    cout << "display world" << endl;
 
+    // load a default
+    if(!defaultModel) {
+        mesh.loadOff(models[13]); //load sphere as default
+        defaultModel = true;
+    }
+
     if (shader.notLoaded()) {
         //cout<<"loading shader"<<endl;
         shader.load("shaders/Environment");
@@ -533,8 +550,9 @@ void World::display(void){
         }
 
         if (renderModel) mesh.renderSmooth();
-        // END XXX
     }
+    // END XXX
+    //    mesh.computeSupplementalVertices();
 
     glutSwapBuffers();
     shader.unbindShader();

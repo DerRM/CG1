@@ -16,7 +16,7 @@
 
 varying vec3  Normal;
 varying vec3  EyeDir;
-varying mat4  myMatrix;
+//varying mat4  myMatrix;
 
 //varying float LightIntensity;
 
@@ -32,6 +32,6 @@ void main()
     vec4 pos       = gl_ModelViewMatrix * gl_Vertex;
     EyeDir         = pos.xyz;
 
-    myMatrix       = gl_ProjectionMatrix;
+    //myMatrix       = gl_ProjectionMatrix;
     //  LightIntensity = max(dot(normalize(LightPos - EyeDir), Normal), 0.0);
 }

@@ -22,7 +22,7 @@ uniform sampler2D EnvMap;
 
 varying vec3 Normal;
 varying vec3  EyeDir;
-varying mat4  myMatrix;
+//varying mat4  myMatrix;
 
 //varying float LightIntensity;
 
@@ -32,7 +32,7 @@ void main()
 
     vec3 reflectDir = reflect(EyeDir, Normal);
 
-    reflectDir *= myMatrix;
+    //reflectDir *= myMatrix;
 
     // Compute altitude and azimuth angles
 

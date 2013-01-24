@@ -114,9 +114,120 @@ void Mesh::loadOff(const string& filename)
         linenumber++;
     }
 
+    computeTexCoords();
+    //    computeSupplementalVertices();
     computeVertexNormals();
     computeBoundingSphereCenter();
-    computeTexCoords();
+
+}
+
+void Mesh::computeSupplementalVertices()
+{
+    double variation = 0.9;
+    int vertices_to_add = 0;
+
+    glDisable(GL_LIGHTING);
+    glColor3f(0.1,0.51,0.91);
+    glLineWidth(2.);
+    glBegin(GL_LINES);
+
+    for (int i = 0; i < m_numFaces; i++) {
+
+        int i0 = m_faces[i].index1;
+        int i1 = m_faces[i].index2;
+        int i2 = m_faces[i].index3;
+
+        // calculate texture variation on every edge
+        //m_texCoords[m_faces[i].index1];
+
+        if(abs(m_texCoords[i0].x - m_texCoords[i1].x) > variation) {
+            vertices_to_add++;
+            glColor3f(0.1,0.51,0.691);
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index1]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index2]));
+        }
+        if(abs(m_texCoords[i1].x - m_texCoords[i2].x) > variation) {
+            vertices_to_add++;
+            glColor3f(0.41,0.251,0.191);
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index2]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
+        }
+        if(abs(m_texCoords[i2].x - m_texCoords[i0].x) > variation) {
+            vertices_to_add++;
+            glColor3f(0.81,0.151,0.91);
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
+            glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index1]));
+        }
+    }
+    glEnd();
+
+    // make new vertex and faces arrays
+    m_vertices_new = new glm::vec3[m_numVertices+vertices_to_add];
+    m_faces_new = new Face[m_numFaces+vertices_to_add];
+
+    // copy existing data into the new arrays
+    for (int i = 0; i < m_numVertices; i++) {
+        m_vertices_new[i] = m_vertices[i];
+        m_faces_new[i] = m_faces[i];
+    }
+
+    // we still need to loop over an array of the original size because we haven't added anything yet
+    for (int i = 0, j = m_numVertices; i < m_numFaces; i++) {
+
+        int i0 = m_faces[i].index1;
+        int i1 = m_faces[i].index2;
+        int i2 = m_faces[i].index3;
+
+        glm::vec3 v0 = m_vertices[i0];
+        glm::vec3 v1 = m_vertices[i1];
+        glm::vec3 v2 = m_vertices[i2];
+
+        if(abs(m_texCoords[i0].x - m_texCoords[i1].x) > variation) {
+
+            glm::vec3 edge0 = v0 - v1;
+            float l0 = glm::dot(edge0, edge0); // lenght in vertex coordinates
+
+            double dist1 = 1 - m_texCoords[i0].x; // distance from seam in tex coord
+            double dist2 = 1 - m_texCoords[i1].x;
+            double l_tex = dist1 + dist2;  // lenght in tex coord
+
+            // calculate a new vertex, to make it easy just in the middle of the edge
+            glm::vec3 v_new;
+            //            v_new.x = v0.x l0  (l_tex/100 * dist1);
+            v_new.x = (v0.x + v1.x)/2.;
+            v_new.y = (v0.y + v1.y)/2.;
+            v_new.z = (v0.z + v1.z)/2.;
+
+            // add a new entry to the list of vertices
+            m_vertices_new[j] = v_new;
+
+            // exchange this vertex in the actual face
+            m_faces[i].index2 = j;
+
+            // add a new face with the other vertices to the end of the facelist
+            Face newFace;
+            newFace.index1 = j;
+            newFace.index2 = m_faces[i].index2;
+            newFace.index3 = m_faces[i].index3;
+
+            m_faces_new[m_numFaces+i] = newFace;
+
+            j++;
+        }
+        if(abs(m_texCoords[i1].x - m_texCoords[i2].x) > variation) {
+            glm::vec3 edge1 = v1 - v2;
+            float l1 = glm::dot(edge1, edge1);
+        }
+        if(abs(m_texCoords[i2].x - m_texCoords[i0].x) > variation) {
+            glm::vec3 edge2 = v2 - v0;
+            float l2 = glm::dot(edge2, edge2);
+        }
+
+    }
+
+    // reassign new arrays to the original names
+    m_vertices = m_vertices_new;
+    m_faces = m_faces_new;
 }
 
 void Mesh::computeVertexNormals()
