@@ -16,7 +16,7 @@
 
 varying vec3  Normal;
 varying vec3  EyeDir;
-varying vec3  myMatrix;
+varying mat4  myMatrix;
 
 //varying float LightIntensity;
 
