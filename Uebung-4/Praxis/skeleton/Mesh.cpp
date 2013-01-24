@@ -115,17 +115,18 @@ void Mesh::loadOff(const string& filename)
     }
 
     computeTexCoords();
-    //    computeSupplementalVertices();
+    computeSupplementalVertices();
+    computeTexCoords();
     computeVertexNormals();
     computeBoundingSphereCenter();
 
 }
 
-void Mesh::computeSupplementalVertices()
-{
-    double variation = 0.9;
-    int vertices_to_add = 0;
+double variation = 0.9;
+int vertices_to_add = 0;
 
+void Mesh::showDistortedEdges()
+{
     glDisable(GL_LIGHTING);
     glColor3f(0.1,0.51,0.91);
     glLineWidth(2.);
@@ -138,8 +139,6 @@ void Mesh::computeSupplementalVertices()
         int i2 = m_faces[i].index3;
 
         // calculate texture variation on every edge
-        //m_texCoords[m_faces[i].index1];
-
         if(abs(m_texCoords[i0].x - m_texCoords[i1].x) > variation) {
             vertices_to_add++;
             glColor3f(0.1,0.51,0.691);
@@ -160,6 +159,12 @@ void Mesh::computeSupplementalVertices()
         }
     }
     glEnd();
+}
+
+void Mesh::computeSupplementalVertices()
+{
+    showDistortedEdges(); // and count them of course
+    cout << "need to add " << vertices_to_add << " new vertices" << endl;
 
     // make new vertex and faces arrays
     m_vertices_new = new glm::vec3[m_numVertices+vertices_to_add];
@@ -168,6 +173,8 @@ void Mesh::computeSupplementalVertices()
     // copy existing data into the new arrays
     for (int i = 0; i < m_numVertices; i++) {
         m_vertices_new[i] = m_vertices[i];
+    }
+    for (int i = 0; i < m_numFaces; i++) {
         m_faces_new[i] = m_faces[i];
     }
 
@@ -185,7 +192,7 @@ void Mesh::computeSupplementalVertices()
         if(abs(m_texCoords[i0].x - m_texCoords[i1].x) > variation) {
 
             glm::vec3 edge0 = v0 - v1;
-            float l0 = glm::dot(edge0, edge0); // lenght in vertex coordinates
+            float l0 = glm::dot(edge0, edge0); // length in vertex coordinates
 
             double dist1 = 1 - m_texCoords[i0].x; // distance from seam in tex coord
             double dist2 = 1 - m_texCoords[i1].x;
@@ -197,6 +204,8 @@ void Mesh::computeSupplementalVertices()
             v_new.x = (v0.x + v1.x)/2.;
             v_new.y = (v0.y + v1.y)/2.;
             v_new.z = (v0.z + v1.z)/2.;
+
+            cout << "1 v_new: " << v_new.x << "/"  << v_new.y << "/"  << v_new.z << endl;
 
             // add a new entry to the list of vertices
             m_vertices_new[j] = v_new;
@@ -213,21 +222,81 @@ void Mesh::computeSupplementalVertices()
             m_faces_new[m_numFaces+i] = newFace;
 
             j++;
-        }
-        if(abs(m_texCoords[i1].x - m_texCoords[i2].x) > variation) {
+        // else if is wrong but I might get quads if I tile an already tiled triangle
+        } else if(abs(m_texCoords[i1].x - m_texCoords[i2].x) > variation) {
             glm::vec3 edge1 = v1 - v2;
             float l1 = glm::dot(edge1, edge1);
-        }
-        if(abs(m_texCoords[i2].x - m_texCoords[i0].x) > variation) {
+
+            double dist1 = 1 - m_texCoords[i1].x; // distance from seam in tex coord
+            double dist2 = 1 - m_texCoords[i2].x;
+            double l_tex = dist1 + dist2;  // length in tex coord
+
+            // calculate a new vertex, to make it easy just in the middle of the edge
+            glm::vec3 v_new;
+            //            v_new.x = v0.x l0  (l_tex/100 * dist1);
+            v_new.x = (v1.x + v2.x)/2.;
+            v_new.y = (v1.y + v2.y)/2.;
+            v_new.z = (v1.z + v2.z)/2.;
+
+            cout << "2 v_new: " << v_new.x << "/"  << v_new.y << "/"  << v_new.z << endl;
+
+            // add a new entry to the list of vertices
+            m_vertices_new[j] = v_new;
+
+            // exchange this vertex in the actual face
+            m_faces[i].index2 = j;
+
+            // add a new face with the other vertices to the end of the facelist
+            Face newFace;
+            newFace.index1 = j;
+            newFace.index2 = m_faces[i].index3;
+            newFace.index3 = m_faces[i].index1;
+
+            m_faces_new[m_numFaces+i] = newFace;
+
+            j++;
+        // else if is wrong but I might get quads if I tile an already tiled triangle
+        } else if(abs(m_texCoords[i2].x - m_texCoords[i0].x) > variation) {
             glm::vec3 edge2 = v2 - v0;
             float l2 = glm::dot(edge2, edge2);
+
+            double dist1 = 1 - m_texCoords[i2].x; // distance from seam in tex coord
+            double dist2 = 1 - m_texCoords[i0].x;
+            double l_tex = dist1 + dist2;  // lenght in tex coord
+
+            // calculate a new vertex, to make it easy just in the middle of the edge
+            glm::vec3 v_new;
+            //            v_new.x = v0.x l0  (l_tex/100 * dist1);
+            v_new.x = (v2.x + v0.x)/2.;
+            v_new.y = (v2.y + v0.y)/2.;
+            v_new.z = (v2.z + v0.z)/2.;
+
+            cout << "3 v_new: " << v_new.x << "/"  << v_new.y << "/"  << v_new.z << endl;
+
+            // add a new entry to the list of vertices
+            m_vertices_new[j] = v_new;
+
+            // exchange this vertex in the actual face
+            m_faces[i].index2 = j;
+
+            // add a new face with the other vertices to the end of the facelist
+            Face newFace;
+            newFace.index1 = j;
+            newFace.index2 = m_faces[i].index1;
+            newFace.index3 = m_faces[i].index2;
+
+            m_faces_new[m_numFaces+i] = newFace;
+
+            j++;
         }
 
     }
 
     // reassign new arrays to the original names
     m_vertices = m_vertices_new;
+    m_numVertices += vertices_to_add;
     m_faces = m_faces_new;
+    m_numFaces += vertices_to_add;
 }
 
 void Mesh::computeVertexNormals()
@@ -280,7 +349,7 @@ void Mesh::computeTexCoords()
 {
     m_texCoords = new glm::vec2[m_numVertices];
     glm::vec3 texCoords;
-
+    cout << "calc " << m_numVertices << " texCoords" << endl;
     for (int i = 0; i < m_numVertices; i++)
     {
         /*

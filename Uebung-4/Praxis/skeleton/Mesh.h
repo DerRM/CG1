@@ -28,7 +28,7 @@ public:
     void loadOff(const string& filename);
     void renderFlat();
     void renderSmooth();
-    void computeSupplementalVertices();
+    void showDistortedEdges();
 
     glm::vec3 m_boundingSphereCenter;
 private:
@@ -42,6 +42,7 @@ private:
     int m_numVertices;
     int m_numFaces;
 
+    void computeSupplementalVertices();
     void computeVertexNormals();
     void computeBoundingSphereCenter();
     void computeTexCoords();

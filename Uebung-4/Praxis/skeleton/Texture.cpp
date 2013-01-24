@@ -552,7 +552,7 @@ void World::display(void){
         if (renderModel) mesh.renderSmooth();
     }
     // END XXX
-    //    mesh.computeSupplementalVertices();
+    //mesh.showDistortedEdges();
 
     glutSwapBuffers();
     shader.unbindShader();
