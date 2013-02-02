@@ -7,6 +7,7 @@
 
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 using namespace glm;
 
@@ -106,21 +107,10 @@ void create_primary_rays(std::vector<Ray>& rays, int resx, int resy)
 {
     
 	// TODO!
-    GLdouble myModelView[16];
-    GLdouble myProjection[16];
-    glGetDoublev( GL_MODELVIEW_MATRIX, myModelView );
-    glGetDoublev( GL_PROJECTION_MATRIX, myProjection );
-    //glGetIntegerv( GL_VIEWPORT, viewport );
-    GLdouble startX, startY, startZ;
-    GLdouble endX, endY, endZ;
+    vec3 start = unProject(vec3(resx, resy, 0), modelview, projection, make_vec4(viewport));
+    vec3 end = unProject(vec3(resx, resy, 1), modelview, projection, make_vec4(viewport));
     
-    gluUnProject((GLdouble)resx, (GLdouble)resy, zNear, myModelView, myProjection, viewport, &startX, &startY, &startZ);
-    std::cout << "x: " << startX << " y: " << startY << " z: " << startZ << "\n";
-    
-    gluUnProject((GLdouble)resx, (GLdouble)resy, zFar, myModelView, myProjection, viewport, &endX, &endY, &endZ);
-    std::cout << "x: " << endX << " y: " << endY << " z: " << endZ << "\n";
-
-    Ray ray = Ray(vec3(startX, startY, startZ), vec3(endX - startX, endY - startY, endZ - startZ));
+    Ray ray = Ray(start, normalize(end - start));
     rays.push_back(ray);
 }
 
@@ -136,8 +126,15 @@ void ray_trace()
 
     std::cout << "raycast: w=" << w << " h=" << h << std::endl;
 
-    create_primary_rays(rays, w, h);
+    for (int i = 0; i < _win_w; i += (1 / _sample_factor))
+    {
+        for (int j = 0; j < _win_h; j+= (1 / _sample_factor))
+        {
+            create_primary_rays(rays, i, j);
+        }
+    }
 
+//    create_primary_rays(rays, 0, 0);
 	rayTracedImage.clear();
     rayTracedImage.resize(w*h, vec3(0, 1, 0));
     
@@ -174,7 +171,7 @@ void draw_rays()
         glBegin(GL_LINES);
         {
             glVertex3fv(&rays[i].o[0]);
-            vec3 dir = (rays[i].o + rays[i].d) * -10.0f;
+            vec3 dir = (rays[i].o + rays[i].d * 3.0f);
             glVertex3fv(&dir[0]);
         }
         glEnd();
@@ -471,6 +468,8 @@ void redisplay_all()
 // gui interaction /////////////////////////////////////
 void screen_mouse(int button, int state, int x, int y)
 {
+    rays.clear();
+    
     if (button == GLUT_LEFT && state == GLUT_DOWN)
     {
         _view_motion = true;
