@@ -9,6 +9,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Ray.h"
+#include "Mesh.h"
+
 using namespace glm;
 
 #ifdef __APPLE__ 
@@ -16,33 +19,6 @@ using namespace glm;
 #else
 #include "GL/glut.h"
 #endif
-
-/*
- * A simple structure to contain a ray
- */
-struct Ray
-{
-    vec3 o;
-    vec3 d;
-
-    float tmin;
-
-    Ray() : tmin(0) {}
-    Ray(const vec3& origin, const vec3& dir)
-        :  o(origin), d(dir), tmin(0)
-    {
-    }
-    Ray(const vec3& origin, const vec3& dir, float eps)
-        :  o(origin + eps*dir), d(dir), tmin(0)
-    {
-    }
-
-    vec3 att(float t) const
-    {
-        return o + t*d;
-    }
-};
-
 
 // global variables //////////////////////////////////////////
 int _id_window, _id_screen, _id_world;
@@ -72,6 +48,8 @@ bool _view_motion = false;
 
 float _world_oldx = 0;
 float _world_roty = -35;
+
+Mesh _mesh;
 
 std::vector<vec3> hitPoints;
 std::vector<Ray> rays;
@@ -172,15 +150,9 @@ void ray_trace()
     {
         for(size_t i = 0; i < w; i++)
         {
-		
-//			if((i+j) % 2 == 0)
-//			{
-//				rayTracedImage[j*w+i] = vec3(1,0,0);
-//			}
-            
-            if (intersectTriangle(rays[i + j * h]))
+            if (intersectTriangle(rays[i + j * w]))
             {
-                rayTracedImage[i + j * h] = vec3(1, 0, 0);
+                rayTracedImage[i + j * w] = vec3(1, 0, 0);
             }
                 
 		}
@@ -405,6 +377,8 @@ void draw_scene_openGL()
 	glVertex3f(0,10,0);
 	glEnd();
 
+//    _mesh.renderFlat();
+    
     glPopMatrix();
 }
 
@@ -655,6 +629,8 @@ int main(int argc, char** argv)
     glutKeyboardFunc(main_keyboard);
     glutCreateMenu(screen_menu);
     redisplay_all();
+    
+    _mesh.loadOff("meshes/torus_tri.off");
 
     glutMainLoop();
     
