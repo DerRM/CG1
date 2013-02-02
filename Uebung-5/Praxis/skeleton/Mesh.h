@@ -17,6 +17,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Ray.h"
+#include "KdTree.h"
 
 #ifdef __APPLE__
 #include <GL/glew.h>

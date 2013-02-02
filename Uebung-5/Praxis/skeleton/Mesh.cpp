@@ -97,6 +97,9 @@ void Mesh::loadOff(const string& filename)
         linenumber++;
     }
     
+    KdTree tree;
+    tree.makeKdTree(m_vertices, m_numVertices);
+    
     computeVertexNormals();
 }
 
