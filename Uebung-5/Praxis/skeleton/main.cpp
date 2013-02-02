@@ -73,7 +73,7 @@ bool _view_motion = false;
 float _world_oldx = 0;
 float _world_roty = -35;
 
-
+std::vector<vec3> hitPoints;
 std::vector<Ray> rays;
 std::vector<vec3> rayTracedImage;
 GLuint rayTracedImageId = 0;
@@ -114,6 +114,34 @@ void create_primary_rays(std::vector<Ray>& rays, int resx, int resy)
     rays.push_back(ray);
 }
 
+bool intersectTriangle(const Ray& ray)
+{
+    vec3 p0 = (vec3) (modelview * vec4(0, 0, 0, 1.0));
+    vec3 p1 = (vec3) (modelview * vec4(10, 0, 0, 1.0));
+    vec3 p2 = (vec3) (modelview * vec4(0, 10, 0, 1.0));
+    
+    vec3 normal = normalize(cross(p0 - p1, p1 - p2));
+    float t = - dot(ray.o - p0, normal) / dot(ray.d, normal);
+    vec3 x = ray.o + t * ray.d;
+    
+    if (dot(cross(p1 - p0, x - p0), normal) < 0.0)
+    {
+        return false;
+    }
+    
+    if (dot(cross(p2 - p1, x - p1), normal) < 0.0)
+    {
+        return false;
+    }
+    
+    if (dot(cross(p0 - p2, x - p2), normal) < 0.0)
+    {
+        return false;
+    }
+    
+    return true;
+}
+
 // Ray trace the scene
 void ray_trace()
 {
@@ -126,9 +154,10 @@ void ray_trace()
 
     std::cout << "raycast: w=" << w << " h=" << h << std::endl;
 
-    for (int i = 0; i < _win_w; i += (1 / _sample_factor))
+
+    for (int j = 0; j < _win_h; j+= (1 / _sample_factor))
     {
-        for (int j = 0; j < _win_h; j+= (1 / _sample_factor))
+        for (int i = 0; i < _win_w; i += (1 / _sample_factor))
         {
             create_primary_rays(rays, i, j);
         }
@@ -136,17 +165,24 @@ void ray_trace()
 
 //    create_primary_rays(rays, 0, 0);
 	rayTracedImage.clear();
-    rayTracedImage.resize(w*h, vec3(0, 1, 0));
+    rayTracedImage.resize(w*h, vec3(0, 0, 0));
     
 	// TODO : write the samples with the correct color (i.e raytrace)
-	for(size_t i = 0; i < w; i++)
-	{
-		for(size_t j = 0; j < h; j++)
-		{
-			if((i+j) % 2 == 0)
-			{
-				rayTracedImage[j*w+i] = vec3(1,0,0);
-			}
+    for(size_t j = 0; j < h; j++)
+    {
+        for(size_t i = 0; i < w; i++)
+        {
+		
+//			if((i+j) % 2 == 0)
+//			{
+//				rayTracedImage[j*w+i] = vec3(1,0,0);
+//			}
+            
+            if (intersectTriangle(rays[i + j * h]))
+            {
+                rayTracedImage[i + j * h] = vec3(1, 0, 0);
+            }
+                
 		}
 	}
 
