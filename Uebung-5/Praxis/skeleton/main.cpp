@@ -189,7 +189,7 @@ void ray_trace()
             Hit hit;
             if (_mesh.intersectTriangle(rays[i + j * w], modelview, hit))
             {
-                hitPoints.push_back(hit.hitPoint);
+                hitPoints.push_back((vec3)(inverse(modelview) * vec4(hit.hitPoint, 1.0)));
                 rayTracedImage[i + j * w] = computeLighting(hit, vec3(1.0, 0.0, 0.0));
             }
                 
@@ -416,7 +416,7 @@ void draw_scene_openGL()
 //	glEnd();
 
     _mesh.renderFlat();
-    _mesh.renderBoundingBox();
+    //_mesh.renderBoundingBox();
     
     glColor3f(1.0f, 0.0f, 0.0f);
     glDisable(GL_LIGHTING);
@@ -529,6 +529,7 @@ void redisplay_all()
 void screen_mouse(int button, int state, int x, int y)
 {
     rays.clear();
+    hitPoints.clear();
     
     if (button == GLUT_LEFT && state == GLUT_DOWN)
     {
@@ -544,6 +545,7 @@ void screen_mouse(int button, int state, int x, int y)
     if (state == GLUT_UP)
     {
         _view_motion = false;
+        _mesh.computeAABB(modelview);
 		ray_trace();
     }
 
@@ -681,6 +683,7 @@ int main(int argc, char** argv)
     redisplay_all();
     
     _mesh.loadOff("meshes/teapot.off");
+    _mesh.computeAABB(modelview);
 
     glutMainLoop();
     

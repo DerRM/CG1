@@ -103,7 +103,7 @@ void Mesh::loadOff(const string& filename)
     //tree.makeKdTree(m_vertices, m_numVertices);
     
     computeVertexNormals();
-    computeAABB();
+    //computeAABB();
 }
 
 void Mesh::computeVertexNormals()
@@ -139,7 +139,7 @@ void Mesh::computeVertexNormals()
     }
 }
 
-void Mesh::computeAABB()
+void Mesh::computeAABB(mat4 modelview)
 {
     m_aabb = new AABB();
     
@@ -152,16 +152,17 @@ void Mesh::computeAABB()
     
     for (int i = 0; i < m_numVertices; i++)
     {
-        m_aabb->xMax = std::max(m_vertices[i].x, m_aabb->xMax);
-        m_aabb->yMax = std::max(m_vertices[i].y, m_aabb->yMax);
-        m_aabb->zMax = std::max(m_vertices[i].z, m_aabb->zMax);
-        m_aabb->xMin = std::min(m_vertices[i].x, m_aabb->xMin);
-        m_aabb->yMin = std::min(m_vertices[i].y, m_aabb->yMin);
-        m_aabb->zMin = std::min(m_vertices[i].z, m_aabb->zMin);
+        vec3 vec= (vec3) (modelview * vec4(m_vertices[i], 1.0));
+        m_aabb->xMax = std::max(vec.x, m_aabb->xMax);
+        m_aabb->yMax = std::max(vec.y, m_aabb->yMax);
+        m_aabb->zMax = std::max(vec.z, m_aabb->zMax);
+        m_aabb->xMin = std::min(vec.x, m_aabb->xMin);
+        m_aabb->yMin = std::min(vec.y, m_aabb->yMin);
+        m_aabb->zMin = std::min(vec.z, m_aabb->zMin);
     }
     
-    cout << "xMin " << m_aabb->xMin << " yMin " << m_aabb->yMin << " zMin " << m_aabb->zMin << "\n";
-    cout << "xMax " << m_aabb->xMax << " yMax " << m_aabb->yMax << " zMax " << m_aabb->zMax << "\n";
+    //cout << "xMin " << m_aabb->xMin << " yMin " << m_aabb->yMin << " zMin " << m_aabb->zMin << "\n";
+    //cout << "xMax " << m_aabb->xMax << " yMax " << m_aabb->yMax << " zMax " << m_aabb->zMax << "\n";
 }
 
 AABB* Mesh::getBoundingBox()
@@ -174,8 +175,8 @@ bool Mesh::intersectBoundingBox(Ray& ray, mat4 modelview)
     double ox = ray.o.x; double oy = ray.o.y; double oz = ray.o.z;
     double dx = ray.d.x; double dy = ray.d.y; double dz = ray.d.z;
     
-    vec3 min = (vec3) (vec4(m_aabb->xMin, m_aabb->yMin, m_aabb->zMin, 1.0));
-    vec3 max = (vec3) (vec4(m_aabb->xMax, m_aabb->yMax, m_aabb->zMax, 1.0));
+    vec3 min = vec3(m_aabb->xMin, m_aabb->yMin, m_aabb->zMin);
+    vec3 max = vec3(m_aabb->xMax, m_aabb->yMax, m_aabb->zMax);
     
     double txMin, tyMin, tzMin;
     double txMax, tyMax, tzMax;
@@ -269,9 +270,9 @@ bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
         vec3 v2 = m_vertices[m_faces[i].index2];
         vec3 v3 = m_vertices[m_faces[i].index3];
         
-//        vec3 p0 = (vec3) (modelview * vec4(v1, 1.0));
-//        vec3 p1 = (vec3) (modelview * vec4(v2, 1.0));
-//        vec3 p2 = (vec3) (modelview * vec4(v3, 1.0));
+        v1 = (vec3) (modelview * vec4(v1, 1.0));
+        v2 = (vec3) (modelview * vec4(v2, 1.0));
+        v3 = (vec3) (modelview * vec4(v3, 1.0));
         
         double a = v1.x - v2.x, b = v1.x - v3.x, c = ray.d.x, d = v1.x - ray.o.x;
         double e = v1.y - v2.y, f = v1.y - v3.y, g = ray.d.y, h = v1.y - ray.o.y;

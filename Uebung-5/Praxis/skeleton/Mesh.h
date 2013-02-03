@@ -56,6 +56,7 @@ public:
     void renderBoundingBox();
     bool intersectTriangle(Ray& ray, mat4 modelview, Hit& hit);
     bool intersectBoundingBox(Ray& ray, mat4 modelview);
+    void computeAABB(mat4 modelview);
     AABB* getBoundingBox();
 private:
     glm::vec3* m_vertices;
@@ -67,7 +68,6 @@ private:
     AABB* m_aabb;
     
     void computeVertexNormals();
-    void computeAABB();
     vec3 interpolateNormal(const float beta, const float gamma, Face face);
 };
 
