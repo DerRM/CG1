@@ -273,40 +273,84 @@ bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
 //        vec3 p1 = (vec3) (modelview * vec4(v2, 1.0));
 //        vec3 p2 = (vec3) (modelview * vec4(v3, 1.0));
         
-        vec3 p0 = v1;
-        vec3 p1 = v2;
-        vec3 p2 = v3;
+        double a = v1.x - v2.x, b = v1.x - v3.x, c = ray.d.x, d = v1.x - ray.o.x;
+        double e = v1.y - v2.y, f = v1.y - v3.y, g = ray.d.y, h = v1.y - ray.o.y;
+        double i2 = v1.z - v2.z, j = v1.z - v3.z, k = ray.d.z, l = v1.z - ray.o.z;
+
+        double m = f * k - g * j, n = h * k - g * l, p = f * l - h * j;
+        double q = g * i2 - e * k, r = e * l - h * i2, s = e * j - f * i2;
         
-        vec3 normal = normalize(cross(p0 - p1, p1 - p2));
-        float t = - dot(ray.o - p0, normal) / dot(ray.d, normal);
-        vec3 x = ray.o + t * ray.d;
+        double inv_denom = 1.0 / (a * m + b * q + c * s);
         
-        if (dot(cross(p1 - p0, x - p0), normal) < 0.0)
+        double e1 = d * m - b * n - c * p;
+        double beta = e1 * inv_denom;
+        
+        if (beta < 0.0 || beta > 1.0)
         {
             continue;
         }
         
-        if (dot(cross(p2 - p1, x - p1), normal) < 0.0)
+        double e2 = a * n + d * q + c * r;
+        double gamma = e2 * inv_denom;
+        
+        if (gamma < 0.0 || gamma > 1.0)
         {
             continue;
         }
         
-        if (dot(cross(p0 - p2, x - p2), normal) < 0.0)
+        if (beta + gamma > 1.0)
         {
             continue;
         }
-    
+        
+        double e3 = a * p - b * r + d * s;
+        double t = e3 * inv_denom;
+        
+        vec3 x = ray.o + (float)t * ray.d;
         double tDist = glm::distance(ray.o, x);
         if (distance > tDist)
         {
             distance = tDist;
+            hit.normal = interpolateNormal(beta, gamma, m_faces[i]);
             hit.hitPoint = x;
         }
         
         result = true;
+        
+//        vec3 p0 = v1;
+//        vec3 p1 = v2;
+//        vec3 p2 = v3;
+//        
+//        vec3 normal = normalize(cross(p0 - p1, p1 - p2));
+//        float t = - dot(ray.o - p0, normal) / dot(ray.d, normal);
+//        vec3 x = ray.o + t * ray.d;
+//        
+//        if (dot(cross(p1 - p0, x - p0), normal) < 0.0)
+//        {
+//            continue;
+//        }
+//        
+//        if (dot(cross(p2 - p1, x - p1), normal) < 0.0)
+//        {
+//            continue;
+//        }
+//        
+//        if (dot(cross(p0 - p2, x - p2), normal) < 0.0)
+//        {
+//            continue;
+//        }
     }
     
     return result;
+}
+
+vec3 Mesh::interpolateNormal(const float beta, const float gamma, Face face)
+{
+    vec3 normal((1 - beta - gamma) * m_vertexNormals[face.index1]
+                + beta * m_vertexNormals[face.index2]
+                + gamma * m_vertexNormals[face.index3]);
+    
+    return normalize(normal);
 }
 
 void Mesh::renderFlat()

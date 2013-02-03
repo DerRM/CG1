@@ -121,6 +121,41 @@ bool intersectTriangle(const Ray& ray)
     return true;
 }
 
+vec3 light_pos(-5.0f, 5.0f, 5.0f);
+
+vec3 computeLighting(Hit& hitpoint, vec3 color)
+{
+    vec3 light_dir = light_pos - hitpoint.hitPoint;
+    vec3 norm_light_dir = normalize(light_dir);
+    
+    vec3 half_vec = normalize(light_dir + eye);
+    
+	float diffuseTerm = dot(hitpoint.normal, norm_light_dir);
+    
+    if (diffuseTerm < 0.0f)
+    {
+        diffuseTerm = 0.0f;
+    }
+    
+    if (diffuseTerm > 1.0f)
+    {
+        diffuseTerm = 1.0f;
+    }
+	
+	float half_dot_normal = dot(half_vec, hitpoint.normal);
+    
+	vec4 light_spec = vec4(0.0, 0.0, 0.0, 0.0);
+    
+	if (half_dot_normal > 0.0)
+	{
+		light_spec = diffuseTerm * vec4(0.4, 0.4, 0.4, 1.0) * vec4(0.5, 0.5, 0.5, 1.0) * pow(half_dot_normal, 100.0f);
+	}
+    
+	// Set the color of the fragment
+	vec3 lightingColor = diffuseTerm * vec3(0.5, 0, 0) + (vec3)light_spec;
+    return lightingColor;
+}
+
 // Ray trace the scene
 void ray_trace()
 {
@@ -155,7 +190,7 @@ void ray_trace()
             if (_mesh.intersectTriangle(rays[i + j * w], modelview, hit))
             {
                 hitPoints.push_back(hit.hitPoint);
-                rayTracedImage[i + j * w] = vec3(1, 0, 0);
+                rayTracedImage[i + j * w] = computeLighting(hit, vec3(1.0, 0.0, 0.0));
             }
                 
 		}

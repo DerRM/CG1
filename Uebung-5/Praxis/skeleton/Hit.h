@@ -16,6 +16,7 @@ using namespace glm;
 struct Hit {
     vec3 hitPoint;
     vec3 color;
+    vec3 normal;
 };
 
 #endif

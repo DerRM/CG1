@@ -68,6 +68,7 @@ private:
     
     void computeVertexNormals();
     void computeAABB();
+    vec3 interpolateNormal(const float beta, const float gamma, Face face);
 };
 
 #endif
