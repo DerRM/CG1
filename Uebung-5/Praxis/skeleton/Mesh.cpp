@@ -152,7 +152,7 @@ void Mesh::computeAABB(mat4 modelview)
     
     for (int i = 0; i < m_numVertices; i++)
     {
-        vec3 vec= (vec3) (modelview * vec4(m_vertices[i], 1.0));
+        vec3 vec = m_vertices[i];
         m_aabb->xMax = std::max(vec.x, m_aabb->xMax);
         m_aabb->yMax = std::max(vec.y, m_aabb->yMax);
         m_aabb->zMax = std::max(vec.z, m_aabb->zMax);
@@ -172,11 +172,18 @@ AABB* Mesh::getBoundingBox()
 
 bool Mesh::intersectBoundingBox(Ray& ray, mat4 modelview)
 {
-    double ox = ray.o.x; double oy = ray.o.y; double oz = ray.o.z;
-    double dx = ray.d.x; double dy = ray.d.y; double dz = ray.d.z;
+    Ray newRay;
+    newRay.o = (vec3) (inverse(modelview) * vec4(ray.o, 1.0));
+    newRay.d = (vec3) (inverse(modelview) * vec4(ray.d, 0.0));
+    
+    double ox = newRay.o.x; double oy = newRay.o.y; double oz = newRay.o.z;
+    double dx = newRay.d.x; double dy = newRay.d.y; double dz = newRay.d.z;
     
     vec3 min = vec3(m_aabb->xMin, m_aabb->yMin, m_aabb->zMin);
     vec3 max = vec3(m_aabb->xMax, m_aabb->yMax, m_aabb->zMax);
+    
+//    min = (vec3) (modelview * vec4(min, 1.0));
+//    max = (vec3) (modelview * vec4(max, 1.0));
     
     double txMin, tyMin, tzMin;
     double txMax, tyMax, tzMax;

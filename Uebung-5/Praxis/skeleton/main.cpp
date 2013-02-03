@@ -189,7 +189,7 @@ void ray_trace()
             Hit hit;
             if (_mesh.intersectTriangle(rays[i + j * w], modelview, hit))
             {
-                hitPoints.push_back((vec3)(inverse(modelview) * vec4(hit.hitPoint, 1.0)));
+                hitPoints.push_back((vec3) (inverse(modelview) * vec4(hit.hitPoint, 1.0)));
                 rayTracedImage[i + j * w] = computeLighting(hit, vec3(1.0, 0.0, 0.0));
             }
                 
@@ -416,7 +416,7 @@ void draw_scene_openGL()
 //	glEnd();
 
     _mesh.renderFlat();
-    //_mesh.renderBoundingBox();
+    _mesh.renderBoundingBox();
     
     glColor3f(1.0f, 0.0f, 0.0f);
     glDisable(GL_LIGHTING);
