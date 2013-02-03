@@ -148,7 +148,7 @@ vec3 computeLighting(Hit& hitpoint, vec3 color)
     
 	if (half_dot_normal > 0.0)
 	{
-		light_spec = diffuseTerm * vec4(0.4, 0.4, 0.4, 1.0) * vec4(0.5, 0.5, 0.5, 1.0) * pow(half_dot_normal, 100.0f);
+		light_spec = diffuseTerm * vec4(0.4, 0.4, 0.4, 1.0) * vec4(0.5, 0.5, 0.5, 1.0) * pow(half_dot_normal, 128.0f);
 	}
     
 	// Set the color of the fragment
@@ -545,7 +545,6 @@ void screen_mouse(int button, int state, int x, int y)
     if (state == GLUT_UP)
     {
         _view_motion = false;
-        _mesh.computeAABB(modelview);
 		ray_trace();
     }
 
@@ -683,7 +682,6 @@ int main(int argc, char** argv)
     redisplay_all();
     
     _mesh.loadOff("meshes/teapot.off");
-    _mesh.computeAABB(modelview);
 
     glutMainLoop();
     

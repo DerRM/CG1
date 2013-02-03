@@ -103,7 +103,7 @@ void Mesh::loadOff(const string& filename)
     //tree.makeKdTree(m_vertices, m_numVertices);
     
     computeVertexNormals();
-    //computeAABB();
+    computeAABB();
 }
 
 void Mesh::computeVertexNormals()
@@ -139,7 +139,7 @@ void Mesh::computeVertexNormals()
     }
 }
 
-void Mesh::computeAABB(mat4 modelview)
+void Mesh::computeAABB()
 {
     m_aabb = new AABB();
     
