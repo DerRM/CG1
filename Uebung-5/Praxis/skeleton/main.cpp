@@ -148,11 +148,11 @@ vec3 computeLighting(Hit& hitpoint, vec3 color)
     
 	if (half_dot_normal > 0.0)
 	{
-		light_spec = diffuseTerm * vec4(0.4, 0.4, 0.4, 1.0) * vec4(0.5, 0.5, 0.5, 1.0) * pow(half_dot_normal, 128.0f);
+		light_spec = diffuseTerm * vec4(0.6, 0.6, 0.6, 1.0) * vec4(0.7, 0.7, 0.7, 1.0) * pow(half_dot_normal, 128.0f);
 	}
     
 	// Set the color of the fragment
-	vec3 lightingColor = diffuseTerm * vec3(0.5, 0, 0) + (vec3)light_spec;
+	vec3 lightingColor = vec3(0.2, 0.0, 0.0) * vec3(0.3, 0.0, 0.0) + diffuseTerm * vec3(0.7, 0.0, 0.0)* vec3(0.7, 0, 0) + (vec3)light_spec;
     return lightingColor;
 }
 
@@ -169,15 +169,14 @@ void ray_trace()
     std::cout << "raycast: w=" << w << " h=" << h << std::endl;
 
 
-    for (int j = 0; j < _win_h; j+= (1 / _sample_factor))
+    for (float j = 0; j < _win_h; j+= (1 / _sample_factor))
     {
-        for (int i = 0; i < _win_w; i += (1 / _sample_factor))
+        for (float i = 0; i < _win_w; i += (1 / _sample_factor))
         {
             create_primary_rays(rays, i, j);
         }
     }
 
-//    create_primary_rays(rays, 0, 0);
 	rayTracedImage.clear();
     rayTracedImage.resize(w*h, vec3(0, 0, 0));
     

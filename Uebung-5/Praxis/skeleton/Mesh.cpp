@@ -160,9 +160,6 @@ void Mesh::computeAABB()
         m_aabb->yMin = std::min(vec.y, m_aabb->yMin);
         m_aabb->zMin = std::min(vec.z, m_aabb->zMin);
     }
-    
-    //cout << "xMin " << m_aabb->xMin << " yMin " << m_aabb->yMin << " zMin " << m_aabb->zMin << "\n";
-    //cout << "xMax " << m_aabb->xMax << " yMax " << m_aabb->yMax << " zMax " << m_aabb->zMax << "\n";
 }
 
 AABB* Mesh::getBoundingBox()
@@ -172,18 +169,11 @@ AABB* Mesh::getBoundingBox()
 
 bool Mesh::intersectBoundingBox(Ray& ray, mat4 modelview)
 {
-    Ray newRay;
-    newRay.o = (vec3) (inverse(modelview) * vec4(ray.o, 1.0));
-    newRay.d = (vec3) (inverse(modelview) * vec4(ray.d, 0.0));
-    
-    double ox = newRay.o.x; double oy = newRay.o.y; double oz = newRay.o.z;
-    double dx = newRay.d.x; double dy = newRay.d.y; double dz = newRay.d.z;
+    double ox = ray.o.x; double oy = ray.o.y; double oz = ray.o.z;
+    double dx = ray.d.x; double dy = ray.d.y; double dz = ray.d.z;
     
     vec3 min = vec3(m_aabb->xMin, m_aabb->yMin, m_aabb->zMin);
     vec3 max = vec3(m_aabb->xMax, m_aabb->yMax, m_aabb->zMax);
-    
-//    min = (vec3) (modelview * vec4(min, 1.0));
-//    max = (vec3) (modelview * vec4(max, 1.0));
     
     double txMin, tyMin, tzMin;
     double txMax, tyMax, tzMax;
@@ -256,15 +246,17 @@ bool Mesh::intersectBoundingBox(Ray& ray, mat4 modelview)
     {
         t1 = tzMax;
     }
-    
-    //cout << " t0 " << t0 << " t1 " << t1 << "\n";
-    
+        
     return (t0 < t1);
 }
 
 bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
 {
-    if (!intersectBoundingBox(ray, modelview))
+    Ray newRay;
+    newRay.o = (vec3) (inverse(modelview) * vec4(ray.o, 1.0));
+    newRay.d = (vec3) (inverse(modelview) * vec4(ray.d, 0.0));
+    
+    if (!intersectBoundingBox(newRay, modelview))
     {
         return false;
     }
@@ -277,13 +269,9 @@ bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
         vec3 v2 = m_vertices[m_faces[i].index2];
         vec3 v3 = m_vertices[m_faces[i].index3];
         
-        v1 = (vec3) (modelview * vec4(v1, 1.0));
-        v2 = (vec3) (modelview * vec4(v2, 1.0));
-        v3 = (vec3) (modelview * vec4(v3, 1.0));
-        
-        double a = v1.x - v2.x, b = v1.x - v3.x, c = ray.d.x, d = v1.x - ray.o.x;
-        double e = v1.y - v2.y, f = v1.y - v3.y, g = ray.d.y, h = v1.y - ray.o.y;
-        double i2 = v1.z - v2.z, j = v1.z - v3.z, k = ray.d.z, l = v1.z - ray.o.z;
+        double a = v1.x - v2.x, b = v1.x - v3.x, c = newRay.d.x, d = v1.x - newRay.o.x;
+        double e = v1.y - v2.y, f = v1.y - v3.y, g = newRay.d.y, h = v1.y - newRay.o.y;
+        double i2 = v1.z - v2.z, j = v1.z - v3.z, k = newRay.d.z, l = v1.z - newRay.o.z;
 
         double m = f * k - g * j, n = h * k - g * l, p = f * l - h * j;
         double q = g * i2 - e * k, r = e * l - h * i2, s = e * j - f * i2;
@@ -324,29 +312,6 @@ bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
         }
         
         result = true;
-        
-//        vec3 p0 = v1;
-//        vec3 p1 = v2;
-//        vec3 p2 = v3;
-//        
-//        vec3 normal = normalize(cross(p0 - p1, p1 - p2));
-//        float t = - dot(ray.o - p0, normal) / dot(ray.d, normal);
-//        vec3 x = ray.o + t * ray.d;
-//        
-//        if (dot(cross(p1 - p0, x - p0), normal) < 0.0)
-//        {
-//            continue;
-//        }
-//        
-//        if (dot(cross(p2 - p1, x - p1), normal) < 0.0)
-//        {
-//            continue;
-//        }
-//        
-//        if (dot(cross(p0 - p2, x - p2), normal) < 0.0)
-//        {
-//            continue;
-//        }
     }
     
     return result;
