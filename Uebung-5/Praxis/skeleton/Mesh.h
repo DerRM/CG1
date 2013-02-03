@@ -17,6 +17,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Ray.h"
+#include "Hit.h"
 #include "KdTree.h"
 
 #ifdef __APPLE__
@@ -35,6 +36,15 @@ typedef struct {
     int index3;
 } Face;
 
+typedef struct {
+    float xMin;
+    float xMax;
+    float yMin;
+    float yMax;
+    float zMin;
+    float zMax;
+} AABB;
+
 class Mesh
 {
 public:
@@ -43,7 +53,10 @@ public:
     void loadOff(const string& filename);
     void renderFlat();
     void renderSmooth();
-    bool intersectTriangle(Ray& ray, mat4 modelview);
+    void renderBoundingBox();
+    bool intersectTriangle(Ray& ray, mat4 modelview, Hit& hit);
+    bool intersectBoundingBox(Ray& ray, mat4 modelview);
+    AABB* getBoundingBox();
 private:
     glm::vec3* m_vertices;
     glm::vec3* m_surfaceNormals;
@@ -51,8 +64,10 @@ private:
     Face* m_faces;
     int m_numVertices;
     int m_numFaces;
+    AABB* m_aabb;
     
     void computeVertexNormals();
+    void computeAABB();
 };
 
 #endif

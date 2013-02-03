@@ -9,7 +9,8 @@
 #include "Mesh.h"
 
 Mesh::Mesh()
-{}
+{
+}
 
 void Mesh::loadOff(const string& filename)
 {
@@ -97,10 +98,12 @@ void Mesh::loadOff(const string& filename)
         linenumber++;
     }
     
-    KdTree tree;
-    tree.makeKdTree(m_vertices, m_numVertices);
+    //KdTree tree(m_vertices, m_numVertices);
+    //Node* root = tree.getRootNode();
+    //tree.makeKdTree(m_vertices, m_numVertices);
     
     computeVertexNormals();
+    computeAABB();
 }
 
 void Mesh::computeVertexNormals()
@@ -136,17 +139,143 @@ void Mesh::computeVertexNormals()
     }
 }
 
-bool Mesh::intersectTriangle(Ray& ray, mat4 modelview)
+void Mesh::computeAABB()
 {
+    m_aabb = new AABB();
+    
+    m_aabb->xMax = FLT_MIN;
+    m_aabb->yMax = FLT_MIN;
+    m_aabb->zMax = FLT_MIN;
+    m_aabb->xMin = FLT_MAX;
+    m_aabb->yMin = FLT_MAX;
+    m_aabb->zMin = FLT_MAX;
+    
+    for (int i = 0; i < m_numVertices; i++)
+    {
+        m_aabb->xMax = std::max(m_vertices[i].x, m_aabb->xMax);
+        m_aabb->yMax = std::max(m_vertices[i].y, m_aabb->yMax);
+        m_aabb->zMax = std::max(m_vertices[i].z, m_aabb->zMax);
+        m_aabb->xMin = std::min(m_vertices[i].x, m_aabb->xMin);
+        m_aabb->yMin = std::min(m_vertices[i].y, m_aabb->yMin);
+        m_aabb->zMin = std::min(m_vertices[i].z, m_aabb->zMin);
+    }
+    
+    cout << "xMin " << m_aabb->xMin << " yMin " << m_aabb->yMin << " zMin " << m_aabb->zMin << "\n";
+    cout << "xMax " << m_aabb->xMax << " yMax " << m_aabb->yMax << " zMax " << m_aabb->zMax << "\n";
+}
+
+AABB* Mesh::getBoundingBox()
+{
+    return m_aabb;
+}
+
+bool Mesh::intersectBoundingBox(Ray& ray, mat4 modelview)
+{
+    double ox = ray.o.x; double oy = ray.o.y; double oz = ray.o.z;
+    double dx = ray.d.x; double dy = ray.d.y; double dz = ray.d.z;
+    
+    vec3 min = (vec3) (vec4(m_aabb->xMin, m_aabb->yMin, m_aabb->zMin, 1.0));
+    vec3 max = (vec3) (vec4(m_aabb->xMax, m_aabb->yMax, m_aabb->zMax, 1.0));
+    
+    double txMin, tyMin, tzMin;
+    double txMax, tyMax, tzMax;
+    
+    double a = 1.0 / dx;
+    
+    if (a >= 0.0)
+    {
+        txMin = (min.x - ox) * a;
+        txMax = (max.x - ox) * a;
+    }
+    else
+    {
+        txMin = (max.x - ox) * a;
+        txMax = (min.x - ox) * a;
+    }
+    
+    double b = 1.0 / dy;
+    
+    if (b >= 0.0)
+    {
+        tyMin = (min.y - oy) * b;
+        tyMax = (max.y - oy) * b;
+    }
+    else
+    {
+        tyMin = (max.y - oy) * b;
+        tyMax = (min.y - oy) * b;
+    }
+
+    double c = 1.0 / dz;
+    
+    if (c >= 0.0)
+    {
+        tzMin = (min.z - oz) * c;
+        tzMax = (max.z - oz) * c;
+    }
+    else
+    {
+        tzMin = (max.z - oz) * c;
+        tzMax = (min.z - oz) * c;
+    }
+    
+    double t0, t1;
+    
+    if (txMin > tyMin)
+    {
+        t0 = txMin;
+    }
+    else
+    {
+        t0 = tyMin;
+    }
+    
+    if (tzMin > t0)
+    {
+        t0 = tzMin;
+    }
+    
+    if (txMax < tyMax)
+    {
+        t1 = txMax;
+    }
+    else
+    {
+        t1 = tyMax;
+    }
+
+    if (tzMax < t1)
+    {
+        t1 = tzMax;
+    }
+    
+    //cout << " t0 " << t0 << " t1 " << t1 << "\n";
+    
+    return (t0 < t1);
+}
+
+bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
+{
+    if (!intersectBoundingBox(ray, modelview))
+    {
+        return false;
+    }
+    
+    bool result = false;
+    double distance = DBL_MAX;
     for (int i = 0; i < m_numFaces; i++)
     {
         vec3 v1 = m_vertices[m_faces[i].index1];
         vec3 v2 = m_vertices[m_faces[i].index2];
         vec3 v3 = m_vertices[m_faces[i].index3];
         
-        vec3 p0 = (vec3) (modelview * vec4(v1, 1.0));
-        vec3 p1 = (vec3) (modelview * vec4(v2, 1.0));
-        vec3 p2 = (vec3) (modelview * vec4(v3, 1.0));
+//        vec3 p0 = (vec3) (modelview * vec4(v1, 1.0));
+//        vec3 p1 = (vec3) (modelview * vec4(v2, 1.0));
+//        vec3 p2 = (vec3) (modelview * vec4(v3, 1.0));
+        
+        vec3 p0 = v1;
+        vec3 p1 = v2;
+        vec3 p2 = v3;
         
         vec3 normal = normalize(cross(p0 - p1, p1 - p2));
         float t = - dot(ray.o - p0, normal) / dot(ray.d, normal);
@@ -167,10 +296,17 @@ bool Mesh::intersectTriangle(Ray& ray, mat4 modelview)
             continue;
         }
     
-        return true;
+        double tDist = glm::distance(ray.o, x);
+        if (distance > tDist)
+        {
+            distance = tDist;
+            hit.hitPoint = x;
+        }
+        
+        result = true;
     }
     
-    return false;
+    return result;
 }
 
 void Mesh::renderFlat()
@@ -184,6 +320,49 @@ void Mesh::renderFlat()
             glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index2]));
             glVertex3fv(glm::value_ptr(m_vertices[m_faces[i].index3]));
         }
+    }
+    glEnd();
+}
+
+void Mesh::renderBoundingBox()
+{
+    glBegin(GL_LINES);
+    {
+        glVertex3f(m_aabb->xMin, m_aabb->yMin, m_aabb->zMin);
+        glVertex3f(m_aabb->xMax, m_aabb->yMin, m_aabb->zMin);
+
+        glVertex3f(m_aabb->xMax, m_aabb->yMin, m_aabb->zMin);
+        glVertex3f(m_aabb->xMax, m_aabb->yMax, m_aabb->zMin);
+        
+        glVertex3f(m_aabb->xMax, m_aabb->yMax, m_aabb->zMin);
+        glVertex3f(m_aabb->xMin, m_aabb->yMax, m_aabb->zMin);
+        
+        glVertex3f(m_aabb->xMin, m_aabb->yMax, m_aabb->zMin);
+        glVertex3f(m_aabb->xMin, m_aabb->yMin, m_aabb->zMin);
+
+        glVertex3f(m_aabb->xMin, m_aabb->yMin, m_aabb->zMin);
+        glVertex3f(m_aabb->xMin, m_aabb->yMin, m_aabb->zMax);
+
+        glVertex3f(m_aabb->xMax, m_aabb->yMin, m_aabb->zMin);
+        glVertex3f(m_aabb->xMax, m_aabb->yMin, m_aabb->zMax);
+
+        glVertex3f(m_aabb->xMax, m_aabb->yMax, m_aabb->zMin);
+        glVertex3f(m_aabb->xMax, m_aabb->yMax, m_aabb->zMax);
+
+        glVertex3f(m_aabb->xMin, m_aabb->yMax, m_aabb->zMin);
+        glVertex3f(m_aabb->xMin, m_aabb->yMax, m_aabb->zMax);
+
+        glVertex3f(m_aabb->xMin, m_aabb->yMin, m_aabb->zMax);
+        glVertex3f(m_aabb->xMax, m_aabb->yMin, m_aabb->zMax);
+        
+        glVertex3f(m_aabb->xMax, m_aabb->yMin, m_aabb->zMax);
+        glVertex3f(m_aabb->xMax, m_aabb->yMax, m_aabb->zMax);
+        
+        glVertex3f(m_aabb->xMax, m_aabb->yMax, m_aabb->zMax);
+        glVertex3f(m_aabb->xMin, m_aabb->yMax, m_aabb->zMax);
+        
+        glVertex3f(m_aabb->xMin, m_aabb->yMax, m_aabb->zMax);
+        glVertex3f(m_aabb->xMin, m_aabb->yMin, m_aabb->zMax);
     }
     glEnd();
 }

@@ -13,11 +13,22 @@ KdTree::KdTree()
     
 }
 
-void KdTree::makeKdTree(glm::vec3 *vertexList, int listLength, int depth)
+KdTree::KdTree(glm::vec3* vertexList, int listLength)
+:m_vertices(vertexList), m_listLength(listLength)
+{
+    m_root = makeKdTree(m_vertices, m_listLength);
+}
+
+Node* KdTree::getRootNode()
+{
+    return m_root;
+}
+
+Node* KdTree::makeKdTree(glm::vec3* vertexList, int listLength, int depth)
 {
     if (listLength == 0)
     {
-        return;
+        return NULL;
     }
     
     int k = 3;
@@ -58,8 +69,12 @@ void KdTree::makeKdTree(glm::vec3 *vertexList, int listLength, int depth)
     glm::vec3* leftList = splitList(vertexList, 0, median);
     glm::vec3* rightList = splitList(vertexList, median + 1, listLength);
     
-    makeKdTree(leftList, median, depth + 1);
-    makeKdTree(rightList, listLength - (median + 1), depth + 1);
+    Node* node = new Node();
+    
+    node->median = median;
+    node->leftChild = makeKdTree(leftList, median, depth + 1);
+    node->rightChild = makeKdTree(rightList, listLength - (median + 1), depth + 1);
+    return node;
 }
 
 bool KdTree::sortX(const glm::vec3 &vecA, const glm::vec3 &vecB)

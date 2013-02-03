@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Ray.h"
+#include "Hit.h"
 #include "Mesh.h"
 
 using namespace glm;
@@ -150,8 +151,10 @@ void ray_trace()
     {
         for(size_t i = 0; i < w; i++)
         {
-            if (intersectTriangle(rays[i + j * w]))
+            Hit hit;
+            if (_mesh.intersectTriangle(rays[i + j * w], modelview, hit))
             {
+                hitPoints.push_back(hit.hitPoint);
                 rayTracedImage[i + j * w] = vec3(1, 0, 0);
             }
                 
@@ -371,13 +374,25 @@ void draw_scene_openGL()
 
 	// TODO :
 	// Draw the preview scene here
-	glBegin(GL_TRIANGLES);
-	glVertex3f(0,0,0);
-	glVertex3f(10,0,0);
-	glVertex3f(0,10,0);
-	glEnd();
+//	glBegin(GL_TRIANGLES);
+//	glVertex3f(0,0,0);
+//	glVertex3f(10,0,0);
+//	glVertex3f(0,10,0);
+//	glEnd();
 
-//    _mesh.renderFlat();
+    _mesh.renderFlat();
+    _mesh.renderBoundingBox();
+    
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glDisable(GL_LIGHTING);
+    for (int i = 0; i < hitPoints.size(); i++)
+    {
+        glBegin(GL_POINTS);
+        {
+            glVertex3fv(&hitPoints[i][0]);
+        }
+        glEnd();
+    }
     
     glPopMatrix();
 }
@@ -630,7 +645,7 @@ int main(int argc, char** argv)
     glutCreateMenu(screen_menu);
     redisplay_all();
     
-    _mesh.loadOff("meshes/torus_tri.off");
+    _mesh.loadOff("meshes/teapot.off");
 
     glutMainLoop();
     
