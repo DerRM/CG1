@@ -74,13 +74,17 @@ numbersep=5pt, xrightmargin=0mm, xleftmargin=4mm, linenos}
 \input{../../latex/title_cg.tex}
 \pagenumbering{arabic}
 
-\chapter*{Aufgabe 1 - Praktischer Teil}
-
-siehe Quellcode
-
-\chapter*{Aufgabe 2 - Theoriefragen}
+\chapter*{Excercise 5 - AUFGABE 2 - Theoriefragen}
 
 \section*{1. Whitted ray tracing ermöglicht neben spekularer Reflektion auch spekulare Brechung nach Snell's Gesetz. Berechnen Sie den effektiven Brechungswinkel für Transmission durch 10 cm Wasser. (0.5 Punkte)}
+
+Brechungsindex Luft/Vakuum -> Wasser/Vakuum: 1,33 / 1 = 1,33
+
+Brechungsindex Wasser/Vakuum -> Luft/Vakuum: 1 / 1,33 =  0.751879699
+
+Um die Brechungszahl nach Transmission zu erhalten muss man beide Werte multiplizieren: Luft/Wasser * Wasser/Luft: 1,33 * 0.751879699 = 1
+
+=> der effektive Brechungswinkel nach der Transmission ist 0.
 
 
 \section*{2. Radiometrie.}
@@ -89,65 +93,12 @@ siehe Quellcode
 
 Die mittlere Strahlungsdichte der Sonne beträgt $20,10 * 10^6 \frac{W}{m^2 * sr}$. Man kann diese mithilfe des Planckschen Strahlungsgesetzes durch Intergration der Leuchtkraft über alle von der Sonne abgestrahlten Wellenlängen berechnen.
 
+
 \subsection*{b) Wieviel Lichtenergie fällt auf eine $1 m^2$ große Fläche in Berlin in 1 min. am 21. Juni um 12:00 Mittags? Fertigen hierzu zunächst eine Skizze an. (1 Punkt)}
 
-Lichtenergie ist mir nicht ganz klar, in der Radiometrie gibt es die Strahlungsenergie, welche der Lichtmenge in der Photometrie entspricht.
+Die Solarkonstante beträgt $1367 W/m^2$, also $1367 J/m^2 * s$
 
-Fotometrisches Grundgesetz
-
-\begin{itemize}
-  \item Leuchtdichte Sonnenscheibe am Mittag: $1,6 *10^9 cd/m^2$
-  \item Mittlere Entfernung Erde-Sonne: $149,6 Mio. km = 14960 * 10^7 m$
-  \item Winkel zw. Oberflächennormale und Strahlrichtung jeweils : 0 Grad
-  \item Fläche der Sonne
-\end{itemize}
-
-Strahlungsleistung = $1,6 * 10^9 cd/m^2 * (\frac{1m^2 * 1m^2}{(149,6*10^9m)^2})$
-
-= $\frac{1,6 * 10^9 cd}{149,6*10^9})$
-
-
-
-
-Die Strahlungsleistung der Sonne an der Sonnenoberfläche ist gleich der Strahlungsleistung der Hüllkugel um die Sonne mit dem Radius r e SE des Abstandes der Sonne von der Erde .
-
-$\Phi_{e S} = \Phi_{e SE}$. 
-
-Die Strahlungsleistung ist für die Hüllkugel mit Radius des mittleren Erdabstands das Produkt aus Bestrahlungsstärke und Oberfläche dieser Kugel. Damit ergibt sich:
-
-$M_{e S} \cdot A_S = E_{e E} cdot A_{SE}$. 
-
-Umgestellt nach der extraterrestrischen Bestrahlungstärke:
-
-$E_{e E} = \frac{M_{e S} \cdot A_S}{A_{SE}}$ 
-
-Die Oberfläche A S der Sonne errechnet sich aus dem Radius r S = 696 · 10 6 m der Sonne mit
-
-$A_S = 4 \pi r_S^2$. 
-
-Die Oberfläche A S der Hüllkugel um die Sonne mit dem Radius des mittleren Erdabstands r SE = 149 6 · 10 9 m errechnet sich aus dem Radius r S = 696 · 10 6 m der Sonne als
-
-$A_{SE} = 4 \pi r_{SE}^2$. 
-
-Eingesetzt in obige Formel ergibt sich die extraterrestrische Bestrahlungsstärke der Erde zu:
-
-$E_{e E} = \frac{M_{e S} \cdot 4 pi r_S^2}{4 \pi r_{SE}^2}$ 
-
-gekürzt:
-
-$E_{e E} = \frac{M_{e S} \cdot r_S^2}{r_{SE}^2}$. 
-
-Es ergibt sich:
-
-$E_{e E} = E_0 = \frac{M_{e S} cdot r_S^2}{r_{SE}^2}$. 
-
-Hiermit ergibt sich der Wert für die Solarkonstante:
-
-$E_0 \approx \frac{63 16 \cdot 10^6\ \mathrm{\frac{W}{m^2}} cdot 696\cdot 10^6\ \mathrm{m}}{149 6 \cdot 10^9\ \mathrm{m}}$. 
-
-$E_0 \approx 1367\ \mathrm{\frac{W}{m^2}}$.
-
-
+Wenn die Beleuchtungsdauer 1 min, also 60 Sekunden beträgt, und die bestrahlte Fläche $1 m^2$ entsprich, ergibt sich die gesamte Lichtenergie aus $1367 \frac{J}{m^2 * s} * 60 s * 1 m^2 = 82020 J$
 
 
 \section*{3. Beschreiben Sie, wie man Ray Tracing und Radiosity geeignet kombinieren kann. (1 Punkt)}
