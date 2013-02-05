@@ -12,6 +12,7 @@
 #include "Ray.h"
 #include "Hit.h"
 #include "Mesh.h"
+#include "Plane.h"
 
 using namespace glm;
 
@@ -51,6 +52,7 @@ float _world_oldx = 0;
 float _world_roty = -35;
 
 Mesh _mesh;
+Plane _plane(vec3(0.0, 1.0, 0.0), vec3(0.0, -0.5, 0.0));
 
 std::vector<vec3> hitPoints;
 std::vector<Ray> rays;
@@ -151,9 +153,84 @@ vec3 computeLighting(Hit& hitpoint, vec3 color)
 		light_spec = diffuseTerm * vec4(0.6, 0.6, 0.6, 1.0) * vec4(0.7, 0.7, 0.7, 1.0) * pow(half_dot_normal, 128.0f);
 	}
     
-	// Set the color of the fragment
-	vec3 lightingColor = vec3(0.2, 0.0, 0.0) * vec3(0.3, 0.0, 0.0) + diffuseTerm * vec3(0.7, 0.0, 0.0)* vec3(0.7, 0, 0) + (vec3)light_spec;
-    return lightingColor;
+	vec4 lightingColor = vec4(color * (1.0f / 5.0f), 1.0) * vec4(0.3, 0.3, 0.3, 1.0) + diffuseTerm * vec4(color * (3.0f / 4.0f), 1.0) * vec4(0.7, 0.7, 0.7, 1.0) + light_spec;
+    
+    //cout << lightingColor.x << " " << lightingColor.y << " " << lightingColor.z <<  "\n";
+    
+    return (vec3) lightingColor;
+}
+
+bool castShadow(Hit& hit)
+{
+    vec3 lightdir = light_pos - hit.hitPoint;
+    vec3 normal_lightdir = normalize(lightdir);
+    
+    Ray ray(hit.hitPoint, lightdir, 10.6f);
+
+    
+    Hit dummy;
+    if (_mesh.intersectTriangle(ray, modelview, dummy))
+    {
+        hit.color *= 0.5f;
+        return true;
+    }
+    
+//    if ( _plane.hit(ray, dummy)) {
+//        hit.color *= 0.5f;
+//        return true;
+//    }
+    return false;
+}
+
+bool hitTest(Ray& ray, Hit& hit)
+{
+    Hit temp, temp2;
+    bool meshTest = _mesh.intersectTriangle(ray, modelview, temp);
+    bool planeTest = _plane.hit(ray, temp2);
+    
+    if (meshTest && planeTest) {
+        double dist1 = distance(ray.o, temp.hitPoint);
+        double dist2 = distance(ray.o, temp2.hitPoint);
+        
+        if (dist1 < dist2)
+        {
+            hit.normal = temp.normal;
+            hit.hitPoint = temp.hitPoint;
+            hit.color = vec3(1.0, 0.0, 0.0);
+        }
+        else
+        {
+            hit.normal = temp2.normal;
+            hit.hitPoint = temp2.hitPoint;
+            hit.color = temp2.color;
+        }
+        
+        return true;
+    }
+    
+    if (meshTest)
+    {
+        hit.normal = temp.normal;
+        hit.hitPoint = temp.hitPoint;
+        hit.color = vec3(1.0, 0.0, 0.0);
+        return true;
+    }
+    
+    if (planeTest)
+    {
+        hit.normal = temp2.normal;
+        hit.hitPoint = temp2.hitPoint;
+        hit.color = temp2.color;
+        
+        if (castShadow(hit))
+        {
+            hit.color -= vec3(0.5, 0.5, 0.5);
+        }
+        
+        return true;
+    }
+    
+    return false;
 }
 
 // Ray trace the scene
@@ -169,7 +246,7 @@ void ray_trace()
     std::cout << "raycast: w=" << w << " h=" << h << std::endl;
 
 
-    for (float j = 0; j < _win_h; j+= (1 / _sample_factor))
+    for (float j = 0; j < _win_h; j += (1 / _sample_factor))
     {
         for (float i = 0; i < _win_w; i += (1 / _sample_factor))
         {
@@ -186,12 +263,13 @@ void ray_trace()
         for(size_t i = 0; i < w; i++)
         {
             Hit hit;
-            if (_mesh.intersectTriangle(rays[i + j * w], modelview, hit))
+            Ray ray = rays[i + j * w];
+            
+            if (hitTest(ray, hit))
             {
                 hitPoints.push_back((vec3) (inverse(modelview) * vec4(hit.hitPoint, 1.0)));
-                rayTracedImage[i + j * w] = computeLighting(hit, vec3(1.0, 0.0, 0.0));
+                rayTracedImage[i + j * w] = computeLighting(hit, hit.color);
             }
-                
 		}
 	}
 
@@ -384,6 +462,35 @@ void main_display()
 {
     glClearColor(0.7, 0.7, 0.7, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    vec4 lightDirection(0,0,1,0);
+
+    // material parameters
+	GLfloat mat_ambient[] = {0.3, 0.3, 0.3, 1.0};
+	GLfloat mat_diffuse[] = {0.5, 0.5, 0.5, 1.0};
+	GLfloat mat_specular[] = {0.4f, 0.4f, 0.4f, 1};
+	GLfloat mat_shininess[] = { 128 };
+	// light parameters
+	GLfloat light_diffuse[] = {0.5, 0.5, 0.5, 1.0};
+	GLfloat light_ambient[] = { 0.2, 0.2, 0.2 };
+	GLfloat light_position[] = { -5.0, 5.0, 5.0, 0.0 };
+    
+	// Set fixed pipeline opengl material states
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+	
+	// Set fixed pipeline opengl light states
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_POSITION, &lightDirection[0]);
+    
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(vec4(0,0,0,1)));
+    glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
 
     std::ostringstream text;
     text << "mouse \t: rotate scene, mouse+shift: change field of view\n";
@@ -400,6 +507,27 @@ void main_display()
     glutSwapBuffers();
 }
 
+void draw_help_stuff()
+{
+    GLfloat bb[] = {0.0, 0.0, 1.0, 1.0};
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, bb);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, bb);
+    _mesh.renderBoundingBox();
+    
+    glBegin(GL_POINTS);
+    {
+        GLfloat point[] = {1.0, 0.0, 0.0, 1.0};
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, point);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, point);
+
+        for (int i = 0; i < hitPoints.size(); i++)
+        {
+            glVertex3fv(&hitPoints[i][0]);
+        }
+    }
+    glEnd();
+}
+
 void draw_scene_openGL()
 {    
 	glPushMatrix();
@@ -413,20 +541,13 @@ void draw_scene_openGL()
 //	glVertex3f(10,0,0);
 //	glVertex3f(0,10,0);
 //	glEnd();
-
-    _mesh.renderFlat();
-    _mesh.renderBoundingBox();
     
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glDisable(GL_LIGHTING);
-    for (int i = 0; i < hitPoints.size(); i++)
-    {
-        glBegin(GL_POINTS);
-        {
-            glVertex3fv(&hitPoints[i][0]);
-        }
-        glEnd();
-    }
+    draw_help_stuff();
+    
+    GLfloat model[] = {0.5, 0.5, 0.5, 1.0};
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, model);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, model);
+    _mesh.renderFlat();
     
     glPopMatrix();
 }
@@ -651,6 +772,9 @@ int main(int argc, char** argv)
     glutInitWindowPosition(50, 50);
     glutInit(&argc, argv);
 
+    _mesh.loadOff("meshes/teapot.off");
+    _plane.setColor(vec3(1.0, 1.0, 0.0));
+    
 	// Create main window
     _id_window = glutCreateWindow("cg1 ex5 ws11/12 - raytracing");
     glutReshapeFunc(main_reshape);
@@ -679,8 +803,6 @@ int main(int argc, char** argv)
     glutKeyboardFunc(main_keyboard);
     glutCreateMenu(screen_menu);
     redisplay_all();
-    
-    _mesh.loadOff("meshes/teapot.off");
 
     glutMainLoop();
     
