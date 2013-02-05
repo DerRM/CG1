@@ -74,23 +74,62 @@ numbersep=5pt, xrightmargin=0mm, xleftmargin=4mm, linenos}
 \input{../../latex/title_cg.tex}
 \pagenumbering{arabic}
 
-\chapter*{Aufgabe 1 - Praktischer Teil}
+\chapter*{Excercise 5 - AUFGABE 2 - Theoriefragen}
 
-siehe Quellcode
+\section*{1. Whitted ray tracing ermöglicht neben spekularer Reflektion auch spekulare Brechung nach Snell's Gesetz. Berechnen Sie den effektiven Brechungswinkel für Transmission durch 10 cm Wasser. (0.5 Punkte)}
 
-\chapter*{Aufgabe 2 - Theoriefragen}
-\section*{1.}
+Brechungsindex Luft/Vakuum -> Wasser/Vakuum: 1,33 / 1 = 1,33
 
-Whitted ray tracing ermöglicht neben spekularer Reflektion auch spekulare Brechung nach Snell’s Gesetz. Berechnen Sie den effektiven Brechungswinkel für Transmission durch 10 cm Wasser. (0.5 Punkte)
+Brechungsindex Wasser/Vakuum -> Luft/Vakuum: 1 / 1,33 =  0.751879699
 
-\section*{2.}
-Radiometrie.
-\subsection*{a)}
-Die Leuchtkraft der Sonne beträgt $3.846 \times 10^{25}$ Watt für eine Wellenlänge im sichtbaren Bereich.Wie groß ist die mittlere Strahlungsdichte der Sonne? Begründen Sie Ihre Antwort. (0.5 Punkte)
-\subsection*{b)}
-Wie viel Lichtenergie fällt auch eine 1 m² große Fläche in Berlin in 1 min. am 21. Juni um 12:00 Mittags? Fertigen hierzu zunächst eine Skizze an. (1 Punkt)
-\section*{3.}
-Beschreiben Sie, wie man Ray Tracing und Radiosity geeignet kombinieren kann. (1 Punkt)
-\section*{4.}
-Bidirectional path tracing wurde von Veach Guibas und Lafortune Willems eingeführt. Diskutieren Sie Vor- und Nachteile des Verfahrens. (1 Punkte)
+Um die Brechungszahl nach Transmission zu erhalten muss man beide Werte multiplizieren: Luft/Wasser * Wasser/Luft: 1,33 * 0.751879699 = 1
+
+=> der effektive Brechungswinkel nach der Transmission ist 0.
+
+
+\section*{2. Radiometrie.}
+
+\subsection*{a) Die Leuchtkraft der Sonne beträgt $3.846 * 10^{25} W$ für eine Wellenlänge im sichtbaren Bereich. Wie groß ist die mittlere Strahlungsdichte der Sonne? Begründen Sie Ihre Antwort. (0.5 Punkte)}
+
+Die mittlere Strahlungsdichte der Sonne beträgt $20,10 * 10^6 \frac{W}{m^2 * sr}$. Man kann diese mithilfe des Planckschen Strahlungsgesetzes durch Intergration der Leuchtkraft über alle von der Sonne abgestrahlten Wellenlängen berechnen.
+
+
+\subsection*{b) Wieviel Lichtenergie fällt auf eine $1 m^2$ große Fläche in Berlin in 1 min. am 21. Juni um 12:00 Mittags? Fertigen hierzu zunächst eine Skizze an. (1 Punkt)}
+
+Die Solarkonstante beträgt $1367 W/m^2$, also $1367 J/m^2 * s$
+
+Wenn die Beleuchtungsdauer 1 min, also 60 Sekunden beträgt, und die bestrahlte Fläche $1 m^2$ entsprich, ergibt sich die gesamte Lichtenergie aus $1367 \frac{J}{m^2 * s} * 60 s * 1 m^2 = 82020 J$
+
+\begin{center}
+        \includegraphics[width=0.5\textwidth]{skizze}
+    \captionof{figure}{Skizze}
+\end{center}
+
+\section*{3. Beschreiben Sie, wie man Ray Tracing und Radiosity geeignet kombinieren kann. (1 Punkt)}
+
+Man kann Radiosity benutzen um die diffusen Beleuchtungsanteile der Szene zu berechnen und Raytracing für spiegelnde und transparente Objekte, dadurch würden sich beide Verfahren mit ihren jeweiligen Stärken ergänzen.
+
+
+\section*{4. Bidirectional path tracing wurde von Veach Guibas und Lafortune Willems eingeführt. Diskutieren Sie Vor- und Nachteile des Verfahrens. (1 Punkte)}
+
+Vorteile:
+
+\begin{itemize}
+  \item berücksichtigt indirektes Licht
+  \item ermöglicht deutlichere Kaustiks,
+  \item diffuse Beleuchtung in Schattenbereichen
+  \item die Szene ist klarer ausgeleuchtet und weniger verrauscht
+\end{itemize}
+
+Nachteile:
+
+\begin{itemize}
+  \item höherer Rechenaufwand
+  \item längere Berechnungszeit
+  \item ggf. stärkeres Bildrauschen
+\end{itemize}
+
+Die Vor- sowie Nachteile ergeben sich daraus, das im Gegensatz zum einfachen Path Tracing sowie normalen Raytracing auch Lichtstrahlen von den Lichtquellen aus ausgesendet werden und diese dann in die Berechnung der Pixelfarbe einfliessen.
+
+
 \end{document}
