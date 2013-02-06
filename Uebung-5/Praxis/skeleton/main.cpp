@@ -13,6 +13,7 @@
 #include "Hit.h"
 #include "Mesh.h"
 #include "Plane.h"
+#include "PPM.h"
 
 using namespace glm;
 
@@ -778,15 +779,23 @@ void main_keyboard(unsigned char key, int x, int y)
             ray_trace();
             break;
         case 'i':
+        {
+            PPM ppm(_sample_height, _sample_width);
+            ppm.saveImage(rayTracedImage);
             break;
+        }
 		case 's':
+        {
             _sample_factor *= 2;
             std::cout << "sampling factor: " << _sample_factor << std::endl;
             break;
+        }
         case 'S':
+        {
             _sample_factor *= 0.5;
             std::cout << "sampling factor: " << _sample_factor << std::endl;
             break;
+        }
     }
 
     redisplay_all();
