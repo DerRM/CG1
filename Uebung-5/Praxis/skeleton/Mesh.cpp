@@ -252,11 +252,8 @@ bool Mesh::intersectBoundingBox(Ray& ray, mat4 modelview)
 
 bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
 {
-    Ray newRay;
-    newRay.o = (vec3) (inverse(modelview) * vec4(ray.o, 1.0));
-    newRay.d = (vec3) (inverse(modelview) * vec4(ray.d, 0.0));
     
-    if (!intersectBoundingBox(newRay, modelview))
+    if (!intersectBoundingBox(ray, modelview))
     {
         return false;
     }
@@ -269,16 +266,21 @@ bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
         vec3 v2 = m_vertices[m_faces[i].index2];
         vec3 v3 = m_vertices[m_faces[i].index3];
         
-        double a = v1.x - v2.x, b = v1.x - v3.x, c = newRay.d.x, d = v1.x - newRay.o.x;
-        double e = v1.y - v2.y, f = v1.y - v3.y, g = newRay.d.y, h = v1.y - newRay.o.y;
-        double i2 = v1.z - v2.z, j = v1.z - v3.z, k = newRay.d.z, l = v1.z - newRay.o.z;
-
-        double m = f * k - g * j, n = h * k - g * l, p = f * l - h * j;
-        double q = g * i2 - e * k, r = e * l - h * i2, s = e * j - f * i2;
+        vec3 v1v2 = v1 - v2;
+        vec3 v1v3 = v1 - v3;
+        vec3 rayDir = ray.d;
+        vec3 v1rayOr = v1 - ray.o;
         
-        double inv_denom = 1.0 / (a * m + b * q + c * s);
+        double m = v1v3.y * rayDir.z - rayDir.y * v1v3.z;
+        double n = v1rayOr.y * rayDir.z - rayDir.y * v1rayOr.z;
+        double p = v1v3.y * v1rayOr.z - v1rayOr.y * v1v3.z;
+        double q = rayDir.y * v1v2.z - v1v2.y * rayDir.z;
+        double r = v1v2.y * v1rayOr.z - v1rayOr.y * v1v2.z;
+        double s = v1v2.y * v1v3.z - v1v3.y * v1v2.z;
         
-        double e1 = d * m - b * n - c * p;
+        double inv_denom = 1.0 / (v1v2.x * m + v1v3.x * q + rayDir.x * s);
+        
+        double e1 = v1rayOr.x * m - v1v3.x * n - rayDir.x * p;
         double beta = e1 * inv_denom;
         
         if (beta < 0.0 || beta > 1.0)
@@ -286,7 +288,7 @@ bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
             continue;
         }
         
-        double e2 = a * n + d * q + c * r;
+        double e2 = v1v2.x * n + v1rayOr.x * q + rayDir.x * r;
         double gamma = e2 * inv_denom;
         
         if (gamma < 0.0 || gamma > 1.0)
@@ -299,7 +301,7 @@ bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
             continue;
         }
         
-        double e3 = a * p - b * r + d * s;
+        double e3 = v1v2.x * p - v1v3.x * r + v1rayOr.x * s;
         double t = e3 * inv_denom;
         
         if (t < ray.tmin)

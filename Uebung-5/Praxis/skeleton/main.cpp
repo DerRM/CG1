@@ -52,7 +52,7 @@ float _world_oldx = 0;
 float _world_roty = -35;
 
 Mesh _mesh;
-Plane _plane(vec3(0.0, 1.0, 0.0), vec3(0.0, -0.5, 0.0));
+Plane _plane(vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 0.0));
 
 std::vector<vec3> hitPoints;
 std::vector<Ray> rays;
@@ -123,12 +123,12 @@ bool intersectTriangle(const Ray& ray)
     return true;
 }
 
-vec3 light_pos(-5.0f, 5.0f, 5.0f);
+vec3 light_pos(0.0f, 5.0f, 5.0f);
 
 vec3 computeLighting(Hit& hitpoint, vec3 color)
 {
     vec3 light_dir = light_pos - hitpoint.hitPoint;
-    vec3 norm_light_dir = normalize(light_dir);
+    vec3 norm_light_dir = (vec3) normalize(modelview * vec4(light_dir, 0.0));
     
     vec3 half_vec = normalize(light_dir + eye);
     
@@ -157,6 +157,8 @@ vec3 computeLighting(Hit& hitpoint, vec3 color)
     
     //cout << lightingColor.x << " " << lightingColor.y << " " << lightingColor.z <<  "\n";
     
+    hitpoint.color = (vec3) lightingColor;
+    
     return (vec3) lightingColor;
 }
 
@@ -165,7 +167,7 @@ bool castShadow(Hit& hit)
     vec3 lightdir = light_pos - hit.hitPoint;
     vec3 normal_lightdir = normalize(lightdir);
     
-    Ray ray(hit.hitPoint, normal_lightdir, 0.1f);
+    Ray ray(hit.hitPoint, normal_lightdir, 0.5f);
 
     
     Hit dummy;
@@ -175,6 +177,23 @@ bool castShadow(Hit& hit)
     }
     
     if ( _plane.hit(ray, dummy)) {
+        return true;
+    }
+    
+    return false;
+}
+
+bool castReflection(Hit& hit, Hit& newHit)
+{
+    vec3 dir = light_pos - hit.hitPoint;    
+    float angle = dot(dir, hit.normal);
+    vec3 reflectDir = 2.0f * angle * hit.normal - dir;
+    dir = (vec3) normalize(modelview * vec4(dir, 0.0));
+
+    Ray reflectRay(hit.hitPoint, reflectDir, 0.1);
+    
+    if (_mesh.intersectTriangle(reflectRay, modelview, newHit))
+    {
         return true;
     }
     
@@ -202,6 +221,12 @@ bool hitTest(Ray& ray, Hit& hit)
             hit.normal = temp2.normal;
             hit.hitPoint = temp2.hitPoint;
             hit.color = temp2.color;
+            
+            Hit newHit;
+            if (castReflection(hit, newHit))
+            {
+                hit.color += computeLighting(newHit, vec3(1.0, 0.0, 0.0));
+            }
         }
         
         return true;
@@ -220,6 +245,12 @@ bool hitTest(Ray& ray, Hit& hit)
         hit.normal = temp2.normal;
         hit.hitPoint = temp2.hitPoint;
         hit.color = temp2.color;
+        
+        Hit newHit;
+        if (castReflection(hit, newHit))
+        {
+            hit.color += computeLighting(newHit, vec3(1.0, 0.0, 0.0));
+        }
         return true;
     }
     
@@ -257,10 +288,13 @@ void ray_trace()
         {
             Hit hit;
             Ray ray = rays[i + j * w];
+            Ray newRay;
+            newRay.o = (vec3) (inverse(modelview) * vec4(ray.o, 1.0));
+            newRay.d = (vec3) (inverse(modelview) * vec4(ray.d, 0.0));
             
-            if (hitTest(ray, hit))
+            if (hitTest(newRay, hit))
             {
-                hitPoints.push_back((vec3) (inverse(modelview) * vec4(hit.hitPoint, 1.0)));
+                hitPoints.push_back(hit.hitPoint);
                 rayTracedImage[i + j * w] = computeLighting(hit, hit.color);
                 
                 if (castShadow(hit))
@@ -771,7 +805,7 @@ int main(int argc, char** argv)
     glutInit(&argc, argv);
 
     _mesh.loadOff("meshes/teapot.off");
-    _plane.setColor(vec3(1.0, 1.0, 0.0));
+    _plane.setColor(vec3(0.0, 1.0, 0.0));
     
 	// Create main window
     _id_window = glutCreateWindow("cg1 ex5 ws11/12 - raytracing");
