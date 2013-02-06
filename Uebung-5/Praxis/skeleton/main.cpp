@@ -11,6 +11,7 @@
 
 #include "Ray.h"
 #include "Hit.h"
+#include "RTObject.h"
 #include "Mesh.h"
 #include "Plane.h"
 #include "PPM.h"
@@ -52,8 +53,8 @@ bool _view_motion = false;
 float _world_oldx = 0;
 float _world_roty = -35;
 
-Mesh _mesh;
-Plane _plane(vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 0.0));
+Mesh mesh;
+std::vector<RTObject*> raytraceObjects;
 
 std::vector<vec3> hitPoints;
 std::vector<Ray> rays;
@@ -172,13 +173,12 @@ bool castShadow(Hit& hit)
 
     
     Hit dummy;
-    if (_mesh.intersectTriangle(ray, modelview, dummy))
-    {
-        return true;
-    }
-    
-    if ( _plane.hit(ray, dummy)) {
-        return true;
+    std::vector<RTObject*>::iterator it;
+    for (it = raytraceObjects.begin(); it != raytraceObjects.end(); ++it) {
+        if ((*it)->hit(ray, dummy))
+        {
+            return true;
+        }
     }
     
     return false;
@@ -190,13 +190,16 @@ bool castReflection(Hit& hit, Hit& newHit)
     float angle = dot(dir, hit.normal);
     vec3 reflectDir = 2.0f * angle * hit.normal - dir;
 
-    Ray reflectRay(hit.hitPoint, reflectDir, 0.1);
+    Ray reflectRay(hit.hitPoint, reflectDir, 0.01f);
 //    reflectRay.o = (vec3) (inverse(modelview) * vec4(reflectRay.o, 1.0));
 //    reflectRay.d = (vec3) (inverse(modelview) * vec4(reflectRay.d, 0.0));
     
-    if (_mesh.intersectTriangle(reflectRay, modelview, newHit))
-    {
-        return true;
+    std::vector<RTObject*>::iterator it;
+    for (it = raytraceObjects.begin(); it != raytraceObjects.end(); ++it) {
+        if ((*it)->hit(reflectRay, newHit))
+        {
+            return true;
+        }
     }
     
     return false;
@@ -204,59 +207,26 @@ bool castReflection(Hit& hit, Hit& newHit)
 
 bool hitTest(Ray& ray, Hit& hit)
 {
-    Hit temp, temp2;
-    bool meshTest = _mesh.intersectTriangle(ray, modelview, temp);
-    bool planeTest = _plane.hit(ray, temp2);
+    Hit temp;
+    double tempDist = DBL_MAX;    
+    bool result = false;
     
-    if (meshTest && planeTest) {
-        double dist1 = distance(ray.o, temp.hitPoint);
-        double dist2 = distance(ray.o, temp2.hitPoint);
-        
-        if (dist1 < dist2)
+    std::vector<RTObject*>::iterator it;
+    for (it = raytraceObjects.begin(); it != raytraceObjects.end(); ++it) {
+        if ((*it)->hit(ray, temp))
         {
-            hit.normal = temp.normal;
-            hit.hitPoint = temp.hitPoint;
-            hit.color = vec3(1.0, 0.0, 0.0);
-        }
-        else
-        {
-            hit.normal = temp2.normal;
-            hit.hitPoint = temp2.hitPoint;
-            hit.color = temp2.color;
+            result = true;
             
-            Hit newHit;
-            if (castReflection(hit, newHit))
+            double dist = glm::distance(ray.o, temp.hitPoint);
+            if (tempDist > dist)
             {
-                hit.color += computeLighting(newHit, vec3(1.0, 0.0, 0.0));
+                hit = temp;
+                tempDist = dist;
             }
         }
-        
-        return true;
     }
     
-    if (meshTest)
-    {
-        hit.normal = temp.normal;
-        hit.hitPoint = temp.hitPoint;
-        hit.color = vec3(1.0, 0.0, 0.0);
-        return true;
-    }
-    
-    if (planeTest)
-    {
-        hit.normal = temp2.normal;
-        hit.hitPoint = temp2.hitPoint;
-        hit.color = temp2.color;
-        
-        Hit newHit;
-        if (castReflection(hit, newHit))
-        {
-            hit.color += computeLighting(newHit, vec3(1.0, 0.0, 0.0));
-        }
-        return true;
-    }
-    
-    return false;
+    return result;
 }
 
 // Ray trace the scene
@@ -302,6 +272,12 @@ void ray_trace()
                 if (castShadow(hit))
                 {
                     rayTracedImage[i + j * w] -= vec3(0.5f, 0.5f, 0.5f);
+                }
+                
+                Hit newHit;
+                if (castReflection(hit, newHit))
+                {
+                    rayTracedImage[i + j * w] += computeLighting(newHit, newHit.color);
                 }
             }
 		}
@@ -546,7 +522,7 @@ void draw_help_stuff()
     GLfloat bb[] = {0.0, 0.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, bb);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, bb);
-    _mesh.renderBoundingBox();
+    mesh.renderBoundingBox();
     
     glBegin(GL_POINTS);
     {
@@ -581,7 +557,7 @@ void draw_scene_openGL()
     GLfloat model[] = {0.5, 0.5, 0.5, 1.0};
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, model);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, model);
-    _mesh.renderFlat();
+    mesh.renderFlat();
     
     glPopMatrix();
 }
@@ -814,8 +790,14 @@ int main(int argc, char** argv)
     glutInitWindowPosition(50, 50);
     glutInit(&argc, argv);
 
-    _mesh.loadOff("meshes/teapot.off");
-    _plane.setColor(vec3(0.0, 1.0, 0.0));
+    mesh.loadOff("meshes/teapot.off");
+    mesh.setColor(vec3(1.0, 0.0, 0.0));
+
+    Plane plane(vec3(0.0, 1.0, 0.0), vec3(0.0, 0.0, 0.0));
+    plane.setColor(vec3(0.0, 1.0, 0.0));
+    
+    raytraceObjects.push_back(&mesh);
+    raytraceObjects.push_back(&plane);
     
 	// Create main window
     _id_window = glutCreateWindow("cg1 ex5 ws11/12 - raytracing");

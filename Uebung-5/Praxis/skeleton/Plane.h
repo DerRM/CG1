@@ -13,14 +13,15 @@
 
 #include "Ray.h"
 #include "Hit.h"
+#include "RTObject.h"
 
 using namespace glm;
 
-class Plane {
+class Plane : public RTObject {
 public:
     Plane(vec3 normal, vec3 point);
     ~Plane(){};
-    bool hit(Ray& ray, Hit& hit);
+    virtual bool hit(Ray& ray, Hit& hit);
     vec3 getNormal();
     vec3 getPoint();
     void setColor(vec3 color);

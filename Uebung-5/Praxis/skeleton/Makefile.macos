@@ -1,0 +1,22 @@
+# // MAKEFILE for Computer Graphics Raytracer Exercise
+EXECUTABLE = cg1_ex5
+CC = g++
+CPPFLAGS = -O3 -DMACOSX -I./include #-I/usr/local/include/ -I/opt/local/include/
+DEPS = ./include/glm/glm.hpp ./include/glm/gtc/constants.inl  KdTree.h Mesh.h Plane.h PPM.h RTObject.h
+OBJ = KdTree.o Mesh.o Plane.o PPM.o RTObject.o main.o
+LIBS = -framework OpenGL -framework GLUT 
+#-L/usr/local/lib/ -L/usr/X11/lib/ -L/opt/local/lib/  -lm -lstdc++ -lglut -lGL -lGLU
+#-framework OpenGL 
+#-framework GLUT -L/usr/local/lib/ -lglew -lglut
+
+
+%.o: %.cpp $(DEPS)
+	$(CC) -c -o $@ $< $(CPPFLAGS)
+
+$(EXECUTABLE): $(OBJ)
+	$(CC) -o $@ $^ $(CPPFLAGS) $(LIBS)
+
+.PHONY: clean
+
+clean:
+	rm -f *.o *~ $(EXECUTABLE)		

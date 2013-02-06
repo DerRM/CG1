@@ -18,6 +18,7 @@
 
 #include "Ray.h"
 #include "Hit.h"
+#include "RTObject.h"
 #include "KdTree.h"
 
 #ifdef __APPLE__
@@ -45,7 +46,7 @@ typedef struct {
     float zMax;
 } AABB;
 
-class Mesh
+class Mesh : public RTObject
 {
 public:
     Mesh();
@@ -54,9 +55,9 @@ public:
     void renderFlat();
     void renderSmooth();
     void renderBoundingBox();
-    bool intersectTriangle(Ray& ray, mat4 modelview, Hit& hit);
-    bool intersectBoundingBox(Ray& ray, mat4 modelview);
+    virtual bool hit(Ray& ray, Hit& hit);
     AABB* getBoundingBox();
+    void setColor(glm::vec3 color);
 private:
     glm::vec3* m_vertices;
     glm::vec3* m_surfaceNormals;
@@ -65,7 +66,10 @@ private:
     int m_numVertices;
     int m_numFaces;
     AABB* m_aabb;
+    glm::vec3 m_color;
     
+    bool intersectTriangle(Ray& ray, Hit& hit);
+    bool intersectBoundingBox(Ray& ray);
     void computeVertexNormals();
     vec3 interpolateNormal(const float beta, const float gamma, Face face);
     void computeAABB();

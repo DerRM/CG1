@@ -167,7 +167,7 @@ AABB* Mesh::getBoundingBox()
     return m_aabb;
 }
 
-bool Mesh::intersectBoundingBox(Ray& ray, mat4 modelview)
+bool Mesh::intersectBoundingBox(Ray& ray)
 {
     double ox = ray.o.x; double oy = ray.o.y; double oz = ray.o.z;
     double dx = ray.d.x; double dy = ray.d.y; double dz = ray.d.z;
@@ -250,10 +250,20 @@ bool Mesh::intersectBoundingBox(Ray& ray, mat4 modelview)
     return (t0 < t1 && t1 > ray.tmin);
 }
 
-bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
+void Mesh::setColor(glm::vec3 color)
+{
+    m_color = color;
+}
+
+bool Mesh::hit(Ray &ray, Hit &hit)
+{
+    return intersectTriangle(ray, hit);
+}
+
+bool Mesh::intersectTriangle(Ray& ray, Hit& hit)
 {
     
-    if (!intersectBoundingBox(ray, modelview))
+    if (!intersectBoundingBox(ray))
     {
         return false;
     }
@@ -316,6 +326,7 @@ bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
             distance = tDist;
             hit.normal = interpolateNormal(beta, gamma, m_faces[i]);
             hit.hitPoint = x;
+            hit.color = m_color;
         }
         
         result = true;
