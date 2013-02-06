@@ -124,7 +124,7 @@ bool intersectTriangle(const Ray& ray)
     return true;
 }
 
-vec3 light_pos(0.0f, 5.0f, 5.0f);
+vec3 light_pos(-5.0f, 5.0f, 5.0f);
 
 vec3 computeLighting(Hit& hitpoint, vec3 color)
 {
@@ -186,12 +186,13 @@ bool castShadow(Hit& hit)
 
 bool castReflection(Hit& hit, Hit& newHit)
 {
-    vec3 dir = light_pos - hit.hitPoint;    
+    vec3 dir = eye - hit.hitPoint;
     float angle = dot(dir, hit.normal);
     vec3 reflectDir = 2.0f * angle * hit.normal - dir;
-    dir = (vec3) normalize(modelview * vec4(dir, 0.0));
 
     Ray reflectRay(hit.hitPoint, reflectDir, 0.1);
+//    reflectRay.o = (vec3) (inverse(modelview) * vec4(reflectRay.o, 1.0));
+//    reflectRay.d = (vec3) (inverse(modelview) * vec4(reflectRay.d, 0.0));
     
     if (_mesh.intersectTriangle(reflectRay, modelview, newHit))
     {

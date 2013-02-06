@@ -78,36 +78,40 @@ numbersep=5pt, xrightmargin=0mm, xleftmargin=4mm, linenos}
 
 \section*{1. Whitted ray tracing ermöglicht neben spekularer Reflektion auch spekulare Brechung nach Snell's Gesetz. Berechnen Sie den effektiven Brechungswinkel für Transmission durch 10 cm Wasser. (0.5 Punkte)}
 
-Brechungsindex Luft/Vakuum -> Wasser/Vakuum: 1,33 / 1 = 1,33
+Brechungsindex Luft/Vakuum $\rightarrow$ Wasser/Vakuum: $1,33 / 1 = 1,33$
 
-Brechungsindex Wasser/Vakuum -> Luft/Vakuum: 1 / 1,33 =  0.751879699
+Brechungsindex Wasser/Vakuum $\rightarrow$ Luft/Vakuum: $1 / 1,33 =  0.751879699$
 
-Um die Brechungszahl nach Transmission zu erhalten muss man beide Werte multiplizieren: Luft/Wasser * Wasser/Luft: 1,33 * 0.751879699 = 1
+Um die Brechungszahl nach Transmission zu erhalten muss man beide Werte multiplizieren: 
+\[
+	Luft/Wasser * Wasser/Luft: 1,33 * 0.751879699 = 1
+\]
 
-=> der effektive Brechungswinkel nach der Transmission ist 0.
+$\Rightarrow$ der effektive Brechungswinkel nach der Transmission ist 0.
 
 
 \section*{2. Radiometrie.}
 
 \subsection*{a) Die Leuchtkraft der Sonne beträgt $3.846 * 10^{25} W$ für eine Wellenlänge im sichtbaren Bereich. Wie groß ist die mittlere Strahlungsdichte der Sonne? Begründen Sie Ihre Antwort. (0.5 Punkte)}
 
-Die mittlere Strahlungsdichte der Sonne beträgt $20,10 * 10^6 \frac{W}{m^2 * sr}$. Man kann diese mithilfe des Planckschen Strahlungsgesetzes durch Intergration der Leuchtkraft über alle von der Sonne abgestrahlten Wellenlängen berechnen.
+Die mittlere Strahlungsdichte der Sonne beträgt $20,10 * 10^6 \frac{W}{m^2 * sr}$. Man kann diese mit hilfe des Planckschen Strahlungsgesetzes durch Integration der Leuchtkraft über alle von der Sonne abgestrahlten Wellenlängen berechnen.
 
 
 \subsection*{b) Wieviel Lichtenergie fällt auf eine $1 m^2$ große Fläche in Berlin in 1 min. am 21. Juni um 12:00 Mittags? Fertigen hierzu zunächst eine Skizze an. (1 Punkt)}
 
-Die Solarkonstante beträgt $1367 W/m^2$, also $1367 J/m^2 * s$
+Die Solarkonstante beträgt $1367~W/m^2$, also $1367~J/m^2 * s$
 
-Wenn die Beleuchtungsdauer 1 min, also 60 Sekunden beträgt, und die bestrahlte Fläche $1 m^2$ entsprich, ergibt sich die gesamte Lichtenergie aus $1367 \frac{J}{m^2 * s} * 60 s * 1 m^2 = 82020 J$
+Wenn die Beleuchtungsdauer 1 min, also 60 Sekunden beträgt, und die bestrahlte Fläche $1 m^2$ entspricht, ergibt sich die gesamte Lichtenergie aus $1367 ~\frac{J}{m^2 * s} * 60 s * 1 m^2 = 82020~J$
 
 \begin{center}
         \includegraphics[width=0.5\textwidth]{skizze}
     \captionof{figure}{Skizze}
 \end{center}
 
+\newpage
 \section*{3. Beschreiben Sie, wie man Ray Tracing und Radiosity geeignet kombinieren kann. (1 Punkt)}
 
-Man kann Radiosity benutzen um die diffusen Beleuchtungsanteile der Szene zu berechnen und Raytracing für spiegelnde und transparente Objekte, dadurch würden sich beide Verfahren mit ihren jeweiligen Stärken ergänzen.
+Man kann Radiosity benutzen um die diffusen Beleuchtungsanteile der Szene zu berechnen , das bedeutet, es lässt sich die gesamte Szene mittels Radiosity rendern um einen reale Lichtverteilung gewährleisten zu können. Raytracing hingegen lässt für spiegelnde und transparente Objekte nutzen. Dadurch kann man die beiden Verfahren miteinander ergänzen, indem man die Szene durch Radiosity vorrendert und die richtungsunabhängige Beleuchtung (diffus) als erste berechnet und danach die vom Betrachter abhängigen Effekte (z.B. spekulärer Lichtanteil oder Reflektion) über Raytracing hinzugefügt.
 
 
 \section*{4. Bidirectional path tracing wurde von Veach Guibas und Lafortune Willems eingeführt. Diskutieren Sie Vor- und Nachteile des Verfahrens. (1 Punkte)}
