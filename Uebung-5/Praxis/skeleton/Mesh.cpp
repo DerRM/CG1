@@ -247,7 +247,7 @@ bool Mesh::intersectBoundingBox(Ray& ray, mat4 modelview)
         t1 = tzMax;
     }
         
-    return (t0 < t1);
+    return (t0 < t1 && t1 > ray.tmin);
 }
 
 bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
@@ -301,6 +301,11 @@ bool Mesh::intersectTriangle(Ray& ray, mat4 modelview, Hit& hit)
         
         double e3 = a * p - b * r + d * s;
         double t = e3 * inv_denom;
+        
+        if (t < ray.tmin)
+        {
+            continue;
+        }
         
         vec3 x = ray.o + (float)t * ray.d;
         double tDist = glm::distance(ray.o, x);

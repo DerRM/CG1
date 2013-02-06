@@ -47,6 +47,11 @@ bool Plane::hit(Ray &ray, Hit &hit)
     
     double t = dot(m_Point - ray.o, m_Normal) / denom;
     
+    if (t < ray.tmin)
+    {
+        return false;
+    }
+    
     hit.normal = m_Normal;
     hit.color = m_Color;
     hit.hitPoint = ray.o + (float) t * ray.d;

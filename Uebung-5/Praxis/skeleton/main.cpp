@@ -165,20 +165,19 @@ bool castShadow(Hit& hit)
     vec3 lightdir = light_pos - hit.hitPoint;
     vec3 normal_lightdir = normalize(lightdir);
     
-    Ray ray(hit.hitPoint, lightdir, 10.6f);
+    Ray ray(hit.hitPoint, normal_lightdir, 0.1f);
 
     
     Hit dummy;
     if (_mesh.intersectTriangle(ray, modelview, dummy))
     {
-        hit.color *= 0.5f;
         return true;
     }
     
-//    if ( _plane.hit(ray, dummy)) {
-//        hit.color *= 0.5f;
-//        return true;
-//    }
+    if ( _plane.hit(ray, dummy)) {
+        return true;
+    }
+    
     return false;
 }
 
@@ -221,12 +220,6 @@ bool hitTest(Ray& ray, Hit& hit)
         hit.normal = temp2.normal;
         hit.hitPoint = temp2.hitPoint;
         hit.color = temp2.color;
-        
-        if (castShadow(hit))
-        {
-            hit.color -= vec3(0.5, 0.5, 0.5);
-        }
-        
         return true;
     }
     
@@ -269,6 +262,11 @@ void ray_trace()
             {
                 hitPoints.push_back((vec3) (inverse(modelview) * vec4(hit.hitPoint, 1.0)));
                 rayTracedImage[i + j * w] = computeLighting(hit, hit.color);
+                
+                if (castShadow(hit))
+                {
+                    rayTracedImage[i + j * w] -= vec3(0.5f, 0.5f, 0.5f);
+                }
             }
 		}
 	}
